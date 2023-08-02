@@ -9,4 +9,3 @@ Classes:
 + Player:
 + Game:
 
-continuo haciendo cambios en el archivo y commit
