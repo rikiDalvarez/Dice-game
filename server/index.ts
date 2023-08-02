@@ -43,11 +43,16 @@ class Player {
   name: string;
   password: string;
   registrationDate: Date;
-  successRate: number; // percentage?
+  successRate: number;
   games: Array<Game>;
 
-  constructor(_id: string, name: string, password: string, games: Array<Game>) {
-    this._id = _id;
+  constructor(
+    _id: string,
+    name: string = "NO NAME",
+    password: string,
+    games: Array<Game>
+  ) {
+    this._id = _id; // assignar id único
     this.name = name;
     this.password = password;
     this.games = games;
