@@ -1,0 +1,37 @@
+name: DICE GAME
+
+on:
+  push:
+    branches: 
+      - "main"
+      - "development"
+  pull_request:
+    branches: 
+      - "main" 
+      - "development"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        fetch-depth: 0
+   
+    - name: Install Node.js 
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    
+    - name: Build NODE APP
+      run: |
+        npm ci
+        npm run eslint
+        npm run build
+    - name: Run tests
+      run: npm run test
+    
+      
+    
+        

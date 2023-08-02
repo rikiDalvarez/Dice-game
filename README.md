@@ -1,4 +1,11 @@
 devs:
--Ricardo Dutra Alvarez
--Galis
--Konrad
+
++ Ricardo Dutra Alvarez
++ Galis
++ Konrad
+
+Classes:
+
++ Player:
++ Game:
+
