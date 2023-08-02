@@ -1,17 +1,42 @@
-// import express from "express";
+import "dotenv/config";
+import config from "./config/config";
+import express from "express";
+import mongoose from "mongoose";
 
-// const app = express();
-// const port = 5555;
+// Express
+const app = express();
+const router = express.Router();
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+// Middlewares
+app.use(express.json());
+app.use("/api", router);
 
-// app.listen(port, () => {
-//   console.log(`Server is listening on port ${port}! 🍄 `);
-// });
+// Routes
+router.get("/", async (req, res) => {
+  const player = await Test.find();
+  res.send(player);
+});
 
-// class Player
+// Database
+mongoose.connect(config.MONGO_URI);
+//schema
+const testSchema = new mongoose.Schema({
+  name: String,
+});
+//model
+const Test = mongoose.model("Test", testSchema);
+//instance
+const player55 = new Test({ name: "player55" });
+//save
+async function savePlayer(player: any) {
+  await player.save().then(() => console.log("player saved"));
+}
+savePlayer(player55);
+
+// Server
+app.listen(config.PORT, () => {
+  console.log(`Server is listening on port ${config.PORT}! 🍄 `);
+});
 
 class Game {
   gameWin: Boolean;
