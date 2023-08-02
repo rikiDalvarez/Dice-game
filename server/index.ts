@@ -39,7 +39,7 @@ game.rollDice();
 ///////////////
 
 class Player {
-//  _id: string; NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
+  //  _id: string; NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
   name: string;
   password: string;
   registrationDate: Date;
@@ -47,12 +47,12 @@ class Player {
   games: Array<Game>;
 
   constructor(
-//    _id: string, NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
+    //    _id: string, NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
     name: string = "NO NAME",
     password: string,
     games: Array<Game>
   ) {
-//    this._id = _id; NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
+    //    this._id = _id; NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
     this.name = name;
     this.password = password;
     this.games = games;
@@ -79,6 +79,8 @@ class Player {
 const game1 = new Game();
 const game2 = new Game();
 const game3 = new Game();
+
+const player2 = new Player("player2", "player2", [game1, game2, game3]);
 
 const player1 = new Player("test", "test", [game1, game2, game3]);
 player1.newGame();
