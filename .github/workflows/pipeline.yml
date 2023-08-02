@@ -29,7 +29,9 @@ jobs:
         npm ci
         npm run eslint
         npm run build
-      working-directory: ./server
+      working-directory: /home/runner/work/Dice-game/server
+
+      
     - name: Run tests
       run: npm run test
     
