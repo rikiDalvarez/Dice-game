@@ -4,11 +4,8 @@ devs:
 + Galis
 + Konrad
 
-he hecho un cambio
-
-añado algo nuevo
-
 Classes:
 
 + Player:
 + Game:
+
