@@ -80,7 +80,7 @@ const game1 = new Game();
 const game2 = new Game();
 const game3 = new Game();
 
-const player2 = new Player("player2", "player2", [game1, game2, game3]);
+//const player2 = new Player("player2", "player2", [game1, game2, game3]);
 
 const player1 = new Player("test", "test", [game1, game2, game3]);
 player1.newGame();

@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import config from "./config/config";
 import express from "express";
@@ -28,7 +29,7 @@ const Test = mongoose.model("Test", testSchema);
 //instance
 const player55 = new Test({ name: "player55" });
 //save
-async function savePlayer(player: any) {
+async function savePlayer(player: unknown) {
   await player.save().then(() => console.log("player saved"));
 }
 savePlayer(player55);
@@ -39,7 +40,7 @@ app.listen(config.PORT, () => {
 });
 
 class Game {
-  gameWin: Boolean;
+  gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
 
@@ -105,7 +106,7 @@ const game1 = new Game();
 const game2 = new Game();
 const game3 = new Game();
 
-const player2 = new Player("player2", "player2", [game1, game2, game3]);
+//const player2 = new Player("player2", "player2", [game1, game2, game3]);
 
 const player1 = new Player("test", "test", [game1, game2, game3]);
 player1.newGame();
@@ -114,3 +115,5 @@ player1.newGame();
 console.log(player1.calcPercentage());
 
 console.log(player1);
+
+
