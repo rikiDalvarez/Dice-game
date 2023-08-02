@@ -4,6 +4,3 @@ devs:
 + Galis
 + Konrad
 
-he hecho un cambio
-
-añado algo nuevo
