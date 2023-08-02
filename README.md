@@ -1,3 +1,5 @@
 devs:
--Ricardo Dutra Alvarez
--Galis
+
++ Ricardo Dutra Alvarez
++ Galis
++ Konrad
