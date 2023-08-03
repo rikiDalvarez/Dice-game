@@ -1,7 +1,6 @@
 import "dotenv/config";
 import config from "../config/config";
 import express from "express";
-import mongoose from "mongoose";
 import router from "./routes";
 import { connectDatabase } from "./mongoDbConnection";
 

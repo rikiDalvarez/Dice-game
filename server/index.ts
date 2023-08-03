@@ -1,4 +1,4 @@
-import "dotenv/config";
+/* import "dotenv/config";
 import config from "./config/config";
 import express from "express";
 import mongoose from "mongoose";
@@ -134,3 +134,4 @@ player1.newGame();
 console.log(player1.calcPercentage());
 
 console.log(player1);
+ */
