@@ -7,7 +7,7 @@ describe("DiceRoller class test", () => {
       const result = diceRoller.roll();
       expect(result).toBeGreaterThanOrEqual(1);
       expect(result).toBeLessThanOrEqual(6);
+      // expect(diceRoller.roll).toHaveBeenCalledTimes(i + 1);
     }
   });
-  
 });
