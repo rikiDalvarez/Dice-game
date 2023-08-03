@@ -4,7 +4,7 @@ import { Game } from "../src/Game";
 import { DiceRoller } from "../src/DiceRoller";
 import { mocked } from "jest-mock";
 jest.mock("../src/DiceRoller");
-describe("Game class test", () => {
+describe("Player class test", () => {
   const diceRoller = new DiceRoller();
   const mockedDiceRoller = mocked(diceRoller);
   function gameGenerator(firstDice: number, secondDice: number): Game {
@@ -14,7 +14,7 @@ describe("Game class test", () => {
     return new Game(mockedDiceRoller);
   }
 
-  test("istnace should contain dices value between 1 and 6", () => {
+  test("calcSuccesRate should return percent of won games", () => {
     const wonGame = gameGenerator(3, 4);
     const lostGame = gameGenerator(1, 2);
 
