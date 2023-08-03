@@ -1,5 +1,4 @@
 import { Dice } from "./Dice";
-
 export class Game {
   readonly gameWin: boolean;
   readonly dice1Value: number;
