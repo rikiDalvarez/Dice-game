@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 import config from "./config/config";
 import express from "express";
@@ -14,22 +13,28 @@ app.use("/api", router);
 
 // Routes
 router.get("/", async (req, res) => {
-  const player = await Test.find();
+  const player = await PlayerDocument.find();
   res.send(player);
 });
 
 // Database
-mongoose.connect(config.MONGO_URI);
+mongoose.connect(config.MONGO_URI, {
+  dbName: config.DATABASE,
+});
 //schema
-const testSchema = new mongoose.Schema({
+const playerSchema = new mongoose.Schema({
   name: String,
+  password: String,
+  registrationDate: Date,
+  successRate: Number,
+  games: Array<Game>,
 });
 //model
-const Test = mongoose.model("Test", testSchema);
+const PlayerDocument = mongoose.model("Player", playerSchema);
 //instance
-const player55 = new Test({ name: "player55" });
+const player55 = new PlayerDocument({ name: "player55UHU" });
 //save
-async function savePlayer(player: unknown) {
+async function savePlayer(player: mongoose.Document) {
   await player.save().then(() => console.log("player saved"));
 }
 savePlayer(player55);
@@ -82,6 +87,8 @@ class Player {
     this.name = name;
     this.password = password;
     this.games = games;
+    this.registrationDate = new Date();
+    this.successRate = this.calcPercentage();
   }
 
   newGame() {
@@ -115,5 +122,3 @@ player1.newGame();
 console.log(player1.calcPercentage());
 
 console.log(player1);
-
-
