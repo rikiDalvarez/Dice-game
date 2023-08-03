@@ -4,7 +4,7 @@ import { Game } from "./domain/Game";
 import { Dice } from "./domain/Dice";
 import { mocked } from "jest-mock";
 
-jest.mock("../src/DiceRoller");
+jest.mock("./domain/Dice");
 describe("Player class test", () => {
   const diceRoller = new Dice();
   const mockedDiceRoller = mocked(diceRoller);

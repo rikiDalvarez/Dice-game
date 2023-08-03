@@ -2,7 +2,7 @@ import { describe, test } from "@jest/globals";
 import { Game } from "../src/domain/Game";
 import { Dice } from "./domain/Dice";
 import { mocked } from "jest-mock";
-jest.mock("../src/DiceRoller");
+jest.mock("./domain/Dice");
 describe("Game  class test", () => {
   test("Game is won if sum of dices is 7", () => {
     const diceRoller = new Dice();
