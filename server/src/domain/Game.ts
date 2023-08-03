@@ -1,11 +1,11 @@
-import { DiceRoller } from "./DiceRoller";
+import { Dice } from "./Dice";
 
 export class Game {
   readonly gameWin: boolean;
   readonly dice1Value: number;
   readonly dice2Value: number;
 
-  constructor(diceRoller: DiceRoller) {
+  constructor(diceRoller: Dice) {
     this.dice1Value = diceRoller.roll();
     this.dice2Value = diceRoller.roll();
     this.gameWin = this.hasWon();

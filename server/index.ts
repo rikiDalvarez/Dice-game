@@ -17,6 +17,7 @@ router.get("/", async (req, res) => {
   res.send(player);
 });
 
+
 // Database
 mongoose.connect(config.MONGO_URI, {
   dbName: config.DATABASE,
@@ -38,6 +39,16 @@ async function savePlayer(player: mongoose.Document) {
   await player.save().then(() => console.log("player saved"));
 }
 savePlayer(player55);
+
+
+// //route
+// router.post("/insertUser", async (req,res) => {
+//   const  player4 = new PlayerDocument({name: "player4"})
+//   const addPlayer = new Player(player4.name, "password", [])
+//   savePlayer(player4);
+  
+// })
+
 
 // Server
 app.listen(config.PORT, () => {
@@ -71,6 +82,7 @@ game.rollDice();
 
 class Player {
   //  _id: string; NO HAY QUE PONERLO, SE GENERA CON SEQUELIZE Y MONGOOSE
+
   name: string;
   password: string;
   registrationDate: Date;
