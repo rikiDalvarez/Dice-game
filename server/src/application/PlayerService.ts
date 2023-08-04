@@ -27,6 +27,10 @@ export class PlayerService {
   readPlayer(playerId: string): Promise<Player> {
     return this.playerInterface.readPlayer(playerId);
   }
+
+  getPlayerList(): Promise<Array<Player>>{
+    return this.playerInterface.getPlayerList()
+  }
 }
 
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers } from './controller';
+import { getPlayers, playgame } from './controller';
 import { postPlayer } from './controller';
 
 const router = express.Router();
@@ -11,10 +11,10 @@ router.post("/players", postPlayer );
 router.put("/players/{id}:", );
 
 // GET /players: retorna el llistat de tots els jugadors/es del sistema amb el seu percentatge d’èxits.
-router.get("/players", getUsers);
+router.get("/players", getPlayers);
 
 // POST /games/{id}: un jugador/a específic realitza una tirada.
-router.post("/games/{id}", );
+router.post("/games/:id", playgame );
 
 // DELETE /games/{id}: elimina les tirades del jugador/a.
 router.delete("/games/{id}", );

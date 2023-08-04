@@ -8,7 +8,7 @@ export class RankingService {
     this.rankingInterface = rankingInterface;
   }
 
-  getPlayerRanking(): Promise<Array<Player>> {
+  getPlayersRanking(): Promise<Array<Player>> {
     return this.rankingInterface.getPlayersRanking();
   }
   getMeanSuccesRate(): Promise<number> {

@@ -9,5 +9,6 @@ export interface PlayerInterface {
   addGame(playerDetails: Player): Promise<boolean>;
   findPlayer(playerEmail:string): Promise<boolean>
   readPlayer(playerId: string): Promise<Player>;
+  getPlayerList(): Promise<Array<Player>>;
 }
 

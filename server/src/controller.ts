@@ -3,28 +3,53 @@ import { Request, Response } from "express";
 import { User } from "./domain/User";
 import { PlayerService } from "./application/PlayerService";
 import { PlayerMongoDbManager } from "./infrastructure/mongoDbManager";
-export const getUsers = async (_req: Request, res: Response) => {
-	const player = await PlayerDocument.find();
-  res.send(player);
-};
+import { RankingService } from "./application/RankingService";
+import { PlayerList } from "./domain/PlayerList";
+import { Game } from "./domain/Game";
+import { Dice } from "./domain/Dice";
 
-
+const dice = new Dice()
 const playerMongoManager = new PlayerMongoDbManager()
 const playerService = new PlayerService(playerMongoManager)
+const rankingService = new RankingService(playerMongoManager)
+
+
+export const getPlayers = async (req:Request, res:Response) => {
+	playerService.getPlayerList().then(
+    (players) =>{
+      if (players){
+       
+        return res.status(201).json(new PlayerList(players))
+      }
+    }
+  ).catch((err)=>{throw err})
+};
 
 export const postPlayer = async (req: Request, res: Response) => {
 	if (!('email' in req.body) || !('password' in req.body)){
 		return res.status(400).json({Bad_reqest: "email and password required"})
 	}
-  const { email, password, name } = req.body;
+  const { email, password, name } = req.body;  
   const newUser = new User(email, password, name);
-  playerService.createPlayer(newUser)
-  res.status(201).send(newUser)
-
-  //const player1 = new PlayerDocument({ name: "player1" });
-  //const savedPlayer = await player1
-   // .save()
-    //.then(() => console.log("player saved"));
-  //console.log(savedPlayer);
-  //res.send(savedPlayer);
+  playerService.createPlayer(newUser).then((response)=>
+  {return res.status(201).json({Player_id: response.id})}).catch((err)=>{throw err})
+  
 };
+
+
+
+export const playgame = async (req: Request, res: Response) => {
+  const playerId = req.params.id
+  try {
+  const player = await playerService.readPlayer(playerId)
+  const game = new Game(dice)
+  player.addNewGame(game)
+  const responseFromDatabase = await playerService.addGame(player)
+  return res.status(200).json({game_saved: responseFromDatabase})}catch(err){
+    return err
+  }
+};
+
+ 
+
+
