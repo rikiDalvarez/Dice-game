@@ -10,7 +10,7 @@ export class Player extends User {
     password: string,
     games: Array<Game>,
     name: string,
-   id?:string
+    id?: string
   ) {
     super(email, password, name);
     this.games = games;
@@ -28,15 +28,14 @@ export class Player extends User {
 
   private calcSuccesRate() {
     const wins = this.games.filter((game) => game.gameWin).length;
-    return this.games.length >0 ?(wins / this.games.length) * 100: 0
+    return this.games.length > 0 ? (wins / this.games.length) * 100 : 0;
   }
-  
-   public setId(id: string) {
-   this.id = id
-   }
+
+  public setId(id: string) {
+    this.id = id;
+  }
 
   public getGames() {
     return this.games;
   }
 }
-
