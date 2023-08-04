@@ -1,5 +1,6 @@
 import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response } from "express";
+import { User } from "./domain/User";
 
 export const getUsers = async (_req: Request, res: Response) => {
   const player = await PlayerDocument.find();
