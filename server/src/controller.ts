@@ -2,9 +2,6 @@ import {PlayerDocument} from "./mongoDbModel";
 import { Request, Response } from "express";
 import { User } from "./domain/User";
 
-const dice = new Dice()
-const a = new Game(dice)
-console.log(a)
 
 export const getUsers = async (_req: Request, res: Response) => {
 	const player = await PlayerDocument.find();
