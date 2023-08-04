@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 
 // Parsing the env file.
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-console.log(path.resolve(process.cwd(), ".env") )
-console.log(process.env.DATABASE)
+console.log(path.resolve(process.cwd(), ".env"));
+console.log(process.env.DATABASE);
 // Interface to load env variables
 
 interface ENV {
@@ -33,9 +33,8 @@ const getConfig = (): ENV => {
 };
 
 const getSanitzedConfig = (config: ENV): Config => {
-  console.log(config)
+  console.log(config);
   for (const [key, value] of Object.entries(config)) {
-
     if (value === undefined) {
       throw new Error(`Missing key ${key} in config.env`);
     }
