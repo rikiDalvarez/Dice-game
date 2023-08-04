@@ -7,7 +7,7 @@ export class PlayerService {
     this.playerInterface = playerInterface;
   }
 
-  createPlayer(playerDetails: Player): Promise<boolean> {
+  createPlayer(playerDetails: Player): Promise<Player> {
     return this.playerInterface.createPlayer(playerDetails);
   }
 
@@ -17,6 +17,10 @@ export class PlayerService {
 
   addGame(playerDetails: Player): Promise<boolean> {
     return this.playerInterface.addGame(playerDetails);
+  }
+
+  findPlayer(playerName:string):Promise<boolean>{
+    return this.playerInterface.findPlayer(playerName)
   }
 
   readPlayer(playerId: string): Promise<Player> {
