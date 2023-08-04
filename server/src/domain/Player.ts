@@ -6,25 +6,14 @@ const diceRoller = new Dice();
 
 export class Player {
   readonly id: string
-  readonly email: string;
-  readonly name?: string;
-  readonly password: string;
-  readonly registrationDate: Date;
   readonly succesRate:number;
   private games: Array<Game>;
 
   constructor(
-    email: string,
-   name: string = "unknown",
-    password: string,
     games: Array<Game>,
-    id?:string
+    id:string
   ) {
-    this.email = email;
-    this.name = name;
-    this.password = password;
     this.games = games;
-    this.registrationDate = new Date();
     this.id = id
     this.succesRate = this.calcSuccesRate()
   }
@@ -50,13 +39,13 @@ export class Player {
   }
 }
 
-const game1 = new Game(diceRoller);
-const game2 = new Game(diceRoller);
-const game3 = new Game(diceRoller);
+///const game1 = new Game(diceRoller);
+///const game2 = new Game(diceRoller);
+//const game3 = new Game(diceRoller);
 
-const player1 = new Player("1@1.com","test", "test", [game1, game2, game3]);
+//const player1 = new Player("1@1.com","test", "test", [game1, game2, game3]);
 
-player1.newGame(new Game(diceRoller));
-player1.newGame(new Game(diceRoller));
+//player1.newGame(new Game(diceRoller));
+//player1.newGame(new Game(diceRoller));
 
-console.log(player1.getGames());
+//console.log(player1.getGames());
