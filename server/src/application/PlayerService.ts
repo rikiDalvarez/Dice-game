@@ -1,6 +1,6 @@
-import { Player } from "../domain/Player";
+ import { Player } from "../domain/Player";
+import { User } from "../domain/User";
 import { PlayerInterface } from "./PlayerInterface";
-
 
 export class PlayerService {
   playerInterface: PlayerInterface;
@@ -8,7 +8,7 @@ export class PlayerService {
     this.playerInterface = playerInterface;
   }
 
-  createPlayer(playerDetails: Player): Promise<Player> {
+  createPlayer(playerDetails: User): Promise<Player> {
     return this.playerInterface.createPlayer(playerDetails);
   }
 

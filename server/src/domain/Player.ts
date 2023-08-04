@@ -1,21 +1,25 @@
 import { Game } from "./Game";
 import { Dice } from "./Dice";
+import { User } from "./User";
 
 const diceRoller = new Dice();
 
-
-export class Player {
-  readonly id: string
-  readonly succesRate:number;
+export class Player extends User {
+  private id: object | undefined;
+  readonly succesRate: number;
   private games: Array<Game>;
-
   constructor(
+   
+    email: string,
+    password: string,
     games: Array<Game>,
-    id:string
+    name: string,
+  
   ) {
+    super(email, password, name);
     this.games = games;
-    this.id = id
-    this.succesRate = this.calcSuccesRate()
+    //this.id = id;
+    this.succesRate = this.calcSuccesRate();
   }
 
   public newGame(game: Game) {
@@ -30,12 +34,13 @@ export class Player {
     const wins = this.games.filter((game) => game.gameWin).length;
     return (wins / this.games.length) * 100;
   }
-  //setId(id: string) {
-   // this.id = id
-  //}
+  
+  // setId(id: object) {
+  // this._id = id
+  // }
 
-  public getGames(){
-    return this.games
+  public getGames() {
+    return this.games;
   }
 }
 

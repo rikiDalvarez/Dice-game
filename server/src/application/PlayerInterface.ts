@@ -1,9 +1,10 @@
 import { Player } from "../domain/Player";
+import { User } from "../domain/User";
 
 
 
 export interface PlayerInterface {
-  createPlayer(playerDetails: Player): Promise<Player>;
+  createPlayer(playerDetails: User): Promise<Player>;
   changeName(playerId: string, newName: string): Promise<boolean>;
   addGame(playerDetails: Player): Promise<boolean>;
   findPlayer(playerName:string): Promise<boolean>

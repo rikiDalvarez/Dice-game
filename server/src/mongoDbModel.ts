@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Game } from "./domain/Game";
+import { Player } from "./domain/Player";
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, match: /.+\@.+\..+/, unique: true },
@@ -25,6 +26,7 @@ const userSchema = new mongoose.Schema({
 
 const playerSchema = new mongoose.Schema({
   name: String,
+  email: String,
   password: String,
   registrationDate: Date,
   successRate: Number,

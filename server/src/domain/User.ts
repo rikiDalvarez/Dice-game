@@ -1,13 +1,14 @@
 export class User {
   readonly email: string;
-  readonly name?: string;
+  readonly name: string;
   readonly password: string;
   readonly registrationDate: Date;
 
   constructor(
-    name: string = "unknown",
     email: string,
     password: string,
+    name: string = "unknown"
+   
   ) {
     this.email = email;
     this.name = name;
@@ -15,3 +16,4 @@ export class User {
     this.registrationDate = new Date();
   }
 }
+
