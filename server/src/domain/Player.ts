@@ -5,7 +5,7 @@ const diceRoller = new Dice();
 
 
 export class Player {
-  readonly id: string | undefined
+  readonly id: string
   readonly email: string;
   readonly name?: string;
   readonly password: string;
