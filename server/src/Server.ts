@@ -5,6 +5,8 @@ import router from "./routes";
 import { connectDatabase } from "./mongoDbConnection";
 
 // Express
+
+console.log(config.MONGO_URI, config.DATABASE)
 const app = express();
 connectDatabase(config.MONGO_URI, config.DATABASE)
 

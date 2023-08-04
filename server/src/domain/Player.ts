@@ -15,7 +15,7 @@ export class Player {
 
   constructor(
     email: string,
-    name: string = "unknown",
+   name: string = "unknown",
     password: string,
     games: Array<Game>,
     id?:string
