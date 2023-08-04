@@ -34,6 +34,8 @@ export class Player extends User {
   }
   public deleteGames() {
     this.games = [];
+    this.successRate = this.calcSuccesRate();
+
   }
 
   private calcSuccesRate() {

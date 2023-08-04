@@ -70,7 +70,16 @@ export class PlayerMongoDbManager implements PlayerInterface {
       }).catch((err)=> {throw err})
     }
 
-   
+    async deleteAllGames(player: Player): Promise<boolean> {
+      // const playerDocument = await PlayerDocument.findById(player.id);
+      //if (playerDocument) return true;
+      //return false;
+      const id = player.id;
+      return PlayerDocument.replaceOne({ _id: {$eq:  id} }, player).then((response)=>{
+        console.log(response)
+        return response.modifiedCount === 1
+        }).catch((err)=> {throw err})
+      }
   
 
   async deletePlayer(playerId: string): Promise<boolean> {

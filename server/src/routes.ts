@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPlayers, playgame } from './controller';
+import { deleteAllGames, getPlayers, playgame } from './controller';
 import { postPlayer } from './controller';
 
 const router = express.Router();
@@ -17,7 +17,7 @@ router.get("/players", getPlayers);
 router.post("/games/:id", playgame );
 
 // DELETE /games/{id}: elimina les tirades del jugador/a.
-router.delete("/games/{id}", );
+router.delete("/games/:id", deleteAllGames );
 
 // GET /games/{id}: retorna el llistat de jugades per un jugador/a.
 router.get("/games/{id}", );

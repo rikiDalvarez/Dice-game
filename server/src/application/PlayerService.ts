@@ -20,6 +20,10 @@ export class PlayerService {
     return this.playerInterface.addGame(playerDetails);
   }
 
+  deleteAllGames(playerDetails: Player): Promise<boolean> {
+    return this.playerInterface.deleteAllGames(playerDetails);
+  }
+
   findPlayer(playerEmail:string):Promise<boolean>{
     return this.playerInterface.findPlayer(playerEmail)
   }

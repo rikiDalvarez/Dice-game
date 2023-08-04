@@ -50,6 +50,17 @@ export const playgame = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteAllGames = async (req: Request, res: Response) => {
+  const playerId = req.params.id
+  try {
+  const player = await playerService.readPlayer(playerId)
+  player.deleteGames()
+  const responseFromDatabase = await playerService.deleteAllGames(player)
+  return res.status(200).json({games_deleted: responseFromDatabase})}catch(err){
+    return err
+  }
+};
+
  
 
 
