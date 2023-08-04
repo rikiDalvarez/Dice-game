@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import {Game} from "./domain/Game"
-
+import { Game } from "./domain/Game";
 
 const playerSchema = new mongoose.Schema({
   name: String,
