@@ -37,11 +37,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async addGame(player: Player): Promise<boolean> {
     const playerDocument = await PlayerDocument.findById(player.id);
-    if (playerDocument) {
-      playerDocument.games.push(player.games[0]);
-      await playerDocument.save();
-      return true;
-    }
+    if (playerDocument) return true;
     return false;
   }
 
