@@ -20,8 +20,8 @@ export class PlayerService {
     return this.playerInterface.addGame(playerDetails);
   }
 
-  findPlayer(playerName:string):Promise<boolean>{
-    return this.playerInterface.findPlayer(playerName)
+  findPlayer(playerEmail:string):Promise<boolean>{
+    return this.playerInterface.findPlayer(playerEmail)
   }
 
   readPlayer(playerId: string): Promise<Player> {

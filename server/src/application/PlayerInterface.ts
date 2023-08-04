@@ -7,7 +7,7 @@ export interface PlayerInterface {
   createPlayer(playerDetails: User): Promise<Player>;
   changeName(playerId: string, newName: string): Promise<boolean>;
   addGame(playerDetails: Player): Promise<boolean>;
-  findPlayer(playerName:string): Promise<boolean>
+  findPlayer(playerEmail:string): Promise<boolean>
   readPlayer(playerId: string): Promise<Player>;
 }
 

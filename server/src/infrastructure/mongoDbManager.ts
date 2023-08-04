@@ -2,27 +2,28 @@ import { Player } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
 import { PlayerDocument } from "../mongoDbModel";
 import { User } from "../domain/User";
-import { ObjectId } from "mongoose";
-
 
 export class PlayerMongoDbManager implements PlayerInterface {
   async createPlayer(player: User): Promise<Player> {
-    const newPlayer = new Player(player.email, player.password, [],  player.name)
+    const newPlayer = new Player(
+      player.email,
+      player.password,
+      [],
+      player.name
+    );
+    
     const playerFromDB = await PlayerDocument.create(newPlayer);
-    console.log(playerFromDB)
-    console.log(newPlayer)
-    console.log('type', typeof(playerFromDB))
 
-    const playerForGame = new Player(playerFromDB.email, playerFromDB.password, playerFromDB.games, playerFromDB.name);
+    const playerForGame = new Player(
+      playerFromDB.email,
+      playerFromDB.password,
+      playerFromDB.games,
+      playerFromDB.name
+    );
+    playerForGame.setId(playerFromDB._id.toString());
+    console.log(playerForGame);
+    
 
-    console.log(playerForGame)
-    // const id = playerFromDB._id;
-    // newPlayer.setId(id);
-    // console.log(newPlayer)
-    ///return newPlayer;
-
-
-    PlayerDocument.create(newPlayer).then((data)=> data)
   }
 
   async findPlayer(playerID: string): Promise<boolean> {

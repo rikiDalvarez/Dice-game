@@ -33,4 +33,4 @@ const playerSchema = new mongoose.Schema({
   games: Array<Game>,
 });
 
-export const PlayerDocument = mongoose.model("Player", playerSchema);
+export const PlayerDocument = mongoose.model<Player>("Player", playerSchema);

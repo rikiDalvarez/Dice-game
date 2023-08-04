@@ -1,24 +1,20 @@
 import { Game } from "./Game";
-import { Dice } from "./Dice";
 import { User } from "./User";
 
-const diceRoller = new Dice();
-
 export class Player extends User {
-  private id: object | undefined;
+  public id: string | undefined;
   readonly succesRate: number;
-  private games: Array<Game>;
+  public games: Array<Game>;
   constructor(
-   
     email: string,
     password: string,
     games: Array<Game>,
     name: string,
-  
+   id?:string
   ) {
     super(email, password, name);
     this.games = games;
-    //this.id = id;
+    this.id = id;
     this.succesRate = this.calcSuccesRate();
   }
 
@@ -32,25 +28,15 @@ export class Player extends User {
 
   private calcSuccesRate() {
     const wins = this.games.filter((game) => game.gameWin).length;
-    return (wins / this.games.length) * 100;
+    return this.games.length >0 ?(wins / this.games.length) * 100: 0
   }
   
-  // setId(id: object) {
-  // this._id = id
-  // }
+   public setId(id: string) {
+   this.id = id
+   }
 
   public getGames() {
     return this.games;
   }
 }
 
-///const game1 = new Game(diceRoller);
-///const game2 = new Game(diceRoller);
-//const game3 = new Game(diceRoller);
-
-//const player1 = new Player("1@1.com","test", "test", [game1, game2, game3]);
-
-//player1.newGame(new Game(diceRoller));
-//player1.newGame(new Game(diceRoller));
-
-//console.log(player1.getGames());
