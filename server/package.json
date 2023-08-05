@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx jest --verbose --silent",
     "build": "npx tsc",
-    "eslint": "npx eslint ."
+    "eslint": "npx eslint .",
+    "dev": "ts-node ./src/Server.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,7 @@
 import { Game } from "./Game";
 import { User } from "./User";
 
-type GameType = {
+export type GameType = {
   gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
@@ -36,7 +36,6 @@ export class Player extends User {
     this.games = [];
     this.successRate = this.calcSuccesRate();
   }
-
   private calcSuccesRate() {
     const wins = this.games.filter((game) => game.gameWin).length;
     return this.games.length > 0

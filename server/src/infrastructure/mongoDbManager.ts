@@ -2,7 +2,11 @@ import { Player } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
 import { PlayerDocument } from "../mongoDbModel";
 import { User } from "../domain/User";
+import { GameType } from "../domain/Player";
+import { Game } from "../domain/Game";
 export class PlayerMongoDbManager implements PlayerInterface {
+
+  //response returns empty array, should return the player created
   async createPlayer(player: User): Promise<Player> {
     const newPlayer = new Player(
       player.email,
@@ -11,7 +15,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       player.name
     );
     const playerFromDB = await PlayerDocument.create(newPlayer);
-      return playerFromDB
+    return playerFromDB
   }
 
   async findPlayer(playerID: string): Promise<boolean> {
@@ -35,6 +39,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<Array<Player>> {
     const playersFromDB = await PlayerDocument.find({});
+    
     if (playersFromDB) {
       return playersFromDB.map((player) => {
         return new Player(
@@ -51,42 +56,52 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async changeName(playerId: string, newName: string): Promise<boolean> {
-    const player = await PlayerDocument.findById(playerId);
-    if (player) {
-      player.name = newName;
-      await player.save();
-      return true;
+    //check if name is in use
+    const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName })
+    if (nameAlreadyInUse) {
+      //add error handling 
+      throw new Error("name already in use, please choose another name")
     }
-    return false;
+    //find and update
+    const player = await PlayerDocument.findByIdAndUpdate(playerId, { name: newName });
+    if (!player) {
+      //add error handler
+      throw new Error("player not found")
+    }
+    return true;
   }
 
   async addGame(player: Player): Promise<boolean> {
-    // const playerDocument = await PlayerDocument.findById(player.id);
-    //if (playerDocument) return true;
-    //return false;
     const id = player.id;
-    return PlayerDocument.replaceOne({ _id: {$eq:  id} }, player).then((response)=>{
+    return PlayerDocument.replaceOne({ _id: { $eq: id } }, player).then((response) => {
       return response.modifiedCount === 1
-      }).catch((err)=> {throw err})
-    }
+    }).catch((err) => { throw err })
+  }
 
-    async deleteAllGames(player: Player): Promise<boolean> {
-      // const playerDocument = await PlayerDocument.findById(player.id);
-      //if (playerDocument) return true;
-      //return false;
-      const id = player.id;
-      return PlayerDocument.replaceOne({ _id: {$eq:  id} }, player).then((response)=>{
-        console.log(response)
-        return response.modifiedCount === 1
-        }).catch((err)=> {throw err})
-      }
-  
+  async deleteAllGames(player: Player): Promise<boolean> {
+    const id = player.id;
+    return PlayerDocument.replaceOne({ _id: { $eq: id } }, player).then((response) => {
+      console.log(response)
+      return response.modifiedCount === 1
+    }).catch((err) => { throw err })
+  }
 
+
+  // we don't need to delete players  
   async deletePlayer(playerId: string): Promise<boolean> {
     const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
     if (deletePlayer) {
       return true;
     }
     return false;
+  }
+
+  async getGames(playerId: string): Promise<Array<Player>> {
+    const player = new Player("riki", "123", [], "riki")
+    return [player]
+    // const allGames = await PlayerDocument.findById(playerId)
+    // const {name, email, id, password, games} = allGames
+    // return allGames;
+  
   }
 }
