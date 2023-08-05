@@ -5,12 +5,12 @@ type GameType = {
   gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
-}
+};
 
 export class Player extends User {
   public id: string | undefined;
   public successRate: number;
- 
+
   public games: Array<GameType>;
   constructor(
     email: string,
@@ -35,16 +35,17 @@ export class Player extends User {
   public deleteGames() {
     this.games = [];
     this.successRate = this.calcSuccesRate();
-
   }
 
   private calcSuccesRate() {
     const wins = this.games.filter((game) => game.gameWin).length;
-    return this.games.length > 0 ? Number(((wins / this.games.length) * 100).toFixed(2)) : 0;
+    return this.games.length > 0
+      ? Number(((wins / this.games.length) * 100).toFixed(2))
+      : 0;
   }
 
   //public setId(id: string) {
-   // this.id = id;
+  // this.id = id;
   //}
 
   public getGames() {
