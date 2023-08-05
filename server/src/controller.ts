@@ -36,7 +36,7 @@ export const postPlayer = async (req: Request, res: Response) => {
   playerService
     .createPlayer(newUser)
     .then((response) => {
-      return res.status(201).json({ Player_id: response.id });
+      return res.status(201).json({ Player_id: response});
     })
     .catch((err) => {
       throw err;
@@ -46,9 +46,12 @@ export const postPlayer = async (req: Request, res: Response) => {
 export const playGame = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   try {
+    console.log('gram')
     const player = await playerService.readPlayer(playerId);
     // add res.status(400) for error when id not found
+    console.log(player)
     const game = new Game(dice);
+    console.log(game)
     player.addNewGame(game);
     const responseFromDatabase = await playerService.addGame(player);
     return res.status(200).json({ game_saved: responseFromDatabase });

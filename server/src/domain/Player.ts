@@ -7,40 +7,49 @@ export type GameType = {
   dice2Value: number;
 };
 
+export type PlayerType = {
+  id:string,
+  successRate:number,
+  games: Array<GameType>,
+  email: string,
+  name:string,
+  password:string
+}
+
 export class Player extends User {
-  public id: string | undefined;
-  public successRate: number;
-  public games: Array<GameType>;
+  readonly id: string;
+  private _successRate: number;
+  private _games: Array<GameType>;
   constructor(
     email: string,
     password: string,
     games: Array<GameType>,
     name: string,
-    id?: string
+    id: string
   ) {
     super(email, password, name);
-    this.games = games;
+    this._games = games;
     this.id = id;
-    this.successRate = this.calcSuccesRate();
+    this._successRate = this.calcSuccesRate();
   }
 
   public addNewGame(game: Game) {
-    
-    this.games.push(game);
-    this.successRate = this.calcSuccesRate();
+    console.log(game)
+    this._games.push(game);
+    this._successRate = this.calcSuccesRate();
    
   }
-  public getSuccesRate(): number {
-    return this.successRate;
+  public get successRate(): number {
+    return this._successRate;
   }
   public deleteGames() {
-    this.games = [];
-    this.successRate = this.calcSuccesRate();
+    this._games = [];
+    this._successRate = this.calcSuccesRate();
   }
   private calcSuccesRate() {
-    const wins = this.games.filter((game) => game.gameWin).length;
-    return this.games.length > 0
-      ? Number(((wins / this.games.length) * 100).toFixed(2))
+    const wins = this._games.filter((game) => game.gameWin).length;
+    return this._games.length > 0
+      ? Number(((wins / this._games.length) * 100).toFixed(2))
       : 0;
   }
 
@@ -48,7 +57,7 @@ export class Player extends User {
   // this.id = id;
   //}
 
-  public getGames() {
-    return this.games;
+  public get games() {
+    return this._games;
   }
 }

@@ -8,7 +8,6 @@ export class User {
     email: string,
     password: string,
     name: string = "unknown"
-   
   ) {
     this.email = email;
     this.name = name;

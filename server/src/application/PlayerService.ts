@@ -10,7 +10,7 @@ export class PlayerService {
     this.playerInterface = playerInterface;
   }
 
-  createPlayer(playerDetails: User): Promise<Player> {
+  createPlayer(playerDetails: User): Promise<string> {
     return this.playerInterface.createPlayer(playerDetails);
   }
 

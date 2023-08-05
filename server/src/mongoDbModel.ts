@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { Game } from "./domain/Game";
-import { Player } from "./domain/Player";
-import { GameType } from "./domain/Player";
+import {PlayerType } from "./domain/Player";
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, match: /.+\@.+\..+/, unique: true },
@@ -34,4 +33,4 @@ const playerSchema = new mongoose.Schema({
   games: Array<Game>,
 });
 
-export const PlayerDocument = mongoose.model<Player>("Player", playerSchema);
+export const PlayerDocument = mongoose.model<PlayerType>("Player", playerSchema);

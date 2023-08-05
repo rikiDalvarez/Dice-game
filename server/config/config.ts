@@ -32,7 +32,7 @@ const getConfig = (): ENV => {
   };
 };
 
-const getSanitzedConfig = (config: ENV): Config => {
+const getSanitizedConfig = (config: ENV): Config => {
   console.log(config);
   for (const [key, value] of Object.entries(config)) {
     if (value === undefined) {
@@ -44,6 +44,6 @@ const getSanitzedConfig = (config: ENV): Config => {
 
 const config = getConfig();
 
-const sanitizedConfig = getSanitzedConfig(config);
+const sanitizedConfig = getSanitizedConfig(config);
 
 export default sanitizedConfig;
