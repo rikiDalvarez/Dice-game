@@ -1,6 +1,7 @@
- import { Player } from "../domain/Player";
+import { Player } from "../domain/Player";
 import { User } from "../domain/User";
 import { PlayerInterface } from "./PlayerInterface";
+import { GameType } from "../domain/Player";
 
 export class PlayerService {
   playerInterface: PlayerInterface;
@@ -12,7 +13,7 @@ export class PlayerService {
     return this.playerInterface.createPlayer(playerDetails);
   }
 
-  changename(playerId: string, newName: string): Promise<boolean> {
+  changeName(playerId: string, newName: string): Promise<boolean> {
     return this.playerInterface.changeName(playerId, newName);
   }
 
@@ -24,7 +25,11 @@ export class PlayerService {
     return this.playerInterface.deleteAllGames(playerDetails);
   }
 
-  findPlayer(playerEmail:string):Promise<boolean>{
+  getGames(playerId:string): Promise<Array<GameType>>{
+    return this.playerInterface.getGames(playerId)
+  }
+
+  findPlayer(playerEmail: string): Promise<boolean> {
     return this.playerInterface.findPlayer(playerEmail)
   }
 
@@ -32,7 +37,7 @@ export class PlayerService {
     return this.playerInterface.readPlayer(playerId);
   }
 
-  getPlayerList(): Promise<Array<Player>>{
+  getPlayerList(): Promise<Array<Player>> {
     return this.playerInterface.getPlayerList()
   }
 }
