@@ -1,7 +1,7 @@
 To start the app create a config.env file with the following variables:
 
 ```
-PORT=3000
+PORT=8000
 MONGO_URI=<yourMongoDBURI>
 ```
 
