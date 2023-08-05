@@ -22,7 +22,7 @@ export const getPlayers = async (req:Request, res:Response) => {
         return res.status(201).json(new PlayerList(players))
       }
     }
-  ).catch((err)=>{throw err})
+  ).catch((err)=>{throw err})  // add res.status(500) for the error
 };
 
 export const postPlayer = async (req: Request, res: Response) => {
@@ -32,7 +32,7 @@ export const postPlayer = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;  
   const newUser = new User(email, password, name);
   playerService.createPlayer(newUser).then((response)=>
-  {return res.status(201).json({Player_id: response.id})}).catch((err)=>{throw err})
+  {return res.status(201).json({Player_id: response.id})}).catch((err)=>{throw err}) // add res.status(500) for the error
   
 };
 
@@ -42,10 +42,11 @@ export const playgame = async (req: Request, res: Response) => {
   const playerId = req.params.id
   try {
   const player = await playerService.readPlayer(playerId)
+   // add res.status(400) for error when id not found
   const game = new Game(dice)
   player.addNewGame(game)
   const responseFromDatabase = await playerService.addGame(player)
-  return res.status(200).json({game_saved: responseFromDatabase})}catch(err){
+  return res.status(200).json({game_saved: responseFromDatabase})}catch(err){  // add res.status(500) for the error
     return err
   }
 };
@@ -54,6 +55,7 @@ export const deleteAllGames = async (req: Request, res: Response) => {
   const playerId = req.params.id
   try {
   const player = await playerService.readPlayer(playerId)
+  // add res.status(400) for error when id not found
   player.deleteGames()
   const responseFromDatabase = await playerService.deleteAllGames(player)
   return res.status(200).json({games_deleted: responseFromDatabase})}catch(err){
