@@ -1,39 +1,52 @@
 import { Game } from "./Game";
 import { User } from "./User";
 
+type GameType = {
+  gameWin: boolean;
+  dice1Value: number;
+  dice2Value: number;
+};
+
 export class Player extends User {
   public id: string | undefined;
-  readonly succesRate: number;
-  public games: Array<Game>;
+  public successRate: number;
+
+  public games: Array<GameType>;
   constructor(
     email: string,
     password: string,
-    games: Array<Game>,
+    games: Array<GameType>,
     name: string,
     id?: string
   ) {
     super(email, password, name);
     this.games = games;
     this.id = id;
-    this.succesRate = this.calcSuccesRate();
+    this.successRate = this.calcSuccesRate();
   }
 
-  public newGame(game: Game) {
+  public addNewGame(game: Game) {
     this.games.push(game);
+    this.successRate = this.calcSuccesRate();
   }
-
+  public getSuccesRate(): number {
+    return this.successRate;
+  }
   public deleteGames() {
     this.games = [];
+    this.successRate = this.calcSuccesRate();
   }
 
   private calcSuccesRate() {
     const wins = this.games.filter((game) => game.gameWin).length;
-    return this.games.length > 0 ? (wins / this.games.length) * 100 : 0;
+    return this.games.length > 0
+      ? Number(((wins / this.games.length) * 100).toFixed(2))
+      : 0;
   }
 
-  public setId(id: string) {
-    this.id = id;
-  }
+  //public setId(id: string) {
+  // this.id = id;
+  //}
 
   public getGames() {
     return this.games;

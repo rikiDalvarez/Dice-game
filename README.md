@@ -1,4 +1,4 @@
-To start the app create a config.env file with the following variables:
+To start the app create a .env file with the following variables:
 
 ```
 PORT=3000
