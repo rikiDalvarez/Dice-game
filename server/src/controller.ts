@@ -1,9 +1,9 @@
-import { PlayerDocument } from "./mongoDbModel";
+// import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response } from "express";
 import { User } from "./domain/User";
 import { PlayerService } from "./application/PlayerService";
 import { PlayerMongoDbManager } from "./infrastructure/mongoDbManager";
-import { RankingService } from "./application/RankingService";
+// import { RankingService } from "./application/RankingService";
 import { PlayerList } from "./domain/PlayerList";
 import { Game } from "./domain/Game";
 import { Dice } from "./domain/Dice";
@@ -11,7 +11,7 @@ import { Dice } from "./domain/Dice";
 const dice = new Dice();
 const playerMongoManager = new PlayerMongoDbManager();
 const playerService = new PlayerService(playerMongoManager);
-const rankingService = new RankingService(playerMongoManager);
+// const rankingService = new RankingService(playerMongoManager);
 
 export const getPlayers = async (req: Request, res: Response) => {
   playerService
