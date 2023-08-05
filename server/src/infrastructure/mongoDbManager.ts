@@ -96,10 +96,16 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return false;
   }
 
-  async getGames(playerId: string): Promise<Array<Player>> {
-    const player = new Player("riki", "123", [], "riki")
-    return [player]
-    // const allGames = await PlayerDocument.findById(playerId)
+  async getGames(playerId: string): Promise<Array<GameType>> {
+   // const player = new Player("riki", "123", [], "riki")
+    // return [player]
+     const player = await PlayerDocument.findById(playerId)
+     if (player){
+       const { games } = player
+       return games
+     } else {
+       return []
+     }
     // const {name, email, id, password, games} = allGames
     // return allGames;
   

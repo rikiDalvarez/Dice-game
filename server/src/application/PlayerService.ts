@@ -25,7 +25,7 @@ export class PlayerService {
     return this.playerInterface.deleteAllGames(playerDetails);
   }
 
-  getGames(playerId:string): Promise<Array<Player>>{
+  getGames(playerId:string): Promise<Array<GameType>>{
     return this.playerInterface.getGames(playerId)
   }
 

@@ -13,6 +13,6 @@ export interface PlayerInterface {
   findPlayer(playerEmail: string): Promise<boolean>
   readPlayer(playerId: string): Promise<Player>;
   getPlayerList(): Promise<Array<Player>>;
-  getGames(playerId:string): Promise<Array<Player>>
+  getGames(playerId:string): Promise<Array<GameType>>
 }
 
