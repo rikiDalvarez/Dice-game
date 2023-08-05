@@ -5,6 +5,7 @@ import {
   playGame,
   changeName,
   getGames,
+  getRankingAndAverage,
 } from "./controller";
 import { postPlayer } from "./controller";
 
@@ -29,7 +30,7 @@ router.delete("/games/:id", deleteAllGames);
 router.get("/games/:id", getGames);
 
 // GET /ranking: retorna un ranking de jugadors/es ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors/es.
-router.get("/ranking");
+router.get("/ranking", getRankingAndAverage);
 
 // GET /ranking/loser: retorna el jugador/a amb pitjor percentatge d’èxit.
 router.get("/ranking/loser");

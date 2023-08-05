@@ -3,7 +3,8 @@ import { PlayerInterface } from "../application/PlayerInterface";
 import { PlayerDocument } from "../mongoDbModel";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
-
+import { RankingInterface } from "../application/RankingInterface";
+import { Ranking } from "../domain/Ranking";
 export class PlayerMongoDbManager implements PlayerInterface {
   //response returns empty array, should return the player created
   async createPlayer(player: User): Promise<Player> {
@@ -105,17 +106,52 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
-    // const player = new Player("riki", "123", [], "riki")
-    // return [player]
     const player = await PlayerDocument.findById(playerId);
-
-    if (player) {
-      const { games } = player;
-      return games;
-    } else {
-      return [];
+    if (!player) {
+      return []
     }
-    // const {name, email, id, password, games} = allGames
-    // return allGames;
+    const { games } = player;
+    return games;
+
   }
+}
+
+export class RankingMongoDbManager implements RankingInterface {
+
+  async getMeanSuccesRate(): Promise<number | null> {
+    const meanValue = await PlayerDocument.aggregate([
+      {
+        $group: {
+          _id: null,
+          meanValue: { $avg: '$successRate' }
+        }
+      }
+    ])
+    console.log(meanValue[0].meanValue)
+    return meanValue.length > 0 ? meanValue[0].meanValue : null
+  }
+
+  async getPlayersRanking(): Promise<Ranking> {
+    const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+    const ranking = new Ranking(playerRanking)
+    console.log(ranking)
+    return ranking;
+  }
+
+  async getWinner(): Promise<Player | null> {
+    const winner = await PlayerDocument.find().findOne({}, { sort: { succesRate: -1 } })
+    if (!winner) {
+      return null
+    }
+    return winner
+  }
+
+  async getLooser(): Promise<Player | null> {
+    const looser = await PlayerDocument.find().findOne({}, { sort: { succesRate: 1 } })
+    if (!looser) {
+      return null
+    }
+    return looser
+  }
+
 }

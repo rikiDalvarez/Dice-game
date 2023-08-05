@@ -10,6 +10,8 @@ export class Ranking {
       return { name: player.name, rating: player.successRate };
     });
   }
+
+  
   //public meanSuccesRate():number{
 
   //    const succesRateSum = this.players.reduce((sum, player)=>  {return sum + player.succesRate},0)

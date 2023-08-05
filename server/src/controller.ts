@@ -2,8 +2,8 @@
 import { Request, Response } from "express";
 import { User } from "./domain/User";
 import { PlayerService } from "./application/PlayerService";
-import { PlayerMongoDbManager } from "./infrastructure/mongoDbManager";
-// import { RankingService } from "./application/RankingService";
+import { PlayerMongoDbManager, RankingMongoDbManager } from "./infrastructure/mongoDbManager";
+import { RankingService } from "./application/RankingService";
 import { PlayerList } from "./domain/PlayerList";
 import { Game } from "./domain/Game";
 import { Dice } from "./domain/Dice";
@@ -11,7 +11,8 @@ import { Dice } from "./domain/Dice";
 const dice = new Dice();
 const playerMongoManager = new PlayerMongoDbManager();
 const playerService = new PlayerService(playerMongoManager);
-// const rankingService = new RankingService(playerMongoManager);
+const rankingMongoDbManager = new RankingMongoDbManager();
+const rankingService = new RankingService(rankingMongoDbManager);
 
 export const getPlayers = async (req: Request, res: Response) => {
   playerService
@@ -86,3 +87,9 @@ export const getGames = async (req: Request, res: Response) => {
   const games = await playerService.getGames(playerId);
   res.send(games);
 };
+
+export const getRankingAndAverage = async (req: Request, res: Response) => {
+  const playerRanking = await rankingService.getPlayersRanking()
+  const average = await rankingService.getMeanSuccesRate()
+  res.status(200).json({ playerRanking, average: average })
+}
