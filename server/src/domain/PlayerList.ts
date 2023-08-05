@@ -1,11 +1,17 @@
 import { Player } from "./Player"
+
+export type PlayerDetailsType = {
+  name: string,
+  rating:number
+}
+
 export class PlayerList {
-  readonly playerlist: Array<object>
+  readonly playerlist: Array<PlayerDetailsType>
   constructor(players: Array<Player>) {
-    this.playerlist = this.preparePlayerList(players)
+    this.playerlist = this.preparePlayersDetails(players)
   }
 
-  public preparePlayerList(players: Array<Player>): Array<object> {
+  public preparePlayersDetails(players: Array<Player>): Array<PlayerDetailsType> {
     return players.map((player) => { return { name: player.name, rating: player.successRate } })
   }
 

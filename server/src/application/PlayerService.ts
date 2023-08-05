@@ -2,6 +2,7 @@ import { Player } from "../domain/Player";
 import { User } from "../domain/User";
 import { PlayerInterface } from "./PlayerInterface";
 import { GameType } from "../domain/Player";
+import { PlayerList } from "../domain/PlayerList";
 
 export class PlayerService {
   playerInterface: PlayerInterface;
@@ -37,7 +38,7 @@ export class PlayerService {
     return this.playerInterface.readPlayer(playerId);
   }
 
-  getPlayerList(): Promise<Array<Player>> {
+  getPlayerList(): Promise<PlayerList> {
     return this.playerInterface.getPlayerList()
   }
 }

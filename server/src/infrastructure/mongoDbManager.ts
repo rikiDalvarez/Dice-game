@@ -5,6 +5,8 @@ import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
+import { PlayerList } from "../domain/PlayerList";
+
 export class PlayerMongoDbManager implements PlayerInterface {
   //response returns empty array, should return the player created
   async createPlayer(player: User): Promise<Player> {
@@ -18,12 +20,19 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return playerFromDB;
   }
 
+  
+
   async findPlayer(playerID: string): Promise<boolean> {
     const player = await PlayerDocument.findById(playerID);
+    return player ? true :false
+    
+    // if not better with Elvis,  we can come back to if and else
+    /*
     if (player) {
       return true;
     }
     return false;
+    */
   }
 
   async readPlayer(playerId: string): Promise<Player> {
@@ -37,9 +46,16 @@ export class PlayerMongoDbManager implements PlayerInterface {
     }
   }
 
-  async getPlayerList(): Promise<Array<Player>> {
+  async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerDocument.find({});
-
+    return new PlayerList(playersFromDB)
+    
+    
+    //--------------->I have changed this part for that above. We dont have to prepare 
+    // Player class object since our model expect Player. We can pass it directly to class PlayerList
+    //Also find return empty array so we dont need to validate with if in this case
+    //I created PlayerDetailsType....
+    /*
     if (playersFromDB) {
       return playersFromDB.map((player) => {
         return new Player(
@@ -53,6 +69,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     } else {
       throw new Error("Player not found");
     }
+    */
   }
 
   async changeName(playerId: string, newName: string): Promise<boolean> {
@@ -88,8 +105,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const id = player.id;
     return PlayerDocument.replaceOne({ _id: { $eq: id } }, player)
       .then((response) => {
-        console.log(response);
-        return response.modifiedCount === 1;
+        return response.modifiedCount === 1
       })
       .catch((err) => {
         throw err;
@@ -99,25 +115,32 @@ export class PlayerMongoDbManager implements PlayerInterface {
   // we don't need to delete players
   async deletePlayer(playerId: string): Promise<boolean> {
     const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
-    if (deletePlayer) {
+    return deletePlayer ? true :false
+    
+    // if not better with Elvis,  we can come back to if and else
+    /*
+    if (deleteplayer) {
       return true;
     }
     return false;
+    */
+    
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
+    return player? player.games : []
+    /*
     if (!player) {
       return []
     }
     const { games } = player;
     return games;
-
+*/
   }
 }
 
 export class RankingMongoDbManager implements RankingInterface {
-
   async getMeanSuccesRate(): Promise<number | null> {
     const meanValue = await PlayerDocument.aggregate([
       {
@@ -127,15 +150,13 @@ export class RankingMongoDbManager implements RankingInterface {
         }
       }
     ])
-    console.log(meanValue[0].meanValue)
     return meanValue.length > 0 ? meanValue[0].meanValue : null
   }
 
   async getPlayersRanking(): Promise<Ranking> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
-    const ranking = new Ranking(playerRanking)
-    console.log(ranking)
-    return ranking;
+    return  new Ranking(playerRanking)
+ 
   }
 
   async getWinner(): Promise<Player | null> {

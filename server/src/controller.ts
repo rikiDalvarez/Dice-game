@@ -4,7 +4,6 @@ import { User } from "./domain/User";
 import { PlayerService } from "./application/PlayerService";
 import { PlayerMongoDbManager, RankingMongoDbManager } from "./infrastructure/mongoDbManager";
 import { RankingService } from "./application/RankingService";
-import { PlayerList } from "./domain/PlayerList";
 import { Game } from "./domain/Game";
 import { Dice } from "./domain/Dice";
 
@@ -19,7 +18,7 @@ export const getPlayers = async (req: Request, res: Response) => {
     .getPlayerList()
     .then((players) => {
       if (players) {
-        return res.status(200).json(new PlayerList(players));
+        return res.status(200).json(players);
       }
     })
     .catch((err) => {
@@ -89,7 +88,8 @@ export const getGames = async (req: Request, res: Response) => {
 };
 
 export const getRankingAndAverage = async (req: Request, res: Response) => {
-  const playerRanking = await rankingService.getPlayersRanking()
+  const playersRanking = await rankingService.getPlayersRanking()
   const average = await rankingService.getMeanSuccesRate()
-  res.status(200).json({ playerRanking, average: average })
+  const ranking = playersRanking.ranking
+  res.status(200).json({ ranking, average: average })
 }

@@ -10,7 +10,6 @@ export type GameType = {
 export class Player extends User {
   public id: string | undefined;
   public successRate: number;
-
   public games: Array<GameType>;
   constructor(
     email: string,
@@ -26,8 +25,10 @@ export class Player extends User {
   }
 
   public addNewGame(game: Game) {
+    
     this.games.push(game);
     this.successRate = this.calcSuccesRate();
+   
   }
   public getSuccesRate(): number {
     return this.successRate;
