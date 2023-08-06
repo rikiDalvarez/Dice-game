@@ -46,14 +46,14 @@ export const postPlayer = async (req: Request, res: Response) => {
 export const playGame = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   try {
-    console.log('gram')
-    const player = await playerService.readPlayer(playerId);
+    //console.log('gram')
+    //const player = await playerService.readPlayer(playerId);
     // add res.status(400) for error when id not found
-    console.log(player)
-    const game = new Game(dice);
-    console.log(game)
-    player.addNewGame(game);
-    const responseFromDatabase = await playerService.addGame(player);
+    //console.log(player)
+    //const game = new Game(dice);
+    //console.log(game)
+    //player.addNewGame(game);
+    const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
   } catch (err) {
     // add res.status(500) for the error

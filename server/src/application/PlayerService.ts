@@ -3,6 +3,10 @@ import { User } from "../domain/User";
 import { PlayerInterface } from "./PlayerInterface";
 import { GameType } from "../domain/Player";
 import { PlayerList } from "../domain/PlayerList";
+import { Game } from "../domain/Game";
+import { Dice } from "../domain/Dice";
+
+const dice = new Dice();
 
 export class PlayerService {
   playerInterface: PlayerInterface;
@@ -18,8 +22,11 @@ export class PlayerService {
     return this.playerInterface.changeName(playerId, newName);
   }
 
-  addGame(playerDetails: Player): Promise<boolean> {
-    return this.playerInterface.addGame(playerDetails);
+  async addGame(playerId: string): Promise<boolean> {
+    const player = await this.readPlayer(playerId);
+    const game = new Game(dice);
+    player.addNewGame(game);
+    return this.playerInterface.addGame(player)
   }
 
   deleteAllGames(playerDetails: Player): Promise<boolean> {
