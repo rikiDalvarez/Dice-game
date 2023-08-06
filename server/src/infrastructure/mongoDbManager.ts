@@ -1,6 +1,6 @@
 import { Player } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
-import { PlayerDocument } from "../mongoDbModel";
+import { PlayerDocument } from "./models/mongoDbModel";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
@@ -20,19 +20,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return playerFromDB;
   }
 
-  
-
   async findPlayer(playerID: string): Promise<boolean> {
     const player = await PlayerDocument.findById(playerID);
-    return player ? true :false
-    
-    // if not better with Elvis,  we can come back to if and else
-    /*
-    if (player) {
-      return true;
-    }
-    return false;
-    */
+    return player ? true : false;
   }
 
   async readPlayer(playerId: string): Promise<Player> {
@@ -48,10 +38,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerDocument.find({});
-    return new PlayerList(playersFromDB)
-    
-    
-    //--------------->I have changed this part for that above. We dont have to prepare 
+    return new PlayerList(playersFromDB);
+
+    //--------------->I have changed this part for that above. We dont have to prepare
     // Player class object since our model expect Player. We can pass it directly to class PlayerList
     //Also find return empty array so we dont need to validate with if in this case
     //I created PlayerDetailsType....
@@ -105,7 +94,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const id = player.id;
     return PlayerDocument.replaceOne({ _id: { $eq: id } }, player)
       .then((response) => {
-        return response.modifiedCount === 1
+        return response.modifiedCount === 1;
       })
       .catch((err) => {
         throw err;
@@ -115,28 +104,12 @@ export class PlayerMongoDbManager implements PlayerInterface {
   // we don't need to delete players
   async deletePlayer(playerId: string): Promise<boolean> {
     const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
-    return deletePlayer ? true :false
-    
-    // if not better with Elvis,  we can come back to if and else
-    /*
-    if (deleteplayer) {
-      return true;
-    }
-    return false;
-    */
-    
+    return deletePlayer ? true : false;
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
-    return player? player.games : []
-    /*
-    if (!player) {
-      return []
-    }
-    const { games } = player;
-    return games;
-*/
+    return player ? player.games : [];
   }
 }
 
@@ -146,33 +119,37 @@ export class RankingMongoDbManager implements RankingInterface {
       {
         $group: {
           _id: null,
-          meanValue: { $avg: '$successRate' }
-        }
-      }
-    ])
-    return meanValue.length > 0 ? meanValue[0].meanValue : null
+          meanValue: { $avg: "$successRate" },
+        },
+      },
+    ]);
+    return meanValue.length > 0 ? meanValue[0].meanValue : null;
   }
 
   async getPlayersRanking(): Promise<Ranking> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
-    return  new Ranking(playerRanking)
- 
+    return new Ranking(playerRanking);
   }
 
   async getWinner(): Promise<Player | null> {
-    const winner = await PlayerDocument.find().findOne({}, { sort: { succesRate: -1 } })
+    const winner = await PlayerDocument.find().findOne(
+      {},
+      { sort: { succesRate: -1 } }
+    );
     if (!winner) {
-      return null
+      return null;
     }
-    return winner
+    return winner;
   }
 
   async getLooser(): Promise<Player | null> {
-    const looser = await PlayerDocument.find().findOne({}, { sort: { succesRate: 1 } })
+    const looser = await PlayerDocument.find().findOne(
+      {},
+      { sort: { succesRate: 1 } }
+    );
     if (!looser) {
-      return null
+      return null;
     }
-    return looser
+    return looser;
   }
-
 }

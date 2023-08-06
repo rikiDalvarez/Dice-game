@@ -11,6 +11,7 @@ export class Player extends User {
   public id: string | undefined;
   public successRate: number;
   public games: Array<GameType>;
+
   constructor(
     email: string,
     password: string,
@@ -19,16 +20,15 @@ export class Player extends User {
     id?: string
   ) {
     super(email, password, name);
+
     this.games = games;
     this.id = id;
     this.successRate = this.calcSuccesRate();
   }
 
   public addNewGame(game: Game) {
-    
     this.games.push(game);
     this.successRate = this.calcSuccesRate();
-   
   }
   public getSuccesRate(): number {
     return this.successRate;
@@ -43,11 +43,6 @@ export class Player extends User {
       ? Number(((wins / this.games.length) * 100).toFixed(2))
       : 0;
   }
-
-  //public setId(id: string) {
-  // this.id = id;
-  //}
-
   public getGames() {
     return this.games;
   }
