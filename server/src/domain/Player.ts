@@ -8,7 +8,7 @@ export type GameType = {
 };
 
 export type PlayerType = {
-  id:string,
+  _id:string,
   successRate:number,
   games: Array<GameType>,
   email: string,
