@@ -29,7 +29,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
 
     const nameAlreadyInUse = await PlayerDocument.findOne({
-      name: newPlayer.name,
+      $or: [{ email: newPlayer.email }, { name: newPlayer.name }],
     });
     if (nameAlreadyInUse) {
       throw new Error("name already in use, please choose another name");
