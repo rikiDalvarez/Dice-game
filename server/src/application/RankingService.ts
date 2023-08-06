@@ -16,11 +16,11 @@ export class RankingService {
     return this.rankingInterface.getMeanSuccesRate();
   }
 
-  getWinner(): Promise<Player|null> {
+  getWinner(): Promise<Player[]> {
     return this.rankingInterface.getWinner();
   }
 
-  getLooser(): Promise<Player|null> {
+  getLoser(): Promise<Player[]> {
     return this.rankingInterface.getWinner();
   }
 }
