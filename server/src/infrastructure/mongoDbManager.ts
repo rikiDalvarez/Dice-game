@@ -27,6 +27,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
       games: [],
       successRate: 0,
     };
+
+    const nameAlreadyInUse = await PlayerDocument.findOne({
+      name: newPlayer.name,
+    });
+    if (nameAlreadyInUse) {
+      throw new Error("name already in use, please choose another name");
+    }
     const playerFromDB = await PlayerDocument.create(newPlayer);
     return playerFromDB.id;
   }
@@ -105,7 +112,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return player ? player.games : [];
   }
 }
-
 //Better to seperate in another file
 export class RankingMongoDbManager implements RankingInterface {
   async getMeanSuccesRate(): Promise<number | null> {
