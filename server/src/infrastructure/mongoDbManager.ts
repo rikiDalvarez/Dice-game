@@ -29,8 +29,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const newPlayer = {
       email:player.email,
       password: player.password,
-      games:[],
-      name:player.name
+      name:player.name,
+      games: [],
+      successRate: 0
     };
     const playerFromDB = await PlayerDocument.create(newPlayer);
     return playerFromDB.id;

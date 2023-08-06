@@ -15,8 +15,8 @@ export class PlayerList {
     players: Array<Player>
   ): Array<PlayerDetailsType> {
     return players.map((player) => {
-      
-      return { name: player.name, rating: player.successRate };
+
+      return { name: player.name, rating: player.successRate};
     });
   }
 }
