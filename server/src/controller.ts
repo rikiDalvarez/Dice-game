@@ -93,3 +93,18 @@ export const getRankingAndAverage = async (req: Request, res: Response) => {
   const ranking = playersRanking.ranking
   res.status(200).json({ ranking, average: average })
 }
+
+export const getWinner = async (req: Request, res: Response) => {
+  const winners = await rankingService.getWinner();
+  if (!winners) {
+    res.status(500).json({ error: 'Error getting winner(s)' })
+  }
+  res.status(200).json({ winners })
+}
+export const getLoser = async (req: Request, res: Response) => {
+  const losers = await rankingService.getLoser();
+  if (!losers) {
+    res.status(500).json({ error: 'Error getting loser(s)' })
+  }
+  res.status(200).json({ losers })
+}

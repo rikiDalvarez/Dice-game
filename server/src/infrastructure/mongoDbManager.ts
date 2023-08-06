@@ -131,25 +131,83 @@ export class RankingMongoDbManager implements RankingInterface {
     return new Ranking(playerRanking);
   }
 
-  async getWinner(): Promise<Player | null> {
-    const winner = await PlayerDocument.find().findOne(
-      {},
-      { sort: { succesRate: -1 } }
-    );
-    if (!winner) {
-      return null;
+  async getWinner(): Promise<Player[]> {
+    try {
+      const winners = await PlayerDocument.aggregate([
+        {
+          $group: {
+            _id: null,
+            highestSuccessRate: { $max: "$successRate" },
+            players: { $push: "$$ROOT" },
+          },
+        },
+        {
+          $project: {
+            winners: {
+              $filter: {
+                input: "$players",
+                as: "player",
+                cond: { $eq: ["$$player.successRate", "$highestSuccessRate"] },
+              },
+            },
+          },
+        },
+      ]);
+      return winners ? winners[0].winners : [];
+    } catch (error) {
+      console.error("Error getting winners:", error);
+      return [];
     }
-    return winner;
   }
-
-  async getLooser(): Promise<Player | null> {
-    const looser = await PlayerDocument.find().findOne(
-      {},
-      { sort: { succesRate: 1 } }
-    );
-    if (!looser) {
-      return null;
+  async getLoser(): Promise<Player[]> {
+    try {
+      const losers = await PlayerDocument.aggregate([
+        {
+          $group: {
+            _id: null,
+            lowestSuccessRate: { $min: "$successRate" },
+            players: { $push: "$$ROOT" },
+          },
+        },
+        {
+          $unwind: "$players",
+        },
+        {
+          $match: {
+            "players.successRate": "$lowestSuccessRate",
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            losers: { $push: "$players" },
+          },
+        },
+      ]);
+      console.log(losers);
+      return losers ? losers[0].losers : [];
+    } catch (error) {
+      console.error("Error getting losers:", error);
+      return [];
     }
-    return looser;
   }
 }
+
+// THIS IS THE WINNER FUNCTION I CHANGED
+// async getWinner(): Promise<Player | null> {
+//   const winner = await PlayerDocument.find().findOne({}, { sort: { succesRate: -1 } })
+//   if (!winner) {
+//     return null
+//   }
+//   return winner
+// }
+
+// THIS IS THE LOSER FUNCTION I CHANGED
+// async getLooser(): Promise<Player | null> {
+
+//   const looser = await PlayerDocument.find().findOne({}, { sort: { succesRate: 1 } })
+//   if (!looser) {
+//     return null
+//   }
+//   return looser
+// }

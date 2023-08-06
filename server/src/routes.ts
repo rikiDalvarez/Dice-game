@@ -6,6 +6,8 @@ import {
   changeName,
   getGames,
   getRankingAndAverage,
+  getWinner,
+  getLoser
 } from "./controller";
 import { postPlayer } from "./controller";
 
@@ -33,9 +35,9 @@ router.get("/games/:id", getGames);
 router.get("/ranking", getRankingAndAverage);
 
 // GET /ranking/loser: retorna el jugador/a amb pitjor percentatge d’èxit.
-router.get("/ranking/loser");
+router.get("/ranking/loser", getLoser);
 
 // GET /ranking/winner: retorna el jugador/a amb millor percentatge d’èxit.
-router.get("/ranking/winner");
+router.get("/ranking/winner", getWinner);
 
 export default router;
