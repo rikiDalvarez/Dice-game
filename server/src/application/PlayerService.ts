@@ -22,6 +22,10 @@ export class PlayerService {
     return this.playerInterface.changeName(playerId, newName);
   }
 
+  findPlayer(playerEmail: string): Promise<Player> {
+    return this.playerInterface.findPlayer(playerEmail);
+  }
+
   async addGame(playerId: string): Promise<boolean> {
     const player = await this.findPlayer(playerId);
     const game = new Game(dice);
@@ -35,10 +39,6 @@ export class PlayerService {
 
   getGames(playerId: string): Promise<Array<GameType>> {
     return this.playerInterface.getGames(playerId);
-  }
-
-  findPlayer(playerEmail: string): Promise<Player> {
-    return this.playerInterface.findPlayer(playerEmail);
   }
 
   getPlayerList(): Promise<PlayerList> {

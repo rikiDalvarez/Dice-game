@@ -48,17 +48,9 @@ export const playGame = async (req: Request, res: Response) => {
   console.log(`req: ${req.body}`);
   const playerId = req.params.id;
   try {
-    //console.log('gram')
-    //const player = await playerService.readPlayer(playerId);
-    // add res.status(400) for error when id not found
-    //console.log(player)
-    //const game = new Game(dice);
-    //console.log(game)
-    //player.addNewGame(game);
     const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
   } catch (err) {
-    // add res.status(500) for the error
     return err;
   }
 };
@@ -97,7 +89,7 @@ export const getRankingAndAverage = async (req: Request, res: Response) => {
   const playersRanking = await rankingService.getPlayersRanking();
   const average = await rankingService.getMeanSuccesRate();
   const ranking = playersRanking.ranking;
-  res.status(200).json({ ranking, average: average });
+  res.status(200).json({ ranking, average });
 };
 
 export const getWinner = async (req: Request, res: Response) => {
@@ -107,6 +99,7 @@ export const getWinner = async (req: Request, res: Response) => {
   }
   res.status(200).json({ winners });
 };
+
 export const getLoser = async (req: Request, res: Response) => {
   const losers = await rankingService.getLoser();
   if (!losers) {

@@ -8,8 +8,6 @@ import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 
 export class PlayerMongoDbManager implements PlayerInterface {
-  //response returns empty array, should return the player created
-
   createPlayerDoc(player: Player) {
     return {
       id: player.id,
@@ -57,41 +55,18 @@ export class PlayerMongoDbManager implements PlayerInterface {
       );
     });
     return new PlayerList(players);
-
-    //--------------->I have changed this part for that above. We dont have to prepare
-    // Player class object since our model expect Player. We can pass it directly to class PlayerList
-    //Also find method return empty array so we dont need to validate with if in this case
-    //I created PlayerDetailsType....
-    /*
-    if (playersFromDB) {
-      return playersFromDB.map((player) => {
-        return new Player(
-          player.email,
-          player.password,
-          player.games,
-          player.name,
-          player.id
-        );
-      });
-    } else {
-      throw new Error("Player not found");
-    }
-    */
   }
 
   async changeName(playerId: string, newName: string): Promise<boolean> {
     //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
-      //add error handling
       throw new Error("name already in use, please choose another name");
     }
-    //find and update
     const player = await PlayerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
     if (!player) {
-      //add error handler
       throw new Error("player not found");
     }
     return true;
@@ -120,34 +95,18 @@ export class PlayerMongoDbManager implements PlayerInterface {
     )
       .then((response) => {
         return response.modifiedCount === 1;
-        return response.modifiedCount === 1;
       })
       .catch((err) => {
         throw err;
       });
   }
-
-  // we don't need to delete players
-  async deletePlayer(playerId: string): Promise<boolean> {
-    const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
-    return deletePlayer ? true : false;
-    return deletePlayer ? true : false;
-
-    // if not better with Elvis,  we can come back to if and else
-    /*
-    if (deleteplayer) {
-      return true;
-    }
-    return false;
-    */
-  }
-
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
     return player ? player.games : [];
   }
 }
 
+//Better to seperate in another file
 export class RankingMongoDbManager implements RankingInterface {
   async getMeanSuccesRate(): Promise<number | null> {
     const meanValue = await PlayerDocument.aggregate([
@@ -204,7 +163,7 @@ export class RankingMongoDbManager implements RankingInterface {
       return [];
     }
   }
- 
+
   async getLoser(): Promise<PlayerList> {
     try {
       const groupedPlayers = await PlayerDocument.aggregate([
@@ -234,6 +193,9 @@ export class RankingMongoDbManager implements RankingInterface {
       throw error;
     }
   }
+
+  // async deletePlayer(playerId: string): Promise<boolean> {
+  //   const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
+  //   return deletePlayer ? true : false;
+  // }
 }
-
-
