@@ -23,27 +23,25 @@ export class PlayerService {
   }
 
   async addGame(playerId: string): Promise<boolean> {
-    const player = await this.readPlayer(playerId);
+    const player = await this.findPlayer(playerId);
     const game = new Game(dice);
     player.addNewGame(game);
-    return this.playerInterface.addGame(player)
+    return this.playerInterface.addGame(player);
   }
 
   deleteAllGames(playerDetails: Player): Promise<boolean> {
     return this.playerInterface.deleteAllGames(playerDetails);
   }
 
-  getGames(playerId:string): Promise<Array<GameType>>{
-    return this.playerInterface.getGames(playerId)
+  getGames(playerId: string): Promise<Array<GameType>> {
+    return this.playerInterface.getGames(playerId);
   }
 
   findPlayer(playerEmail: string): Promise<Player> {
-    return this.playerInterface.findPlayer(playerEmail)
+    return this.playerInterface.findPlayer(playerEmail);
   }
 
   getPlayerList(): Promise<PlayerList> {
-    return this.playerInterface.getPlayerList()
+    return this.playerInterface.getPlayerList();
   }
 }
-
-

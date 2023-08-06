@@ -2,7 +2,10 @@
 import { Request, Response } from "express";
 import { User } from "./domain/User";
 import { PlayerService } from "./application/PlayerService";
-import { PlayerMongoDbManager, RankingMongoDbManager } from "./infrastructure/mongoDbManager";
+import {
+  PlayerMongoDbManager,
+  RankingMongoDbManager,
+} from "./infrastructure/mongoDbManager";
 import { RankingService } from "./application/RankingService";
 
 const playerMongoManager = new PlayerMongoDbManager();
@@ -33,7 +36,7 @@ export const postPlayer = async (req: Request, res: Response) => {
   playerService
     .createPlayer(newUser)
     .then((response) => {
-      return res.status(201).json({ Player_id: response});
+      return res.status(201).json({ Player_id: response });
     })
     .catch((err) => {
       throw err;
@@ -41,6 +44,8 @@ export const postPlayer = async (req: Request, res: Response) => {
 };
 
 export const playGame = async (req: Request, res: Response) => {
+  //should return if winner or not
+  console.log(`req: ${req.body}`);
   const playerId = req.params.id;
   try {
     //console.log('gram')
@@ -72,6 +77,7 @@ export const deleteAllGames = async (req: Request, res: Response) => {
   }
 };
 export const changeName = async (req: Request, res: Response) => {
+  //return new name
   const playerId = req.params.id;
   const newName = req.body.name;
   const player = await playerService.changeName(playerId, newName);
@@ -88,23 +94,23 @@ export const getGames = async (req: Request, res: Response) => {
 };
 
 export const getRankingAndAverage = async (req: Request, res: Response) => {
-  const playersRanking = await rankingService.getPlayersRanking()
-  const average = await rankingService.getMeanSuccesRate()
-  const ranking = playersRanking.ranking
-  res.status(200).json({ ranking, average: average })
-}
+  const playersRanking = await rankingService.getPlayersRanking();
+  const average = await rankingService.getMeanSuccesRate();
+  const ranking = playersRanking.ranking;
+  res.status(200).json({ ranking, average: average });
+};
 
 export const getWinner = async (req: Request, res: Response) => {
   const winners = await rankingService.getWinner();
   if (!winners) {
-    res.status(500).json({ error: 'Error getting winner(s)' })
+    res.status(500).json({ error: "Error getting winner(s)" });
   }
-  res.status(200).json({ winners })
-}
+  res.status(200).json({ winners });
+};
 export const getLoser = async (req: Request, res: Response) => {
   const losers = await rankingService.getLoser();
   if (!losers) {
-    res.status(500).json({ error: 'Error getting loser(s)' })
+    res.status(500).json({ error: "Error getting loser(s)" });
   }
-  res.status(200).json({ losers })
-}
+  res.status(200).json({ losers });
+};
