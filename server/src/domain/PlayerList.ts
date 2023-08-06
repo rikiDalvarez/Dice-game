@@ -16,7 +16,13 @@ export class PlayerList {
   ): Array<PlayerDetailsType> {
     return players.map((player) => {
 
-      return { name: player.name, rating: player.successRate};
+      return { name: player.name, rating: player.successRate, registrationDate: player.registrationDate};
     });
   }
+
+  sortList() {
+    return this.playerlist.sort()
+  
+}
+  
 }

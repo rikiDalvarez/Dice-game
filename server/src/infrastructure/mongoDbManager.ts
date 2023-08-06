@@ -37,22 +37,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return playerFromDB.id;
   }
 
-  async findPlayer(playerID: string): Promise<boolean> {
-    const player = await PlayerDocument.findById(playerID);
-    return player ? true : false;
-    return player ? true : false;
-
-    // if not better with Elvis,  we can come back to if and else
-    /*
-    if (player) {
-      return true;
-    }
-    return false;
-    */
-  }
-
-  async readPlayer(playerId: string): Promise<Player> {
-    const playerDetails = await PlayerDocument.findById(playerId);
+  async findPlayer(playerID: string): Promise<Player> {
+   const playerDetails = await PlayerDocument.findById(playerID);
     if (playerDetails) {
       console.log("Player details retrieved:", playerDetails);
       const { name, email, password, games, id } = playerDetails;
@@ -62,9 +48,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
       throw new Error("Player not found");
     }
   }
-
-
-
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerDocument.find({});
@@ -163,6 +146,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 }
 
+
 export class RankingMongoDbManager implements RankingInterface {
 
 
@@ -193,6 +177,7 @@ export class RankingMongoDbManager implements RankingInterface {
   }
 
   async getWinner(): Promise<Player[]> {
+    //get highest success rate players
     try {
       const winners = await PlayerDocument.aggregate([
         {

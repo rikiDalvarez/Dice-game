@@ -37,12 +37,8 @@ export class PlayerService {
     return this.playerInterface.getGames(playerId)
   }
 
-  findPlayer(playerEmail: string): Promise<boolean> {
+  findPlayer(playerEmail: string): Promise<Player> {
     return this.playerInterface.findPlayer(playerEmail)
-  }
-
-  readPlayer(playerId: string): Promise<Player> {
-    return this.playerInterface.readPlayer(playerId);
   }
 
   getPlayerList(): Promise<PlayerList> {

@@ -61,7 +61,7 @@ export const playGame = async (req: Request, res: Response) => {
 export const deleteAllGames = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   try {
-    const player = await playerService.readPlayer(playerId);
+    const player = await playerService.findPlayer(playerId);
     // add res.status(400) for error when id not found
     player.deleteGames();
     const responseFromDatabase = await playerService.deleteAllGames(player);
