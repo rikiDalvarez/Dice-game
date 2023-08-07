@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Game } from "../../domain/Game";
 import { GameType, PlayerType } from "../../domain/Player";
 
 const playerSchema = new mongoose.Schema({
