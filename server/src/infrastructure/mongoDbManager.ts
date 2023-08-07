@@ -13,6 +13,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       id: player.id,
       email: player.email,
       password: player.password,
+      registrationDate: player.registrationDate,
       games: player.games,
       name: player.name,
       successRate: player.successRate,
@@ -26,6 +27,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       name: player.name,
       games: [],
       successRate: 0,
+      registrationDate: player.registrationDate,
     };
 
     const nameAlreadyInUse = await PlayerDocument.findOne({
