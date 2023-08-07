@@ -1,5 +1,10 @@
 import { Player } from "./Player";
-import { PlayerDetailsType } from "./PlayerList";
+
+type RankingType = {
+  name: string;
+  rating: number;
+};
+
 /*
 export class Ranking {
   readonly ranking: Array<PlayerDetailsType>;
@@ -19,10 +24,10 @@ export class Ranking {
 }
 */
 export class Ranking {
-  private _rankingList: Array<PlayerDetailsType>;
+  private _rankingList: Array<RankingType>;
   private _average: number;
-  private _losers: Array<PlayerDetailsType>;
-  private _winners: Array<PlayerDetailsType>;
+  private _losers: Array<RankingType>;
+  private _winners: Array<RankingType>;
   constructor() {
     (this._rankingList = []),
       (this._average = 0),
@@ -30,9 +35,7 @@ export class Ranking {
       (this._winners = []);
   }
 
-  private preparePlayersDetails(
-    players: Array<Player>
-  ): Array<PlayerDetailsType> {
+  private preparePlayersDetails(players: Array<Player>): Array<RankingType> {
     return players.map((player) => {
       return { name: player.name, rating: player.successRate };
     });
@@ -51,15 +54,15 @@ export class Ranking {
     this._winners = this.preparePlayersDetails(winners);
   }
 
-  public get rankingList(): Array<PlayerDetailsType> {
+  public get rankingList(): Array<RankingType> {
     return this._rankingList;
   }
 
-  public get losers(): Array<PlayerDetailsType> {
+  public get losers(): Array<RankingType> {
     return this._losers;
   }
 
-  public get winners(): Array<PlayerDetailsType> {
+  public get winners(): Array<RankingType> {
     return this._winners;
   }
 

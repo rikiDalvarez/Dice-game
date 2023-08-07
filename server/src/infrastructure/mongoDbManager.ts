@@ -4,7 +4,7 @@ import { PlayerDocument } from "./models/mongoDbModel";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
-import { Ranking} from "../domain/Ranking";
+import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 
 export class PlayerMongoDbManager implements PlayerInterface {
@@ -115,10 +115,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 }
 //Better to seperate in another file
-
-
-const ranking = new Ranking()
 export class RankingMongoDbManager implements RankingInterface {
+  ranking: Ranking;
+
+  constructor(ranking: Ranking) {
+    this.ranking = ranking;
+  }
+
   async getMeanSuccesRate(): Promise<Ranking> {
     const meanValue = await PlayerDocument.aggregate([
       {
@@ -128,9 +131,8 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
-
-    ranking.average = meanValue.length > 0 ? meanValue[0].meanValue: 0
-    return ranking
+    this.ranking.average = meanValue.length > 0 ? meanValue[0].meanValue : 0;
+    return this.ranking;
   }
 
   async getPlayersRanking(): Promise<Ranking> {
@@ -145,10 +147,10 @@ export class RankingMongoDbManager implements RankingInterface {
       );
     });
 
-    ranking.rankingList = players
-    return ranking
+    this.ranking.rankingList = players;
+    console.log("ranking", this.ranking);
+    return this.ranking;
   }
-
 
   async getWinner(): Promise<Ranking> {
     try {
@@ -163,7 +165,8 @@ export class RankingMongoDbManager implements RankingInterface {
       ]);
 
       //added validation if proupedPlayers is not empty, e.g. when we dont have any player
-      const winnersDoc = groupedPlayers.length>0? groupedPlayers[0].wholeDocument: [];
+      const winnersDoc =
+        groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const winners = winnersDoc.map((players: PlayerType) => {
         return new Player(
           players.email,
@@ -174,8 +177,8 @@ export class RankingMongoDbManager implements RankingInterface {
         );
       });
 
-      ranking.winners = winners
-      return ranking
+      this.ranking.winners = winners;
+      return this.ranking;
     } catch (error) {
       console.error("Error getting losers:", error);
       throw error;
@@ -192,9 +195,10 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: 1 } },
       ]);
-      
+
       //added validation if proupedPlayers is not empty, e.g. when we dont have any player
-      const losersDoc = groupedPlayers.length> 0 ? groupedPlayers[0].wholeDocument :[];
+      const losersDoc =
+        groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const losers = losersDoc.map((players: PlayerType) => {
         return new Player(
           players.email,
@@ -205,13 +209,11 @@ export class RankingMongoDbManager implements RankingInterface {
         );
       });
 
-      ranking.losers = losers
-      return ranking
+      this.ranking.losers = losers;
+      return this.ranking;
     } catch (error) {
       console.error("Error getting losers:", error);
       throw error;
     }
   }
-
-
 }

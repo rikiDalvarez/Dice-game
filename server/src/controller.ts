@@ -1,6 +1,7 @@
 // import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response } from "express";
 import { User } from "./domain/User";
+import { Ranking } from "./domain/Ranking";
 import { PlayerService } from "./application/PlayerService";
 import {
   PlayerMongoDbManager,
@@ -10,7 +11,8 @@ import { RankingService } from "./application/RankingService";
 
 const playerMongoManager = new PlayerMongoDbManager();
 const playerService = new PlayerService(playerMongoManager);
-const rankingMongoDbManager = new RankingMongoDbManager();
+const ranking = new Ranking();
+const rankingMongoDbManager = new RankingMongoDbManager(ranking);
 const rankingService = new RankingService(rankingMongoDbManager);
 
 export const getPlayers = async (req: Request, res: Response) => {
@@ -87,15 +89,18 @@ export const getGames = async (req: Request, res: Response) => {
 
 export const getRankingAndAverage = async (req: Request, res: Response) => {
   const ranking = await rankingService.getPlayersRanking();
+
   const rankingAv = await rankingService.getMeanSuccesRate();
-  
-  res.status(200).json({ranking: ranking.rankingList, average: rankingAv.average });
+
+  res
+    .status(200)
+    .json({ ranking: ranking.rankingList, average: rankingAv.average });
 };
 
 export const getWinner = async (req: Request, res: Response) => {
   const ranking = await rankingService.getWinner();
- // if (ranking.winners.length === 0) {
-   // res.status(500).json({ error: "Error getting winner(s)" });
+  // if (ranking.winners.length === 0) {
+  // res.status(500).json({ error: "Error getting winner(s)" });
   //}
   res.status(200).json(ranking.winners);
 };
@@ -103,7 +108,7 @@ export const getWinner = async (req: Request, res: Response) => {
 export const getLoser = async (req: Request, res: Response) => {
   const ranking = await rankingService.getLoser();
   //if (!losers) {
-   // res.status(500).json({ error: "Error getting loser(s)" });
+  // res.status(500).json({ error: "Error getting loser(s)" });
   //}
   res.status(200).json(ranking.losers);
 };
