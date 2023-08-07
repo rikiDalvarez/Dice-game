@@ -1,4 +1,3 @@
-import { PlayerList } from "../domain/PlayerList";
 import { Ranking } from "../domain/Ranking";
 import { RankingInterface } from "./RankingInterface";
 
@@ -11,15 +10,15 @@ export class RankingService {
   getPlayersRanking(): Promise<Ranking> {
     return this.rankingInterface.getPlayersRanking();
   }
-  getMeanSuccesRate(): Promise<number | null> {
+  getMeanSuccesRate(): Promise<Ranking> {
     return this.rankingInterface.getMeanSuccesRate();
   }
 
-  getWinner(): Promise<PlayerList> {
+  getWinner(): Promise<Ranking> {
     return this.rankingInterface.getWinner();
   }
 
-  getLoser(): Promise<PlayerList> {
+  getLoser(): Promise<Ranking> {
     return this.rankingInterface.getLoser();
   }
 }

@@ -86,24 +86,24 @@ export const getGames = async (req: Request, res: Response) => {
 };
 
 export const getRankingAndAverage = async (req: Request, res: Response) => {
-  const playersRanking = await rankingService.getPlayersRanking();
-  const average = await rankingService.getMeanSuccesRate();
-  const ranking = playersRanking.ranking;
-  res.status(200).json({ ranking, average });
+  const ranking = await rankingService.getPlayersRanking();
+  const rankingAv = await rankingService.getMeanSuccesRate();
+  
+  res.status(200).json({ranking: ranking.rankingList, average: rankingAv.average });
 };
 
 export const getWinner = async (req: Request, res: Response) => {
-  const winners = await rankingService.getWinner();
-  if (!winners) {
-    res.status(500).json({ error: "Error getting winner(s)" });
-  }
-  res.status(200).json({ winners });
+  const ranking = await rankingService.getWinner();
+ // if (ranking.winners.length === 0) {
+   // res.status(500).json({ error: "Error getting winner(s)" });
+  //}
+  res.status(200).json(ranking.winners);
 };
 
 export const getLoser = async (req: Request, res: Response) => {
-  const losers = await rankingService.getLoser();
-  if (!losers) {
-    res.status(500).json({ error: "Error getting loser(s)" });
-  }
-  res.status(200).json({ losers });
+  const ranking = await rankingService.getLoser();
+  //if (!losers) {
+   // res.status(500).json({ error: "Error getting loser(s)" });
+  //}
+  res.status(200).json(ranking.losers);
 };
