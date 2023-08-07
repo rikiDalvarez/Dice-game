@@ -8,5 +8,5 @@ export interface RankingInterface {
   getPlayersRanking(): Promise<Ranking>;
   getMeanSuccesRate():Promise<number|null>;
   getLoser(): Promise<PlayerList>;
-  getWinner(): Promise<Player[]>;
+  getWinner(): Promise<PlayerList>;
 }

@@ -140,36 +140,65 @@ export class RankingMongoDbManager implements RankingInterface {
     return new Ranking(players);
   }
 
-  async getWinner(): Promise<Player[]> {
-    //get highest success rate players
+  // async getWinner(): Promise<Player[]> {
+  //   //get highest success rate players
+  //   try {
+  //     const winners = await PlayerDocument.aggregate([
+  //       {
+  //         $group: {
+  //           _id: null,
+  //           highestSuccessRate: { $max: "$successRate" },
+  //           players: { $push: "$$ROOT" },
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           winners: {
+  //             $filter: {
+  //               input: "$players",
+  //               as: "player",
+  //               cond: { $eq: ["$$player.successRate", "$highestSuccessRate"] },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     ]);
+  //     return winners ? winners[0].winners : [];
+  //   } catch (error) {
+  //     console.error("Error getting winners:", error);
+  //     return [];
+  //   }
+  // }
+  // CREO QUE ESTÁ MEJOR COMO LO HIZO KONRAD:
+  async getWinner(): Promise<PlayerList> {
     try {
-      const winners = await PlayerDocument.aggregate([
+      const groupedPlayers = await PlayerDocument.aggregate([
         {
           $group: {
-            _id: null,
-            highestSuccessRate: { $max: "$successRate" },
-            players: { $push: "$$ROOT" },
+            _id: "$successRate",
+            wholeDocument: { $push: "$$ROOT" },
           },
         },
-        {
-          $project: {
-            winners: {
-              $filter: {
-                input: "$players",
-                as: "player",
-                cond: { $eq: ["$$player.successRate", "$highestSuccessRate"] },
-              },
-            },
-          },
-        },
+        { $sort: { _id: -1 } },
       ]);
-      return winners ? winners[0].winners : [];
+
+      const winnersDoc = groupedPlayers[0].wholeDocument;
+      const winners = winnersDoc.map((players: PlayerType) => {
+        return new Player(
+          players.email,
+          players.password,
+          players.games,
+          players.name,
+          players._id.toString()
+        );
+      });
+
+      return new PlayerList(winners);
     } catch (error) {
-      console.error("Error getting winners:", error);
-      return [];
+      console.error("Error getting losers:", error);
+      throw error;
     }
   }
-
   async getLoser(): Promise<PlayerList> {
     try {
       const groupedPlayers = await PlayerDocument.aggregate([

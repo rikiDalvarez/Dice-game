@@ -17,7 +17,7 @@ export class RankingService {
     return this.rankingInterface.getMeanSuccesRate();
   }
 
-  getWinner(): Promise<Player[]> {
+  getWinner(): Promise<PlayerList> {
     return this.rankingInterface.getWinner();
   }
 
