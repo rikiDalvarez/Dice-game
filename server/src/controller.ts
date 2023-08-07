@@ -87,14 +87,15 @@ export const getGames = async (req: Request, res: Response) => {
   res.send(games);
 };
 
-export const getRankingAndAverage = async (req: Request, res: Response) => {
-  const ranking = await rankingService.getPlayersRanking();
-
-  const rankingAv = await rankingService.getMeanSuccesRate();
-
+//refactoring of getRankingAndAvarage
+export const getRankingWithAverage = async (req: Request, res: Response) => {
+  console.log('ranking service')
+  const ranking = await rankingService.getRankingWithAverage()
+  //const ranking = await rankingService.getPlayersRanking();
+  //const rankingAv = await rankingService.getMeanSuccesRate();
   res
     .status(200)
-    .json({ ranking: ranking.rankingList, average: rankingAv.average });
+    .json({ ranking: ranking.rankingList, average: ranking.average });
 };
 
 export const getWinner = async (req: Request, res: Response) => {
