@@ -4,7 +4,7 @@ import { PlayerDocument } from "./models/mongoDbModel";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
-import { Ranking } from "../domain/Ranking";
+import { Ranking} from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 
 export class PlayerMongoDbManager implements PlayerInterface {
@@ -115,8 +115,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 }
 //Better to seperate in another file
+
+
+const ranking = new Ranking()
 export class RankingMongoDbManager implements RankingInterface {
-  async getMeanSuccesRate(): Promise<number | null> {
+  async getMeanSuccesRate(): Promise<Ranking> {
     const meanValue = await PlayerDocument.aggregate([
       {
         $group: {
@@ -125,7 +128,9 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
-    return meanValue.length > 0 ? meanValue[0].meanValue : null;
+
+    ranking.average = meanValue.length > 0 ? meanValue[0].meanValue: 0
+    return ranking
   }
 
   async getPlayersRanking(): Promise<Ranking> {
@@ -139,40 +144,13 @@ export class RankingMongoDbManager implements RankingInterface {
         players.id
       );
     });
-    return new Ranking(players);
+
+    ranking.rankingList = players
+    return ranking
   }
 
-  // async getWinner(): Promise<Player[]> {
-  //   //get highest success rate players
-  //   try {
-  //     const winners = await PlayerDocument.aggregate([
-  //       {
-  //         $group: {
-  //           _id: null,
-  //           highestSuccessRate: { $max: "$successRate" },
-  //           players: { $push: "$$ROOT" },
-  //         },
-  //       },
-  //       {
-  //         $project: {
-  //           winners: {
-  //             $filter: {
-  //               input: "$players",
-  //               as: "player",
-  //               cond: { $eq: ["$$player.successRate", "$highestSuccessRate"] },
-  //             },
-  //           },
-  //         },
-  //       },
-  //     ]);
-  //     return winners ? winners[0].winners : [];
-  //   } catch (error) {
-  //     console.error("Error getting winners:", error);
-  //     return [];
-  //   }
-  // }
-  // CREO QUE ESTÁ MEJOR COMO LO HIZO KONRAD:
-  async getWinner(): Promise<PlayerList> {
+
+  async getWinner(): Promise<Ranking> {
     try {
       const groupedPlayers = await PlayerDocument.aggregate([
         {
@@ -184,7 +162,8 @@ export class RankingMongoDbManager implements RankingInterface {
         { $sort: { _id: -1 } },
       ]);
 
-      const winnersDoc = groupedPlayers[0].wholeDocument;
+      //added validation if proupedPlayers is not empty, e.g. when we dont have any player
+      const winnersDoc = groupedPlayers.length>0? groupedPlayers[0].wholeDocument: [];
       const winners = winnersDoc.map((players: PlayerType) => {
         return new Player(
           players.email,
@@ -195,13 +174,14 @@ export class RankingMongoDbManager implements RankingInterface {
         );
       });
 
-      return new PlayerList(winners);
+      ranking.winners = winners
+      return ranking
     } catch (error) {
       console.error("Error getting losers:", error);
       throw error;
     }
   }
-  async getLoser(): Promise<PlayerList> {
+  async getLoser(): Promise<Ranking> {
     try {
       const groupedPlayers = await PlayerDocument.aggregate([
         {
@@ -212,8 +192,9 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: 1 } },
       ]);
-
-      const losersDoc = groupedPlayers[0].wholeDocument;
+      
+      //added validation if proupedPlayers is not empty, e.g. when we dont have any player
+      const losersDoc = groupedPlayers.length> 0 ? groupedPlayers[0].wholeDocument :[];
       const losers = losersDoc.map((players: PlayerType) => {
         return new Player(
           players.email,
@@ -224,15 +205,13 @@ export class RankingMongoDbManager implements RankingInterface {
         );
       });
 
-      return new PlayerList(losers);
+      ranking.losers = losers
+      return ranking
     } catch (error) {
       console.error("Error getting losers:", error);
       throw error;
     }
   }
 
-  // async deletePlayer(playerId: string): Promise<boolean> {
-  //   const deletePlayer = await PlayerDocument.findByIdAndDelete(playerId);
-  //   return deletePlayer ? true : false;
-  // }
+
 }

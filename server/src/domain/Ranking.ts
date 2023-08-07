@@ -1,6 +1,6 @@
-import { Player, PlayerType } from "./Player";
+import { Player} from "./Player";
 import { PlayerDetailsType } from "./PlayerList";
-
+/*
 export class Ranking {
   readonly ranking: Array<PlayerDetailsType>;
   private _looser:Array<Player>;
@@ -17,39 +17,56 @@ export class Ranking {
     });
   }
 }
-
-export class Ranking2 {
-  //PlayerTypeRanking{exlcuir ID, password}
-
-  _ranking: Array<PlayerType>;
-  _average: number;
-  _losers: Array<PlayerType>;
-  private _winners: Array<Player>;
+*/
+export class Ranking {
+ 
+  private _rankingList: Array<PlayerDetailsType>;
+ private _average: number;
+  private _losers: Array<PlayerDetailsType>;
+  private _winners: Array<PlayerDetailsType>;
   constructor() {
-    (this._ranking = []),
+    (this._rankingList = []),
       (this._average = 0),
       (this._losers = []),
       (this._winners = []);
   }
 
-  public set ranking(players: Array<PlayerType>) {
-    const ranking = players.map((player) => {
+
+
+  private preparePlayersDetails(
+    players: Array<Player>
+  ): Array<PlayerDetailsType> {
+    return players.map((player) => {
       return { name: player.name, rating: player.successRate };
     });
-    this._ranking = ranking;
   }
-
-  //   return players.map((player) => {
-  //     return { name: player.name, rating: player.successRate };
-  //   });
+  public set rankingList(players: Array<Player>) {
+    this._rankingList = this.preparePlayersDetails(players)
+  }
 
   public set average(meanValue: number) {
     this._average = meanValue;
   }
-  public set losers(players: Array<PlayerType>) {
-    this._losers = players;
+  public set losers(losers: Array<Player>) {
+    this._losers = this.preparePlayersDetails(losers)
   }
-  public set winner(players: Array<PlayerType>) {
-    this._winners = players;
+  public set winners(winners: Array<Player>) {
+    this._winners = this.preparePlayersDetails(winners)
+  }
+
+  public get rankingList():Array<PlayerDetailsType>{
+    return this._rankingList
+  }
+
+  public get losers():Array<PlayerDetailsType>{
+    return this._losers
+  }
+
+  public get winners():Array<PlayerDetailsType>{
+    return this._winners
+  }
+
+  public get average():number{
+    return this._average
   }
 }
