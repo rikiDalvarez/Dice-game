@@ -24,8 +24,8 @@ export const getPlayers = async (req: Request, res: Response) => {
       }
     })
     .catch((err) => {
-      throw err;
-    }); // add res.status(500) for the error
+      return res.status(500).json({ error: err.message, error_code: "GP001" });
+    });
 };
 
 export const postPlayer = async (req: Request, res: Response) => {
@@ -41,7 +41,7 @@ export const postPlayer = async (req: Request, res: Response) => {
       return res.status(201).json({ Player_id: response });
     })
     .catch((err) => {
-      throw err;
+      return res.status(500).json({ error: err.message, error_code: "PP001" });
     }); // add res.status(500) for the error
 };
 
@@ -53,7 +53,7 @@ export const playGame = async (req: Request, res: Response) => {
     const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
   } catch (err) {
-    return err;
+    return res.status(500).json({ error: err, error_code: "PG001" });
   }
 };
 
@@ -66,8 +66,7 @@ export const deleteAllGames = async (req: Request, res: Response) => {
     const responseFromDatabase = await playerService.deleteAllGames(player);
     return res.status(200).json({ games_deleted: responseFromDatabase });
   } catch (err) {
-    // add res.status(500) for the error
-    return err;
+    return res.status(500).json({ error: err, error_code: "DAG001" });
   }
 };
 export const changeName = async (req: Request, res: Response) => {
@@ -84,13 +83,16 @@ export const changeName = async (req: Request, res: Response) => {
 export const getGames = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   const games = await playerService.getGames(playerId);
+  if (!games) {
+    res.status(500).json({ error: "Error getting games" });
+  }
   res.send(games);
 };
 
 //refactoring of getRankingAndAvarage
 export const getRankingWithAverage = async (req: Request, res: Response) => {
-  console.log('ranking service')
-  const ranking = await rankingService.getRankingWithAverage()
+  console.log("ranking service");
+  const ranking = await rankingService.getRankingWithAverage();
   //const ranking = await rankingService.getPlayersRanking();
   //const rankingAv = await rankingService.getMeanSuccesRate();
   res
