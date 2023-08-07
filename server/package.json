@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx jest --verbose --silent",
+    "start": "node ./dist/src/Server.js",
     "build": "npx tsc",
     "eslint": "npx eslint .",
     "dev": "ts-node ./src/Server.ts"
