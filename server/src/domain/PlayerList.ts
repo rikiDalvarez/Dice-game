@@ -3,6 +3,7 @@ import { Player } from "./Player";
 export type PlayerDetailsType = {
   name: string;
   rating: number;
+  registrationDate: Date
 };
 
 export class PlayerList {
@@ -16,7 +17,7 @@ export class PlayerList {
   ): Array<PlayerDetailsType> {
     return players.map((player) => {
 
-      return { name: player.name, rating: player.successRate};
+      return { name: player.name, rating: player.successRate, registrationDate: player.registrationDate};
     });
   }
 

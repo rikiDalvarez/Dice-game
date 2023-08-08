@@ -6,8 +6,6 @@ import { PlayerList } from "../domain/PlayerList";
 import { Game } from "../domain/Game";
 import { Dice } from "../domain/Dice";
 
-const dice = new Dice();
-
 export class PlayerService {
   playerInterface: PlayerInterface;
   constructor(playerInterface: PlayerInterface) {
@@ -27,6 +25,7 @@ export class PlayerService {
   }
 
   async addGame(playerId: string): Promise<boolean> {
+    const dice = new Dice();
     const player = await this.findPlayer(playerId);
     const game = new Game(dice);
     player.addNewGame(game);

@@ -90,7 +90,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
         return response.modifiedCount === 1;
       })
       .catch((err) => {
-        throw err;
+        throw new Error(`error: ${err} `);
       });
   }
 
@@ -120,7 +120,7 @@ export class RankingMongoDbManager implements RankingInterface {
     this.ranking = ranking;
   }
 
-  async getMeanSuccesRate():Promise<number> {
+  async getMeanSuccesRate(): Promise<number> {
     const meanValue = await PlayerDocument.aggregate([
       {
         $group: {
@@ -131,10 +131,10 @@ export class RankingMongoDbManager implements RankingInterface {
     ]);
     //this.ranking.average = meanValue.length > 0 ? meanValue[0].meanValue : 0;
     //return this.ranking;
-    return meanValue.length > 0 ? meanValue[0].meanValue : 0
+    return meanValue.length > 0 ? meanValue[0].meanValue : 0;
   }
 
-  async getPlayersRanking():Promise<Player[]> {
+  async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
     const players = playerRanking.map((players) => {
       return new Player(
@@ -148,13 +148,13 @@ export class RankingMongoDbManager implements RankingInterface {
 
     //this.ranking.rankingList = players;
     //return this.ranking;
-    return players
+    return players;
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
-    this.ranking.rankingList = await this.getPlayersRanking()
-    this.ranking.average = await this.getMeanSuccesRate()
-    return this.ranking
+    this.ranking.rankingList = await this.getPlayersRanking();
+    this.ranking.average = await this.getMeanSuccesRate();
+    return this.ranking;
   }
 
   async getWinner(): Promise<Ranking> {
