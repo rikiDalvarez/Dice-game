@@ -40,8 +40,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     }
   ],
     });
-    console.log({nameAlreadyInUse})
-
     if (nameAlreadyInUse) {
       throw new Error("name already in use, please choose another name");
     }
@@ -80,13 +78,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
     //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
-      throw new Error("name already in use, please choose another name");
+      throw new Error("NameConflictError");
     }
     const player = await PlayerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
     if (!player) {
-      throw new Error("player not found");
+      throw new Error("NotFoundError");
     }
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
