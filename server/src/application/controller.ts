@@ -1,5 +1,5 @@
 // import { PlayerDocument } from "./mongoDbModel";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { User } from "../domain/User";
 import { Ranking } from "../domain/Ranking";
 import { PlayerService } from "./PlayerService";
@@ -28,7 +28,7 @@ export const getPlayers = async (req: Request, res: Response) => {
     });
 };
 
-export const postPlayer = async (req: Request, res: Response) => {
+export const postPlayer = async (req: Request, res: Response, next:NextFunction) => {
   if (!("email" in req.body) || !("password" in req.body)) {
     return res.status(400).json({ Bad_reqest: "email and password required" });
   }
@@ -40,9 +40,9 @@ export const postPlayer = async (req: Request, res: Response) => {
     .then((response) => {
       return res.status(201).json({ Player_id: response });
     })
-    .catch((err) => {
-      return res.status(500).json({ error: err.message, error_code: "PP001" });
-    });
+    .catch((err:Error) => {
+      next(err)
+    }); 
 };
 
 export const playGame = async (req: Request, res: Response) => {
@@ -69,15 +69,18 @@ export const deleteAllGames = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err, error_code: "DAG001" });
   }
 };
-export const changeName = async (req: Request, res: Response) => {
+
+
+export const changeName = async (req: Request, res: Response, next:NextFunction) => {
   const playerId = req.params.id;
   const newName = req.body.name;
-  try {
-    const player = await playerService.changeName(playerId, newName);
-    res.status(200).json(player);
-  } catch (error) {
-    res.status(500).json({ error: "Error changing name" });
-  }
+  try{
+  const player = await playerService.changeName(playerId, newName)
+  res.status(200).json(player);
+
+}
+  catch (err) {next(err)}
+ 
 };
 
 export const getGames = async (req: Request, res: Response) => {

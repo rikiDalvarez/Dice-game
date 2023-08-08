@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { getDatabase } from "../src/mongoDbConnection";
+import { getDatabase } from "../src/infrastructure/mongoDbConnection";
 import { PlayerDocument } from "../src/infrastructure/models/mongoDbModel";
 
 //startServer()
