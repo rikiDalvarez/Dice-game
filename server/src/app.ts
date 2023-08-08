@@ -2,7 +2,7 @@ import "dotenv/config";
 import config from "../config/config";
 import express from "express";
 import router from "./routes";
-import { connectDatabase } from "./mongoDbConnection";
+import { connectDatabase } from "./infrastructure/mongoDbConnection";
 import cors from "cors";
 // Express
 

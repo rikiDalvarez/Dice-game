@@ -1,13 +1,13 @@
 // import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response } from "express";
-import { User } from "./domain/User";
-import { Ranking } from "./domain/Ranking";
-import { PlayerService } from "./application/PlayerService";
+import { User } from "../domain/User";
+import { Ranking } from "../domain/Ranking";
+import { PlayerService } from "./PlayerService";
 import {
   PlayerMongoDbManager,
   RankingMongoDbManager,
-} from "./infrastructure/mongoDbManager";
-import { RankingService } from "./application/RankingService";
+} from "../infrastructure/mongoDbManager";
+import { RankingService } from "./RankingService";
 
 const playerMongoManager = new PlayerMongoDbManager();
 const playerService = new PlayerService(playerMongoManager);

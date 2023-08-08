@@ -7,9 +7,9 @@ import {
   getGames,
   getRankingWithAverage,
   getWinner,
-  getLoser
-} from "./controller";
-import { postPlayer } from "./controller";
+  getLoser,
+} from "./application/controller";
+import { postPlayer } from "./application/controller";
 
 const router = express.Router();
 
