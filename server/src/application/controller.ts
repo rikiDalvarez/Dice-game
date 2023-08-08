@@ -42,13 +42,13 @@ export const postPlayer = async (req: Request, res: Response) => {
     })
     .catch((err) => {
       return res.status(500).json({ error: err.message, error_code: "PP001" });
-    }); // add res.status(500) for the error
+    });
 };
 
 export const playGame = async (req: Request, res: Response) => {
-  //should return if winner or not
   console.log(`req: ${req.body}`);
   const playerId = req.params.id;
+
   try {
     const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
@@ -82,36 +82,42 @@ export const changeName = async (req: Request, res: Response) => {
 
 export const getGames = async (req: Request, res: Response) => {
   const playerId = req.params.id;
-  const games = await playerService.getGames(playerId);
-  if (!games) {
-    res.status(500).json({ error: "Error getting games" });
+  try {
+    const games = await playerService.getGames(playerId);
+    res.send(games);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting games", error_code: "GG001" });
   }
-  res.send(games);
 };
 
 //refactoring of getRankingAndAvarage
 export const getRankingWithAverage = async (req: Request, res: Response) => {
-  console.log("ranking service");
-  const ranking = await rankingService.getRankingWithAverage();
-  //const ranking = await rankingService.getPlayersRanking();
-  //const rankingAv = await rankingService.getMeanSuccesRate();
-  res
-    .status(200)
-    .json({ ranking: ranking.rankingList, average: ranking.average });
+  try {
+    const ranking = await rankingService.getRankingWithAverage();
+    res
+      .status(200)
+      .json({ ranking: ranking.rankingList, average: ranking.average });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error getting ranking", error_code: "GR001" });
+  }
 };
 
 export const getWinner = async (req: Request, res: Response) => {
-  const ranking = await rankingService.getWinner();
-  // if (ranking.winners.length === 0) {
-  // res.status(500).json({ error: "Error getting winner(s)" });
-  //}
-  res.status(200).json(ranking.winners);
+  try {
+    const ranking = await rankingService.getWinner();
+    res.status(200).json(ranking.winners);
+  } catch (error) {
+    res.status(500).json({ error: `${error}`, error_code: "GW001" });
+  }
 };
 
 export const getLoser = async (req: Request, res: Response) => {
-  const ranking = await rankingService.getLoser();
-  //if (!losers) {
-  // res.status(500).json({ error: "Error getting loser(s)" });
-  //}
-  res.status(200).json(ranking.losers);
+  try {
+    const ranking = await rankingService.getLoser();
+    res.status(200).json(ranking.losers);
+  } catch (error) {
+    res.status(500).json({ error: `${error}`, error_code: "GL001" });
+  }
 };

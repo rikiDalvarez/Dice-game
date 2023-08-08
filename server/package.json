@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./dist/src/Server.js",
     "test": "npx jest --verbose --silent --detectOpenHandles",
     "build": "npx tsc",
     "eslint": "npx eslint .",

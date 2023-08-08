@@ -140,6 +140,9 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+    if (!playerRanking) {
+      throw new Error("no players found");
+    }
     const players = playerRanking.map((players) => {
       return new Player(
         players.email,
@@ -150,14 +153,16 @@ export class RankingMongoDbManager implements RankingInterface {
       );
     });
 
-    //this.ranking.rankingList = players;
-    //return this.ranking;
     return players;
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
-    this.ranking.rankingList = await this.getPlayersRanking();
-    this.ranking.average = await this.getMeanSuccesRate();
+    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
+    this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
     return this.ranking;
   }
 
