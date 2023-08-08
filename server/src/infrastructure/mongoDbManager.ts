@@ -30,11 +30,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
       registrationDate: player.registrationDate,
     };
 
-    const nameAlreadyInUse = await PlayerDocument.findOne({
+    const nameOrEmailAlreadyInUse = await PlayerDocument.findOne({
       $or: [{ email: newPlayer.email }, { name: newPlayer.name }],
     });
-    if (nameAlreadyInUse) {
-      throw new Error("name already in use, please choose another name");
+    if (nameOrEmailAlreadyInUse) {
+      throw new Error('NameEmailConflictError');
     }
     const playerFromDB = await PlayerDocument.create(newPlayer);
     return playerFromDB.id;
@@ -68,13 +68,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
     //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
-      throw new Error("name already in use, please choose another name");
+      throw new Error("NameConflictError");
     }
     const player = await PlayerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
     if (!player) {
-      throw new Error("player not found");
+      throw new Error("NotFoundError");
     }
     return true;
   }

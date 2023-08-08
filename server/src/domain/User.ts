@@ -5,7 +5,7 @@ export class User {
   readonly password: string;
   readonly registrationDate: Date;
 
-  constructor(email: string, password: string, name: string = "unknown") {
+  constructor(email: string, password: string, name: string = "anonim") {
     this.email = email;
     this.name = name;
     this.password = password;

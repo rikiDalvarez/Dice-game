@@ -17,13 +17,11 @@ async function createUser(name:string, password:string, email:string) {
 }
 
 
-describe("REST API TEST", () => {
+describe("API CREATE USER TEST", () => {
   beforeEach(async () => {
    await PlayerDocument.deleteMany({})
     
   });
-
- 
 
   test("Should create user:", async () => {
     await api
@@ -43,7 +41,7 @@ describe("REST API TEST", () => {
 
   test("Should fail if reques body lacks email", async () => {
     await api
-      .post("/api/v1/users/")
+      .post("/api/players/")
       .send({ name: 'mafalda', password: "password"})
       .expect(400)
       .expect("Content-Type", /application\/json/);
@@ -51,9 +49,8 @@ describe("REST API TEST", () => {
 
 
   test("Should fail if reques body lacks password:", async () => {
-    
     await api
-      .post("/api/v1/users/")
+      .post("/api/players/")
       .send({ name: "user", email:"mafalda@op.pl" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
@@ -77,8 +74,16 @@ describe("REST API TEST", () => {
       .expect("Content-Type", /application\/json/);
   });
 
+  test("Should return ValidationError if wrong email format:", async () => {
+    await createUser('mafalda', 'password', 'mafalda@op.pl')
+    await api
+      .post("/api/players")
+      .send({ name: "riki", password: "password", email: "mafaldaop.pl" })
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+  });
+
   afterAll(() => { 
-    
     const connection = getDatabase()
     connection.close(); });
 
