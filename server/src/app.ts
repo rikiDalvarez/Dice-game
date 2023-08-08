@@ -8,6 +8,7 @@ import { errorHandler } from "./errorHandler";
 
 
 export const app = express();
+
 connectDatabase(config.MONGO_URI, config.DATABASE);
 app.use(cors());
 app.use(express.json());
