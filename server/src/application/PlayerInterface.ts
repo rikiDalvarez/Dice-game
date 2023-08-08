@@ -5,7 +5,7 @@ import { PlayerList } from "../domain/PlayerList";
 
 export interface PlayerInterface {
   createPlayer(playerDetails: User): Promise<string>;
-  changeName(playerId: string, newName: string): Promise<boolean>;
+  changeName(playerId: string, newName: string): Promise<Partial<Player>>;
   addGame(playerDetails: Player): Promise<boolean>;
   deleteAllGames(playerDetails: Player): Promise<boolean>;
   findPlayer(playerEmail: string): Promise<Player>;

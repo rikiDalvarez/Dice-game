@@ -70,14 +70,14 @@ export const deleteAllGames = async (req: Request, res: Response) => {
   }
 };
 export const changeName = async (req: Request, res: Response) => {
-  //return new name
   const playerId = req.params.id;
   const newName = req.body.name;
-  const player = await playerService.changeName(playerId, newName);
-  if (!player) {
+  try {
+    const player = await playerService.changeName(playerId, newName);
+    res.status(200).json(player);
+  } catch (error) {
     res.status(500).json({ error: "Error changing name" });
   }
-  res.status(200).json(player);
 };
 
 export const getGames = async (req: Request, res: Response) => {

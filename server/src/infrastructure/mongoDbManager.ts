@@ -64,7 +64,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return new PlayerList(players);
   }
 
-  async changeName(playerId: string, newName: string): Promise<boolean> {
+  async changeName(
+    playerId: string,
+    newName: string
+  ): Promise<Partial<Player>> {
     //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
@@ -76,7 +79,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!player) {
       throw new Error("player not found");
     }
-    return true;
+    const returnPlayer = { id: player.id, name: newName };
+    return returnPlayer;
   }
 
   async addGame(player: Player): Promise<boolean> {
