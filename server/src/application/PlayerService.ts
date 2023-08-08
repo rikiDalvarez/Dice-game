@@ -16,7 +16,7 @@ export class PlayerService {
     return this.playerInterface.createPlayer(playerDetails);
   }
 
-  changeName(playerId: string, newName: string): Promise<boolean> {
+  changeName(playerId: string, newName: string): Promise<Partial<Player>> {
     return this.playerInterface.changeName(playerId, newName);
   }
 

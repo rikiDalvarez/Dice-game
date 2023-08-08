@@ -1,13 +1,13 @@
 // import { PlayerDocument } from "./mongoDbModel";
-import { NextFunction, Request, Response } from "express";
-import { User } from "./domain/User";
-import { Ranking } from "./domain/Ranking";
-import { PlayerService } from "./application/PlayerService";
+import { Request, Response } from "express";
+import { User } from "../domain/User";
+import { Ranking } from "../domain/Ranking";
+import { PlayerService } from "./PlayerService";
 import {
   PlayerMongoDbManager,
   RankingMongoDbManager,
-} from "./infrastructure/mongoDbManager";
-import { RankingService } from "./application/RankingService";
+} from "../infrastructure/mongoDbManager";
+import { RankingService } from "./RankingService";
 
 const playerMongoManager = new PlayerMongoDbManager();
 const playerService = new PlayerService(playerMongoManager);
@@ -28,7 +28,7 @@ export const getPlayers = async (req: Request, res: Response) => {
     });
 };
 
-export const postPlayer = async (req: Request, res: Response, next:NextFunction) => {
+export const postPlayer = async (req: Request, res: Response) => {
   if (!("email" in req.body) || !("password" in req.body)) {
     return res.status(400).json({ Bad_reqest: "email and password required" });
   }
@@ -40,24 +40,24 @@ export const postPlayer = async (req: Request, res: Response, next:NextFunction)
     .then((response) => {
       return res.status(201).json({ Player_id: response });
     })
-    .catch((err:Error) => {
-      next(err)
-    }); 
+    .catch((err) => {
+      return res.status(500).json({ error: err.message, error_code: "PP001" });
+    });
 };
 
-export const playGame = async (req: Request, res: Response, next:NextFunction) => {
-  //should return if winner or not
+export const playGame = async (req: Request, res: Response) => {
   console.log(`req: ${req.body}`);
   const playerId = req.params.id;
+
   try {
     const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
   } catch (err) {
-next(err)
+    return res.status(500).json({ error: err, error_code: "PG001" });
   }
 };
 
-export const deleteAllGames = async (req: Request, res: Response, next:NextFunction) => {
+export const deleteAllGames = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   try {
     const player = await playerService.findPlayer(playerId);
@@ -66,55 +66,59 @@ export const deleteAllGames = async (req: Request, res: Response, next:NextFunct
     const responseFromDatabase = await playerService.deleteAllGames(player);
     return res.status(200).json({ games_deleted: responseFromDatabase });
   } catch (err) {
-next(err)  }
+    return res.status(500).json({ error: err, error_code: "DAG001" });
+  }
 };
-export const changeName = async (req: Request, res: Response, next:NextFunction) => {
-  //return new name
+export const changeName = async (req: Request, res: Response) => {
   const playerId = req.params.id;
   const newName = req.body.name;
-  try{
-  const player = await playerService.changeName(playerId, newName)
-  res.status(200).json(player);
-
-}
-  catch (err) {next(err)}
-  //if (!player) {
-  //  res.status(500).json({ error: "Error changing name" });
-  //}
+  try {
+    const player = await playerService.changeName(playerId, newName);
+    res.status(200).json(player);
+  } catch (error) {
+    res.status(500).json({ error: "Error changing name" });
+  }
 };
 
 export const getGames = async (req: Request, res: Response) => {
   const playerId = req.params.id;
-  const games = await playerService.getGames(playerId);
-  if (!games) {
-    res.status(500).json({ error: "Error getting games" });
+  try {
+    const games = await playerService.getGames(playerId);
+    res.send(games);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting games", error_code: "GG001" });
   }
-  res.send(games);
 };
 
 //refactoring of getRankingAndAvarage
 export const getRankingWithAverage = async (req: Request, res: Response) => {
-  console.log("ranking service");
-  const ranking = await rankingService.getRankingWithAverage();
-  //const ranking = await rankingService.getPlayersRanking();
-  //const rankingAv = await rankingService.getMeanSuccesRate();
-  res
-    .status(200)
-    .json({ ranking: ranking.rankingList, average: ranking.average });
+  try {
+    const ranking = await rankingService.getRankingWithAverage();
+    res
+      .status(200)
+      .json({ ranking: ranking.rankingList, average: ranking.average });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error getting ranking", error_code: "GR001" });
+  }
 };
 
 export const getWinner = async (req: Request, res: Response) => {
-  const ranking = await rankingService.getWinner();
-  // if (ranking.winners.length === 0) {
-  // res.status(500).json({ error: "Error getting winner(s)" });
-  //}
-  res.status(200).json(ranking.winners);
+  try {
+    const ranking = await rankingService.getWinner();
+    res.status(200).json(ranking.winners);
+  } catch (error) {
+    res.status(500).json({ error: `${error}`, error_code: "GW001" });
+  }
 };
 
 export const getLoser = async (req: Request, res: Response) => {
-  const ranking = await rankingService.getLoser();
-  //if (!losers) {
-  // res.status(500).json({ error: "Error getting loser(s)" });
-  //}
-  res.status(200).json(ranking.losers);
+  try {
+    const ranking = await rankingService.getLoser();
+    res.status(200).json(ranking.losers);
+  } catch (error) {
+    res.status(500).json({ error: `${error}`, error_code: "GL001" });
+  }
 };
+

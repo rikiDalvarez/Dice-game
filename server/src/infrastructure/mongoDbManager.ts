@@ -64,7 +64,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return new PlayerList(players);
   }
 
-  async changeName(playerId: string, newName: string): Promise<boolean> {
+  async changeName(
+    playerId: string,
+    newName: string
+  ): Promise<Partial<Player>> {
     //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
@@ -76,7 +79,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!player) {
       throw new Error("NotFoundError");
     }
-    return true;
+    const returnPlayer = { id: player.id, name: newName };
+    return returnPlayer;
   }
 
   async addGame(player: Player): Promise<boolean> {
@@ -136,6 +140,9 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+    if (!playerRanking) {
+      throw new Error("no players found");
+    }
     const players = playerRanking.map((players) => {
       return new Player(
         players.email,
@@ -146,14 +153,16 @@ export class RankingMongoDbManager implements RankingInterface {
       );
     });
 
-    //this.ranking.rankingList = players;
-    //return this.ranking;
     return players;
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
-    this.ranking.rankingList = await this.getPlayersRanking();
-    this.ranking.average = await this.getMeanSuccesRate();
+    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
+    this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
     return this.ranking;
   }
 
