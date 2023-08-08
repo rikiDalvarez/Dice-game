@@ -19,7 +19,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: player.successRate,
     };
   }
-
   async createPlayer(player: User): Promise<string> {
     const newPlayer = {
       email: player.email,
@@ -31,8 +30,18 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
 
     const nameAlreadyInUse = await PlayerDocument.findOne({
-      $or: [{ email: newPlayer.email }, { name: newPlayer.name }],
+    $or: [
+    { email: newPlayer.email },
+    {
+      $and: [
+        { name: { $ne: "unknown" } },
+        { name: newPlayer.name }
+      ]
+    }
+  ],
     });
+    console.log({nameAlreadyInUse})
+
     if (nameAlreadyInUse) {
       throw new Error("name already in use, please choose another name");
     }
@@ -84,6 +93,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async addGame(player: Player): Promise<boolean> {
+    // hacer PATCH, cambiar solo el game y no reemplazar el player
+    // wouldn't it be better to use updateOne and only change games and successRate?
+    // same with deleteAllGames()
     console.log(player);
     const id = player.id;
     return PlayerDocument.replaceOne(
@@ -111,6 +123,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
         throw err;
       });
   }
+  
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
     return player ? player.games : [];
@@ -178,7 +191,7 @@ export class RankingMongoDbManager implements RankingInterface {
         { $sort: { _id: -1 } },
       ]);
 
-      //added validation if proupedPlayers is not empty, e.g. when we dont have any player
+      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const winnersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const winners = winnersDoc.map((players: PlayerType) => {
@@ -194,7 +207,7 @@ export class RankingMongoDbManager implements RankingInterface {
       this.ranking.winners = winners;
       return this.ranking;
     } catch (error) {
-      console.error("Error getting losers:", error);
+      console.error("Error getting winners:", error);
       throw error;
     }
   }
@@ -210,7 +223,7 @@ export class RankingMongoDbManager implements RankingInterface {
         { $sort: { _id: 1 } },
       ]);
 
-      //added validation if proupedPlayers is not empty, e.g. when we dont have any player
+      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const losersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const losers = losersDoc.map((players: PlayerType) => {
