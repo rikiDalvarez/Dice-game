@@ -1,7 +1,8 @@
 import { Sequelize, DataTypes } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
+import { PlayerType } from "../../../domain/Player";
 
-export const Player = sequelize.define('Player', {
+export const PlayerSQL= sequelize.define('Player', {
   player_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -28,11 +29,11 @@ export const Player = sequelize.define('Player', {
     allowNull: false,
   },
   successRate: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.DECIMAL,
     allowNull: false,
   }
 }, {
 })
 
 // This creates the table if it doesn't exist (and does nothing if it already exists)
-Player.sync()
+// PlayerSQL.sync()

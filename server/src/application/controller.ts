@@ -8,12 +8,37 @@ import {
   RankingMongoDbManager,
 } from "../infrastructure/mongoDbManager";
 import { RankingService } from "./RankingService";
+import { PlayerMySQLManager, RankingMySQLManager } from "../infrastructure/mySQLManager";
 
-const playerMongoManager = new PlayerMongoDbManager();
-const playerService = new PlayerService(playerMongoManager);
-const ranking = new Ranking();
-const rankingMongoDbManager = new RankingMongoDbManager(ranking);
-const rankingService = new RankingService(rankingMongoDbManager);
+const mongo = true;
+const chooseDatabase = () => {
+  const ranking = new Ranking();
+  if (mongo) {
+    const playerMongoManager = new PlayerMongoDbManager();
+    const playerService = new PlayerService(playerMongoManager);
+    const rankingMongoDbManager = new RankingMongoDbManager(ranking);
+    const rankingService = new RankingService(rankingMongoDbManager);
+    return {
+      playerService: playerService,
+      rankingService: rankingService
+    }
+  } else {
+    const playerMySQLManager = new PlayerMySQLManager();
+    const playerService = new PlayerService(playerMySQLManager);
+    const rankingMySQLManager = new RankingMySQLManager(ranking);
+    const rankingService = new RankingService(rankingMySQLManager);
+    return {
+      playerService: playerService,
+      rankingService: rankingService
+    }
+  }
+
+}
+
+const services = chooseDatabase()
+
+const playerService = services.playerService;
+const rankingService = services.rankingService;
 
 export const getPlayers = async (req: Request, res: Response) => {
   playerService
@@ -28,7 +53,7 @@ export const getPlayers = async (req: Request, res: Response) => {
     });
 };
 
-export const postPlayer = async (req: Request, res: Response, next:NextFunction) => {
+export const postPlayer = async (req: Request, res: Response, next: NextFunction) => {
   if (!("email" in req.body) || !("password" in req.body)) {
     return res.status(409).json({ Bad_reqest: "email and password required" });
   }
@@ -40,9 +65,9 @@ export const postPlayer = async (req: Request, res: Response, next:NextFunction)
     .then((response) => {
       return res.status(201).json({ Player_id: response });
     })
-    .catch((err:Error) => {
+    .catch((err: Error) => {
       next(err)
-    }); 
+    });
 };
 
 export const playGame = async (req: Request, res: Response) => {
@@ -70,16 +95,16 @@ export const deleteAllGames = async (req: Request, res: Response) => {
 };
 
 
-export const changeName = async (req: Request, res: Response, next:NextFunction) => {
+export const changeName = async (req: Request, res: Response, next: NextFunction) => {
   const playerId = req.params.id;
   const newName = req.body.name;
-  try{
-  const player = await playerService.changeName(playerId, newName)
-  res.status(200).json(player);
+  try {
+    const player = await playerService.changeName(playerId, newName)
+    res.status(200).json(player);
 
-}
-  catch (err) {next(err)}
- 
+  }
+  catch (err) { next(err) }
+
 };
 
 export const getGames = async (req: Request, res: Response) => {
