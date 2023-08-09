@@ -9,7 +9,6 @@ import { PlayerDocument } from "../src/Server";
 const api = supertest(app);
 
 
-
 async function createUser(password:string, email:string, name?:string) {
   const response = await api
     .post("/api/players/")
@@ -20,14 +19,7 @@ async function createUser(password:string, email:string, name?:string) {
 
 
 describe("API ADD GAME TEST", () => {
-//let server:Server;
-  //beforeAll((done) => {
-   //server =  app.listen(3000, () => {
-      
-    //});
-   
-    //done()
-  //});
+
   beforeEach(async () => {
    await PlayerDocument.deleteMany({})
     
@@ -55,7 +47,6 @@ describe("API ADD GAME TEST", () => {
   afterAll((done) => { 
         dbConnection.close()
        server.close()
-   //closeServer()
    done()
    });
    

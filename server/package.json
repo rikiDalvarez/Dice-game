@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/src/Server.js",
     "api_test": "npx jest --verbose --silent --testNamePattern=api --detectOpenHandles",
-    "test": "npx jest --verbose --silent",
+    "test": "npx jest --silent --runInBand",
     "build": "npx tsc",
     "eslint": "npx eslint .",
     "dev": "ts-node ./src/Server.ts"
