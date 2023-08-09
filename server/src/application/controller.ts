@@ -10,15 +10,20 @@ import {
 import { RankingService } from "./RankingService";
 import { PlayerMySQLManager, RankingMySQLManager } from "../infrastructure/mySQLManager";
 
+
+export const playerMongoManager = new PlayerMongoDbManager();
+
+
+
 const mongo = true;
 const chooseDatabase = () => {
   const ranking = new Ranking();
   if (mongo) {
-    const playerMongoManager = new PlayerMongoDbManager();
     const playerService = new PlayerService(playerMongoManager);
     const rankingMongoDbManager = new RankingMongoDbManager(ranking);
     const rankingService = new RankingService(rankingMongoDbManager);
     return {
+      playerMongoManager: playerMongoManager,
       playerService: playerService,
       rankingService: rankingService
     }
@@ -36,7 +41,6 @@ const chooseDatabase = () => {
 }
 
 const services = chooseDatabase()
-
 const playerService = services.playerService;
 const rankingService = services.rankingService;
 

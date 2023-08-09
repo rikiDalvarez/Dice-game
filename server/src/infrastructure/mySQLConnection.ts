@@ -8,8 +8,12 @@ export const sequelize = new Sequelize(connectionString, {
   dialect: 'mysql',
   database: database,
 });
-
-
+/*
+export const sequelize = new Sequelize('db', 'root', 'password', {
+  host: '127.0.0.1',
+  dialect:  'mysql'
+})
+*/
 export const connectMySQLDatabase = async () => {
   try {
     await sequelize.sync({ force: false });

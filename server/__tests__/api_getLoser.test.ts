@@ -35,7 +35,7 @@ async function createUser(password:string, email:string, name:string, ) {
 }
 
 
-describe("REST GET WINNER TEST", () => {
+describe("REST GET LOSER TEST", () => {
  
   beforeEach(async () => {
    await PlayerDocument.deleteMany({})
@@ -61,7 +61,8 @@ describe("REST GET WINNER TEST", () => {
 const rankingList = response.body.ranking
      const loser = await getLoser()
   if (loser.length ==1 ){
-    expect(rankingList[2]).toStrictEqual(loser[2])
+   
+    expect(rankingList[2]).toStrictEqual(loser[0])
   }
 
 });

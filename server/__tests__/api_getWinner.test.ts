@@ -60,7 +60,7 @@ describe("REST GET WINNER TEST", () => {
     .get(`/api/ranking`)
 const rankingList = response.body.ranking
      const winner = await getWinner()
-  if (winner.length ==1 ){
+  if (winner.length === 1 ){
     expect(rankingList[0]).toStrictEqual(winner[0])
   }
 
@@ -68,11 +68,11 @@ const rankingList = response.body.ranking
 
 
   
-  afterAll((done) => { 
+  afterAll(async () => { 
     
-    dbConnection.close();
+    await dbConnection.close();
     server.close()
-done()
+
 });
 
 });
