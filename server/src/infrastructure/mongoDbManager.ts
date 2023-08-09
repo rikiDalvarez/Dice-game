@@ -25,7 +25,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       $or: [
         { email: player.email },
         {
-          $and: [{ name: { $ne: "anonim" } }, { name: player.name }],
+          $and: [{ name: { $ne: "unknown" } }, { name: player.name }],
         },
       ],
     });
