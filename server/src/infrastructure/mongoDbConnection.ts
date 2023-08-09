@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
+//import { PlayerType } from "../domain/Player";
+//import { playerSchema } from "./models/mongoDbModel";
 
-export async function connectDatabase(
+
+export function connectDatabase (
   url: string,
   dbName: string
-): Promise<void> {
+): mongoose.Connection{
   try {
     const options = {
       dbName,
     };
 
-    await mongoose.connect(url, options);
+    const connection =  mongoose.createConnection(url, options);
+    //const PModel = connection.model<PlayerType>("player",
+    //playerSchema)
     console.log("Connected to the database 🌱");
+    return connection
   } catch (error) {
     console.error("Error connecting to the database:", error);
     throw error;
   }
 }
 
-export function getDatabase(): mongoose.Connection {
-  return mongoose.connection;
-}
+

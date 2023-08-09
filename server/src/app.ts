@@ -1,12 +1,9 @@
 import "dotenv/config";
-import config from "../config/config";
 import express, { NextFunction, Request, Response } from "express";
 import router from "./routes";
-import { connectDatabase } from "./infrastructure/mongoDbConnection";
 import cors from "cors";
 import { errorHandler } from "./errorHandler";
 import { connectMySQLDatabase } from "./infrastructure/mySQLConnection";
-
 
 export const app = express();
 

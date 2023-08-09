@@ -40,7 +40,7 @@ const services = chooseDatabase()
 const playerService = services.playerService;
 const rankingService = services.rankingService;
 
-export const getPlayers = async (req: Request, res: Response) => {
+export const getPlayers = async (req: Request, res: Response, next: NextFunction) => {
   playerService
     .getPlayerList()
     .then((players) => {
@@ -49,13 +49,15 @@ export const getPlayers = async (req: Request, res: Response) => {
       }
     })
     .catch((err) => {
-      return res.status(404).json({ error: err.message, error_code: "GP001" });
+      next(err)
+      //in which scenario we will return this and what will be err.message???
+      //return res.status(404).json({ error: err.message, error_code: "GP001" });
     });
 };
 
 export const postPlayer = async (req: Request, res: Response, next: NextFunction) => {
   if (!("email" in req.body) || !("password" in req.body)) {
-    return res.status(409).json({ Bad_reqest: "email and password required" });
+    return res.status(400).json({ Bad_reqest: "email and password required" });
   }
   const { email, password, name } = req.body;
   const newUser = new User(email, password, name);
@@ -70,19 +72,17 @@ export const postPlayer = async (req: Request, res: Response, next: NextFunction
     });
 };
 
-export const playGame = async (req: Request, res: Response) => {
-  console.log(`req: ${req.body}`);
+export const addGame = async (req: Request, res: Response, next:NextFunction) => {
   const playerId = req.params.id;
-
   try {
     const responseFromDatabase = await playerService.addGame(playerId);
     return res.status(200).json({ game_saved: responseFromDatabase });
   } catch (err) {
-    return res.status(500).json({ error: err, error_code: "PG001" });
+    next(err)
   }
 };
 
-export const deleteAllGames = async (req: Request, res: Response) => {
+export const deleteAllGames = async (req: Request, res: Response, next:NextFunction) => {
   const playerId = req.params.id;
   try {
     const player = await playerService.findPlayer(playerId);
@@ -90,8 +90,7 @@ export const deleteAllGames = async (req: Request, res: Response) => {
     const responseFromDatabase = await playerService.deleteAllGames(player);
     return res.status(200).json({ games_deleted: responseFromDatabase });
   } catch (err) {
-    return res.status(500).json({ error: err, error_code: "DAG001" });
-  }
+next(err)  }
 };
 
 
@@ -107,13 +106,13 @@ export const changeName = async (req: Request, res: Response, next: NextFunction
 
 };
 
-export const getGames = async (req: Request, res: Response) => {
+export const getGames = async (req: Request, res: Response, next:NextFunction) => {
   const playerId = req.params.id;
   try {
     const games = await playerService.getGames(playerId);
     res.send(games);
   } catch (error) {
-    res.status(500).json({ error: "Error getting games", error_code: "GG001" });
+    next(error)
   }
 };
 
