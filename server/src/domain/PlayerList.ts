@@ -7,9 +7,9 @@ export type PlayerDetailsType = {
 };
 
 export class PlayerList {
-  readonly playerlist: Array<PlayerDetailsType>;
+  readonly playerList: Array<PlayerDetailsType>;
   constructor(players: Array<Player>) {
-    this.playerlist = this.preparePlayersDetails(players);
+    this.playerList = this.preparePlayersDetails(players);
   }
 
   public preparePlayersDetails(
@@ -22,7 +22,7 @@ export class PlayerList {
   }
 
   sortList() {
-    return this.playerlist.sort()
+    return this.playerList.sort()
   
 }
   

@@ -1,12 +1,13 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
-import { PlayerDocument } from "./models/mongoDbModel";
+//import { PlayerDocument } from "./models/mongoDbModel";
+import { PlayerDocument } from "../Server";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-
+//import { dbConnection } from "../app";
 export class PlayerMongoDbManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
     return {
@@ -20,6 +21,24 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
   async createPlayer(player: User): Promise<string> {
+    
+    const nameAlreadyInUse = await PlayerDocument.findOne({
+    $or: [
+    { email: player.email },
+    {
+      $and: [
+        { name: { $ne: "anonim" } },
+        { name: player.name }
+      ]
+    }
+  ],
+    });
+
+    
+    if (nameAlreadyInUse) {
+      throw new Error("NameEmailConflictError");
+    }
+
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -28,21 +47,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: 0,
       registrationDate: player.registrationDate,
     };
-
-    const nameAlreadyInUse = await PlayerDocument.findOne({
-    $or: [
-    { email: newPlayer.email },
-    {
-      $and: [
-        { name: { $ne: "unknown" } },
-        { name: newPlayer.name }
-      ]
-    }
-  ],
-    });
-    if (nameAlreadyInUse) {
-      throw new Error("name already in use, please choose another name");
-    }
     const playerFromDB = await PlayerDocument.create(newPlayer);
     return playerFromDB.id;
   }
@@ -68,6 +72,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
         players.id
       );
     });
+
     return new PlayerList(players);
   }
 
@@ -94,7 +99,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     // hacer PATCH, cambiar solo el game y no reemplazar el player
     // wouldn't it be better to use updateOne and only change games and successRate?
     // same with deleteAllGames()
-    console.log(player);
+    //--------> lets talk about this toogether
+
     const id = player.id;
     return PlayerDocument.replaceOne(
       { _id: { $eq: id } },
@@ -104,7 +110,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
         return response.modifiedCount === 1;
       })
       .catch((err) => {
-        throw new Error(`error: ${err} `);
+        throw err
+        //---> not sure but is it enough just throw err to pass it down???
+        //throw new Error(`error: ${err} `);
       });
   }
 
