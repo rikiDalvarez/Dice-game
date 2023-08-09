@@ -30,15 +30,12 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
 
     const nameAlreadyInUse = await PlayerDocument.findOne({
-    $or: [
-    { email: newPlayer.email },
-    {
-      $and: [
-        { name: { $ne: "unknown" } },
-        { name: newPlayer.name }
-      ]
-    }
-  ],
+      $or: [
+        { email: newPlayer.email },
+        {
+          $and: [{ name: { $ne: "unknown" } }, { name: newPlayer.name }],
+        },
+      ],
     });
     if (nameAlreadyInUse) {
       throw new Error("name already in use, please choose another name");
@@ -121,7 +118,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
         throw err;
       });
   }
-  
+
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
     return player ? player.games : [];
