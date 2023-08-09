@@ -5,6 +5,7 @@ import { User } from "../domain/User";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
+import { PlayerDocument } from "../Server";
 
 export class PlayerMySQLManager implements PlayerInterface {
     createPlayerDoc(player: Player) {

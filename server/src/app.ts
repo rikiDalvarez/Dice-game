@@ -9,17 +9,6 @@ import { config } from "dotenv";
 
 export const app = express();
 
-const mongoDB = true;
-
-const chooseDatabase = async () => {
-  if (mongoDB) {
-    connectDatabase(config.MONGO_URI, config.DATABASE);
-  }
-  connectMySQLDatabase()
-}
-
-chooseDatabase()
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
