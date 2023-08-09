@@ -19,14 +19,14 @@ describe("Player class test", () => {
     const wonGame = gameGenerator(3, 4);
     const lostGame = gameGenerator(1, 2);
 
-    const player1 = new Player("1@1.com", "password", [wonGame, lostGame], "name",);
+    const player1 = new Player("1@1.com", "password", [wonGame, lostGame], "name", '1');
     expect(player1.successRate).toEqual(50.0);
     const player2 = new Player("1@1.com","password", [
       wonGame,
       wonGame,
       wonGame,
       lostGame,
-    ],"name");
+    ],"name", '1');
     expect(player2.successRate).toEqual(75.0);
   });
 });

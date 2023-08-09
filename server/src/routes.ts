@@ -2,7 +2,7 @@ import express from "express";
 import {
   deleteAllGames,
   getPlayers,
-  playGame,
+  addGame,
   changeName,
   getGames,
   getRankingWithAverage,
@@ -23,7 +23,7 @@ router.put("/players/:id", changeName);
 router.get("/players", getPlayers);
 
 // POST /games/{id}: un jugador/a específic realitza una tirada.
-router.post("/games/:id", playGame);
+router.post("/games/:id", addGame);
 
 // DELETE /games/{id}: elimina les tirades del jugador/a.
 router.delete("/games/:id", deleteAllGames);
