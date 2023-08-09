@@ -4,7 +4,6 @@ import { PlayerSQL } from "./models/mySQLModels/PlayerMySQLModel";
 import { User } from "../domain/User";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
-import { PlayerDocument } from "./models/mongoDbModel";
 import { PlayerList } from "../domain/PlayerList";
 
 export class PlayerMySQLManager implements PlayerInterface {
