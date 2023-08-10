@@ -3,7 +3,7 @@ import { sequelize } from "../../mySQLConnection";
 import { PlayerType } from "../../../domain/Player";
 
 export const PlayerSQL = sequelize.define(
-  "Player",
+  "PlayerSQL",
   {
     id: {
       type: DataTypes.UUID,
@@ -37,3 +37,5 @@ export const PlayerSQL = sequelize.define(
   },
   {}
 );
+
+

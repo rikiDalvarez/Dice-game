@@ -11,7 +11,7 @@ export const sequelize = new Sequelize(connectionString, {
 });
 */
 export const createDatabase = async () => {
-  const connection = await createConnection(connectionString);
+  const connection = await createConnection(  {host: '127.0.0.1',user: 'root', password: 'password'});
   try {
     await connection.query('CREATE DATABASE IF NOT EXISTS `dice-game`');
     console.log('Database "dice-game" created successfully.');

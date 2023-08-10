@@ -2,9 +2,9 @@ import "dotenv/config";
 import config from "../config/config";
 import { app } from "./app";
 import { connectDatabase } from "./infrastructure/mongoDbConnection";
-import { Player, PlayerType } from "./domain/Player";
+import {PlayerType } from "./domain/Player";
 import { playerSchema } from "./infrastructure/models/mongoDbModel";
-import { connectMySQLDatabase, createDatabase } from "./infrastructure/mySQLConnection";
+import { connectMySQLDatabase, createDatabase, sequelize } from "./infrastructure/mySQLConnection";
 import { GameSQL } from "./infrastructure/models/mySQLModels/GameMySQLModel";
 import { PlayerSQL } from "./infrastructure/models/mySQLModels/PlayerMySQLModel";
 
@@ -30,8 +30,13 @@ const chooseDatabase = async () => {
   }
   await createDatabase();
   await connectMySQLDatabase()
-  await PlayerSQL.sync();
-  await GameSQL.sync();
+  PlayerSQL.hasMany(GameSQL, {
+ foreignKey: "player_id",
+ onDelete: 'CASCADE',
+ onUpdate: 'CASCADE'
+});
+
+await sequelize.sync()
 }
 
 chooseDatabase()
