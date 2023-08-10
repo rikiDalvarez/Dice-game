@@ -11,12 +11,40 @@ import { RankingService } from "./RankingService";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sanitizedConfig from "../../config/config";
+import {
+  PlayerMySQLManager,
+  RankingMySQLManager,
+} from "../infrastructure/mySQLManager";
 
 export const playerMongoManager = new PlayerMongoDbManager();
-const playerService = new PlayerService(playerMongoManager);
-const ranking = new Ranking();
-const rankingMongoDbManager = new RankingMongoDbManager(ranking);
-const rankingService = new RankingService(rankingMongoDbManager);
+
+const mongo = true;
+const chooseDatabase = () => {
+  const ranking = new Ranking();
+  if (mongo) {
+    const playerService = new PlayerService(playerMongoManager);
+    const rankingMongoDbManager = new RankingMongoDbManager(ranking);
+    const rankingService = new RankingService(rankingMongoDbManager);
+    return {
+      playerMongoManager: playerMongoManager,
+      playerService: playerService,
+      rankingService: rankingService,
+    };
+  } else {
+    const playerMySQLManager = new PlayerMySQLManager();
+    const playerService = new PlayerService(playerMySQLManager);
+    const rankingMySQLManager = new RankingMySQLManager(ranking);
+    const rankingService = new RankingService(rankingMySQLManager);
+    return {
+      playerService: playerService,
+      rankingService: rankingService,
+    };
+  }
+};
+
+const services = chooseDatabase();
+const playerService = services.playerService;
+const rankingService = services.rankingService;
 
 export const handleLogin = async (req: Request, res: Response) => {
   try {

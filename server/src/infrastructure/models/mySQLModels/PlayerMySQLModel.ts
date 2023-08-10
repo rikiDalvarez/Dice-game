@@ -1,12 +1,13 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
+// import { PlayerType } from "../../../domain/Player";
 
-export const Player = sequelize.define(
-  "Player",
+export const PlayerSQL = sequelize.define(
+  "PlayerSQL",
   {
-    player_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     name: {
@@ -16,6 +17,7 @@ export const Player = sequelize.define(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         is: /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/,
       },
@@ -29,12 +31,9 @@ export const Player = sequelize.define(
       allowNull: false,
     },
     successRate: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.DECIMAL,
       allowNull: false,
     },
   },
   {}
 );
-
-// This creates the table if it doesn't exist (and does nothing if it already exists)
-Player.sync();
