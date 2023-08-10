@@ -1,25 +1,14 @@
 import supertest from "supertest";
 import { server } from "../src/Server";
-
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { PlayerDocument } from "../src/Server";
 import { playerMongoManager } from "../src/application/controller";
 import { dbConnection } from "../src/Server";
-//startServer()
+import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { addGame } from "../auxilaryFunctionsForTests/addGame";
+
 const api = supertest(app);
-
-async function addGame(playerId: string) {
-  await api.post(`/api/games/${playerId}`);
-}
-
-async function createUser(password: string, email: string, name?: string) {
-  const response = await api
-    .post("/api/players/")
-    .send({ name: name, password: password, email: email });
-  console.log("response", response.body);
-  return response;
-}
 
 describe("API DELETE GAME TEST", () => {
   beforeEach(async () => {
@@ -28,13 +17,14 @@ describe("API DELETE GAME TEST", () => {
 
   test("Should delete all games:", async () => {
     const response = await createUser(
+      api,
       "password",
       "mafalda@gmail.com",
       "mafalda"
     );
     const playerId = response.body.Player_id;
-    await addGame(playerId);
-    await addGame(playerId);
+    await addGame(api, playerId);
+    await addGame(api, playerId);
     const player = await playerMongoManager.findPlayer(playerId);
     expect(player.games.length).toBe(2);
 

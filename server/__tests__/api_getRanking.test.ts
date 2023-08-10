@@ -5,38 +5,12 @@ import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import {  } from "../src/infrastructure/mongoDbConnection";
 import { PlayerDocument } from "../src/Server";
 import { dbConnection } from "../src/Server";
+import { addGame } from "../auxilaryFunctionsForTests/addGame";
+import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
+import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
+import { createUser } from "../auxilaryFunctionsForTests/createUser";
 
-//startServer()
 const api = supertest(app);
-
-
-async function addGame(playerId:string){
-  await api
-  .post(`/api/games/${playerId}`)
-}
-
-async function getWinner(){
-  const response= await api
-  .get(`/api/ranking/winner`)
-  return response.body
-}
-
-async function getLoser(){
-  const response =  await api
-  .get(`/api/ranking/loser`)
-  return response.body
-}
-
-
-
-
-async function createUser(password:string, email:string, name:string, ) {
-  const response = await api
-    .post("/api/players/")
-    .send({ name: name, password: password, email:email });
-    console.log('response', response.body)
-  return response
-}
 
 
 describe("REST GET RANKING TEST", () => {
@@ -48,24 +22,24 @@ describe("REST GET RANKING TEST", () => {
 
 
   test("Should return ranking list:", async () => {
-    const response1 = await createUser('password', 'mafalda@op.pl','mafalda')
+    const response1 = await createUser(api, 'password', 'mafalda@op.pl','mafalda')
     const playerId1 = response1.body.Player_id
-    const response2 = await createUser('password', 'ricky@op.pl','ricky')
+    const response2 = await createUser(api, 'password', 'ricky@op.pl','ricky')
     const playerId2 = response2.body.Player_id
-    const response3 = await createUser('password', 'milo@op.pl','milo')
+    const response3 = await createUser(api, 'password', 'milo@op.pl','milo')
     const playerId3 = response3.body.Player_id
     for (let i=0; i<50; i++){
-      await addGame(playerId1)
-      await addGame(playerId2)
-      await addGame(playerId3)
+      await addGame(api, playerId1)
+      await addGame(api, playerId2)
+      await addGame(api, playerId3)
     }
    
     const response =  await api
     .get(`/api/ranking`)
 const rankingList = response.body.ranking
 const average = response.body.average
-     const loser = await getLoser()
-     const winner = await getWinner()
+     const loser = await getLoser(api)
+     const winner = await getWinner(api)
   if (winner.length ==1 ){
     expect(rankingList[0]).toStrictEqual(winner[0])
   }

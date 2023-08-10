@@ -5,8 +5,10 @@ import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { dbConnection } from "../src/Server";
 import { playerMongoManager } from "../src/application/controller";
 import { PlayerDocument } from "../src/Server";
+import { createUser } from "../auxilaryFunctionsForTests/createUser";
 const api = supertest(app);
 
+/*
 async function createUser(password: string, email: string, name?: string) {
   const response = await api
     .post("/api/players/")
@@ -14,6 +16,7 @@ async function createUser(password: string, email: string, name?: string) {
   console.log("response", response.body);
   return response;
 }
+*/
 
 describe("API ADD GAME TEST", () => {
   beforeEach(async () => {
@@ -22,6 +25,7 @@ describe("API ADD GAME TEST", () => {
 
   test("Should add games to player:", async () => {
     const response = await createUser(
+      api,
       "password",
       "mafalda@gmail.com",
       "mafalda"
