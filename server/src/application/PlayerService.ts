@@ -20,8 +20,12 @@ export class PlayerService {
     return this.playerInterface.changeName(playerId, newName);
   }
 
-  findPlayer(playerEmail: string): Promise<Player> {
-    return this.playerInterface.findPlayer(playerEmail);
+  findPlayer(playerID: string): Promise<Player> {
+    return this.playerInterface.findPlayer(playerID);
+  }
+
+  findPlayerByEmail(playerEmail: string): Promise<Player> {
+    return this.playerInterface.findPlayerByEmail(playerEmail);
   }
 
   async addGame(playerId: string): Promise<boolean> {

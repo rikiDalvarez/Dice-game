@@ -8,10 +8,16 @@ import {
   getRankingWithAverage,
   getWinner,
   getLoser,
+  handleLogin,
 } from "./application/controller";
 import { postPlayer } from "./application/controller";
+import auth from "./infrastructure/middleware/auth";
 
 const router = express.Router();
+
+router.get("/protected", auth, getPlayers);
+
+router.post("/login", handleLogin);
 
 // POST /players: crea un jugador/a.
 router.post("/players", postPlayer);

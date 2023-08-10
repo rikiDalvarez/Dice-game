@@ -7,11 +7,11 @@ export class RankingService {
     this.rankingInterface = rankingInterface;
   }
 
-  getRankingWithAverage():Promise<Ranking>{
-    return this.rankingInterface.getRankingWithAverage()
+  getRankingWithAverage(): Promise<Ranking> {
+    return this.rankingInterface.getRankingWithAverage();
   }
 
-/*
+  /*
   getPlayersRanking(): Promise<Ranking> {
     return this.rankingInterface.getPlayersRanking();
   }
