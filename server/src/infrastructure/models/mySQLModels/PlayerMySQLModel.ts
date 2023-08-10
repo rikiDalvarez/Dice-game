@@ -37,6 +37,3 @@ export const PlayerSQL = sequelize.define(
   },
   {}
 );
-
-// This creates the table if it doesn't exist (and does nothing if it already exists)
-// PlayerSQL.sync()

@@ -2,7 +2,7 @@ import { Sequelize, DataTypes } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
 import { PlayerSQL } from "./PlayerMySQLModel";
 
-export const Game = sequelize.define(
+export const GameSQL = sequelize.define(
   "Game",
   {
     id: {
@@ -11,7 +11,7 @@ export const Game = sequelize.define(
       primaryKey: true,
     },
     player_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     gameWin: {
@@ -30,12 +30,10 @@ export const Game = sequelize.define(
   {}
 );
 
-// This creates the table if it doesn't exist (and does nothing if it already exists)
-// Game.sync()
-
-// foreing keys
-
-PlayerSQL.hasMany(Game, {
+// Define the association between PlayerSQL and GameSQL
+PlayerSQL.hasMany(GameSQL, {
   foreignKey: "player_id",
 });
-Game.belongsTo(PlayerSQL);
+GameSQL.belongsTo(PlayerSQL, {
+  foreignKey: "player_id",
+});
