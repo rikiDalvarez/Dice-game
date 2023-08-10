@@ -24,12 +24,32 @@ describe("API POST PLAYER TEST", () => {
     
   });
 
-  test("Should create user:", async () => {
-    await api
+  test("Should create player:", async () => {
+   
+    const response = await api
       .post("/api/players")
       .send({password: "first password", email: "mafalda@op.pl", name: "first user" })
       .expect(201)
       .expect("Content-Type", /application\/json/);
+    const playerId = response.body.Player_id
+    console.log(playerId)
+    const playerDetails = await PlayerDocument.findById(playerId);
+    console.log(playerDetails)
+
+    if (playerDetails) {
+      console.log(playerDetails)
+      const { name, email, password, games, _id, successRate } = playerDetails;
+      expect(_id.toString()).toBe(playerId)
+      expect(name).toBe('first user')
+      expect(password).toBe('first password')
+      expect(email).toBe('mafalda@op.pl')
+      expect(successRate).toBe(0)
+      expect(games.length).toBe(0)
+    }
+      
+   
+
+
   });
 
   test("Should create more than one anonim user:", async () => {
@@ -40,7 +60,22 @@ describe("API POST PLAYER TEST", () => {
       .get("/api/players")
       .expect(200)
       .expect("Content-Type", /application\/json/);
-      expect(response.body.playerList.length).toBe(2)
+      const listLength = response.body.playerList.length
+      expect(listLength).toBe(2)
+  });
+
+  test("Should create anonim user:", async () => {
+    await createUser("first password", "first.anonim@op.pl" )
+
+    const response = await api
+      .get("/api/players")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+      const listLength = response.body.playerList.length
+      const name = response.body.playerList[0].name
+      expect(listLength).toBe(1)
+      expect(name).toBe('unknown')
+
   });
 
   test("two anonim should have different emails:", async () => {
