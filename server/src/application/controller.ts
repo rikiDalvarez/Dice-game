@@ -13,8 +13,6 @@ import { PlayerMySQLManager, RankingMySQLManager } from "../infrastructure/mySQL
 
 export const playerMongoManager = new PlayerMongoDbManager();
 
-
-
 const mongo = true;
 const chooseDatabase = () => {
   const ranking = new Ranking();
