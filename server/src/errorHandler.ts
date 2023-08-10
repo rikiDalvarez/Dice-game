@@ -20,6 +20,8 @@ export const errorHandler = (
         .send({ Error: "name or email already exists" });
     case "NameConflictError":
       return response.status(409).send({ Error: "name already exists" });
+    case "NoToken":
+      return response.status(401).json({ Error: "Authentication required" });
     case "NotFoundError":
       return response.status(404).send({ Error: "Resource not exists" });
     default:

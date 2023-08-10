@@ -15,9 +15,8 @@ const authenticate = (
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).json({ error: "Authentication required" });
+    throw new Error ('NoToken')
   }
-
   try {
     const decodedToken = jwt.verify(token, sanitizedConfig.JWT_SECRET) as {
       userId: string;
@@ -25,7 +24,7 @@ const authenticate = (
     req.userId = decodedToken.userId;
     next();
   } catch (error) {
-    res.status(401).json({ error: "Authentication failed" });
+    next(error);
   }
 };
 
