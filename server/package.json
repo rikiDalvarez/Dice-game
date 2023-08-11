@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
+
 
   "scripts": {
     "start": "node ./dist/src/Server.js",
@@ -10,8 +10,8 @@
     "build": "npx tsc",
     "eslint": "npx eslint .",
     "dev": "ts-node ./src/Server.ts",
-    "devmongo": "cross-env NODE_ENV=mongo ts-node ./src/Server.js",
-    "devsql": "cross-env NODE_ENV=sql ts-node ./src/Server.js",
+    "devmongo": "cross-env NODE_ENV=mongo ts-node ./src/Server.ts",
+    "devsql": "cross-env NODE_ENV=sql ts-node ./src/Server.ts",
     "dev_mongo": "cross-env NODE_ENV=mongo node ./dist/src/Server.js",
     "dev_sql": "cross-env NODE_ENV=sql node ./dist/src/Server.js",
     "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --detectOpenHandles"
