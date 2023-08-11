@@ -8,7 +8,8 @@ export interface PlayerInterface {
   changeName(playerId: string, newName: string): Promise<Partial<Player>>;
   addGame(playerDetails: Player): Promise<boolean>;
   deleteAllGames(playerDetails: Player): Promise<boolean>;
-  findPlayer(playerEmail: string): Promise<Player>;
+  findPlayer(playerId: string): Promise<Player>;
+  findPlayerByEmail(playerEmail: string): Promise<Player>;
   getPlayerList(): Promise<PlayerList>;
   getGames(playerId: string): Promise<Array<GameType>>;
 }

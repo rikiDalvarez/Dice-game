@@ -1,6 +1,6 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
-import { PlayerSQL } from "./PlayerMySQLModel";
+// import { PlayerSQL } from "./PlayerMySQLModel";
 
 export const GameSQL = sequelize.define(
   "GameSQL",
@@ -10,7 +10,7 @@ export const GameSQL = sequelize.define(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-   
+
     gameWin: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -29,8 +29,8 @@ export const GameSQL = sequelize.define(
 
 // Define the association between PlayerSQL and GameSQL
 //PlayerSQL.hasMany(GameSQL, {
- // foreignKey: "player_id",
+// foreignKey: "player_id",
 //});
 //GameSQL.belongsTo(PlayerSQL, {
-  //foreignKey: "player_id",
+//foreignKey: "player_id",
 //});

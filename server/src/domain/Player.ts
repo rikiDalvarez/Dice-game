@@ -8,13 +8,13 @@ export type GameType = {
 };
 
 export type PlayerType = {
-  _id:string,
-  successRate:number,
-  games: Array<GameType>,
-  email: string,
-  name:string,
-  password:string
-}
+  _id: string;
+  successRate: number;
+  games: Array<GameType>;
+  email: string;
+  name: string;
+  password: string;
+};
 
 export class Player extends User {
   readonly id: string;
@@ -34,10 +34,9 @@ export class Player extends User {
   }
 
   public addNewGame(game: Game) {
-    console.log(game)
+    console.log(game);
     this._games.push(game);
     this._successRate = this.calcSuccesRate();
-   
   }
   public get successRate(): number {
     return this._successRate;

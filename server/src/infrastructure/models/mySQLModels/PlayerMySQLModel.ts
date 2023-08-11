@@ -1,6 +1,6 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
-import { PlayerType } from "../../../domain/Player";
+// import { PlayerType } from "../../../domain/Player";
 
 export const PlayerSQL = sequelize.define(
   "PlayerSQL",
@@ -37,5 +37,3 @@ export const PlayerSQL = sequelize.define(
   },
   {}
 );
-
-

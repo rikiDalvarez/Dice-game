@@ -1,7 +1,9 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
+//mongodbResponse type
+import { UpdateResult } from "mongodb";
 //import { PlayerDocument } from "./models/mongoDbModel";
-import { PlayerDocument } from "../Server";
+import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
@@ -55,16 +57,25 @@ export class PlayerMongoDbManager implements PlayerInterface {
       throw new Error("Player not found");
     }
   }
+  async findPlayerByEmail(playerEmail: string): Promise<Player> {
+    const playerDetails = await PlayerDocument.findOne({ email: playerEmail });
+    if (playerDetails) {
+      const { name, email, password, games, id } = playerDetails;
+      return new Player(email, password, games, name, id);
+    } else {
+      throw new Error("Player not found");
+    }
+  }
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerDocument.find({});
-    const players = playersFromDB.map((players) => {
+    const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
         players.email,
         players.password,
         players.games,
         players.name,
-        players.id
+        players._id
       );
     });
 
@@ -101,7 +112,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
-      .then((response) => {
+      .then((response: UpdateResult) => {
         return response.modifiedCount === 1;
       })
       .catch((err) => {

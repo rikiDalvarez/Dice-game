@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { GameType} from "../../domain/Player";
+import { GameType } from "../../domain/Player";
+
 export const playerSchema = new mongoose.Schema({
   name: String,
   email: {
@@ -28,7 +29,3 @@ export const playerSchema = new mongoose.Schema({
     required: true,
   },
 });
-
-
-
-

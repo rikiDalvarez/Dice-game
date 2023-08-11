@@ -2,9 +2,9 @@ import supertest from "supertest";
 import { server } from "../src/Server";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { dbConnection } from "../src/Server";
+import { mongoDbConnection as dbConnection } from "../src/Server";
 import { playerMongoManager } from "../src/application/controller";
-import { PlayerDocument } from "../src/Server";
+import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 const api = supertest(app);
 
