@@ -89,14 +89,14 @@ export class PlayerMySQLManager implements PlayerInterface {
         const playerDetails = await PlayerSQL.findByPk(playerID);
         // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
         if (playerDetails) {
-            const { name, email, Games, password, id } = playerDetails;
-            return new Player(email, password, Games, name, id);
+            const { name, email, password, id } = playerDetails;
+            return new Player(email, password, [], name, id);
         } else {
             throw new Error("Player not found");
         }
     }
 
-    // I THINK JOIN IS WORKING WELL
+    // I THINK JOIN IS WORKING WELL, althought we really do not need it
     async getPlayerList(): Promise<PlayerList> {
         const playersFromDB = await PlayerSQL.findAll({ include: GameSQL });
         const players = playersFromDB.map((players) => {
@@ -112,7 +112,6 @@ export class PlayerMySQLManager implements PlayerInterface {
         return new PlayerList(players);
     }
 
-    // fake function to test
     async changeName(
         playerId: string,
         newName: string
@@ -121,13 +120,14 @@ export class PlayerMySQLManager implements PlayerInterface {
         if (nameAlreadyInUse) {
             throw new Error("NameConflictError");
         }
-        const player = await PlayerDocument.findByIdAndUpdate(playerId, {
-            name: newName,
+        const updatePlayer = await PlayerSQL.update({ name: newName }, {
+            where: { id: playerId }
         });
-        if (!player) {
+        const updatedPlayer = await PlayerSQL.findByPk(playerId)
+        if (!updatedPlayer) {
             throw new Error("NotFoundError");
         }
-        const returnPlayer = { id: player.id, name: newName };
+        const returnPlayer = { id: updatedPlayer.id, name: newName };
         return returnPlayer;
     }
 
