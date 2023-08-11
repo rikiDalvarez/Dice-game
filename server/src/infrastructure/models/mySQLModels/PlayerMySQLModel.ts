@@ -1,7 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
 import { IPlayerSQL, IPlayerSQLInput } from "../../../domain/Player";
+import { GameSQL } from "./GameMySQLModel";
 // import { PlayerType } from "../../../domain/Player";
+
 
 
 export class PlayerSQL extends Model<IPlayerSQL, IPlayerSQLInput> implements IPlayerSQL {
@@ -11,7 +13,9 @@ export class PlayerSQL extends Model<IPlayerSQL, IPlayerSQLInput> implements IPl
   public password!: string
   public registrationDate!: Date
   public successRate!: number
+  public Games!: Array<GameSQL>
 }
+
 PlayerSQL.init({
   // MAYBE IS BETTER TO NAME IT _id THEN IT IS LIKE IN MONGODB
   id: {
@@ -28,7 +32,7 @@ PlayerSQL.init({
     allowNull: false,
     unique: true,
     validate: {
-      is: /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+      isEmail: true
     },
   },
   password: {
