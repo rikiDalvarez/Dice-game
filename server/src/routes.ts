@@ -23,27 +23,27 @@ router.post("/login", handleLogin);
 router.post("/players", postPlayer);
 
 // PUT /players/{id}: modifica el nom del jugador/a.
-router.put("/players/:id", changeName);
+router.put("/players/:id", auth, changeName);
 
 // GET /players: retorna el llistat de tots els jugadors/es del sistema amb el seu percentatge d’èxits.
-router.get("/players",  getPlayers);
+router.get("/players", auth, getPlayers);
 
 // POST /games/{id}: un jugador/a específic realitza una tirada.
-router.post("/games/:id", addGame);
+router.post("/games/:id", auth, addGame);
 
 // DELETE /games/{id}: elimina les tirades del jugador/a.
-router.delete("/games/:id", deleteAllGames);
+router.delete("/games/:id", auth, deleteAllGames);
 
 // GET /games/{id}: retorna el llistat de jugades per un jugador/a.
-router.get("/games/:id", getGames);
+router.get("/games/:id", auth, getGames);
 
 // GET /ranking: retorna un ranking de jugadors/es ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors/es.
-router.get("/ranking", getRankingWithAverage);
+router.get("/ranking", auth, getRankingWithAverage);
 
 // GET /ranking/loser: retorna el jugador/a amb pitjor percentatge d’èxit.
-router.get("/ranking/loser", getLoser);
+router.get("/ranking/loser", auth, getLoser);
 
 // GET /ranking/winner: retorna el jugador/a amb millor percentatge d’èxit.
-router.get("/ranking/winner", getWinner);
+router.get("/ranking/winner", auth, getWinner);
 
 export default router;

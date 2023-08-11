@@ -3,8 +3,8 @@ import { server } from "../src/Server";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { mongoDbConnection as dbConnection } from "../src/Server";
-import { playerMongoManager } from "../src/application/controller";
 import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
+import { playerMongoManager } from "../src/application/controller";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 const api = supertest(app);
 

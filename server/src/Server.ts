@@ -17,28 +17,23 @@ export const server = app.listen(config.PORT, () => {
   console.log(`Server is listening on port ${config.PORT}! 🍄 `);
 });
 
-
 //const isMongo = config.NODE_ENV === 'mongo'
-const isMongo = false
+const isMongo = false;
 
-export let mongoDbConnection:Connection;
+export let mongoDbConnection: Connection;
 export let mongoPlayerDocument: Model<PlayerType>;
 
 const chooseDatabase = async () => {
   if (isMongo) {
-    mongoDbConnection = connectDatabase(
-      config.MONGO_URI,
-      config.DATABASE
-    );
-     mongoPlayerDocument = mongoDbConnection.model<PlayerType>(
+    mongoDbConnection = connectDatabase(config.MONGO_URI, config.DATABASE);
+    mongoPlayerDocument = mongoDbConnection.model<PlayerType>(
       "Player",
       playerSchema
     );
 
-    return {mongoDbConnection, mongoPlayerDocument}
-    
+    return { mongoDbConnection, mongoPlayerDocument };
   }
-  
+
   await createDatabase();
   await connectMySQLDatabase();
   PlayerSQL.hasMany(GameSQL, {
@@ -49,7 +44,5 @@ const chooseDatabase = async () => {
 
   await sequelize.sync();
 };
-
-
 
 chooseDatabase();
