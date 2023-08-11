@@ -7,6 +7,7 @@ export class GameSQL extends Model<IGameSQL, IGameSQLInput> implements IGameSQL 
   public id!: string
   // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
   //public player_id!: string
+  
   public gameWin!: boolean
   public dice1Value!: number
   public dice2Value!: number

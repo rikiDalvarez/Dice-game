@@ -8,6 +8,7 @@ import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op } from "sequelize";
+import { Game } from "../domain/Game";
 
 export class PlayerMySQLManager implements PlayerInterface {
     createPlayerDoc(player: Player) {
@@ -21,7 +22,18 @@ export class PlayerMySQLManager implements PlayerInterface {
             successRate: player.successRate,
         };
     }
+    createGameDoc(games: Array<GameType>, id:string) {
 
+        return games.map((game)=>{
+            return {
+                gameWin: game.gameWin,
+                dice1Value: game.dice1Value,
+                dice2Value: game.dice2Value,
+                player_id: id
+            }; 
+        })
+       
+    }
     // I WAS THINKING MAYBE WE CAN CREATE A FUNCTION THAT MAKES A PLAYER/GAME JOIN, NOT SURE WE NEED IT
     // async createPlayerGameJoin(): Promise<Player> {
     //     const playerGamesJoin = await PlayerSQL.findAll({
@@ -135,19 +147,19 @@ export class PlayerMySQLManager implements PlayerInterface {
 
     // NO ESTÁ BIEN HAY QUE CAMBIARLO
     async addGame(player: Player): Promise<boolean> {
-      // console.log(player);
         const id = player.id;
-        const createPlayer = this.createPlayerDoc(player)
-        console.log(createPlayer)
-        await GameSQL.update(createPlayer.games[0], {
-            where: { id: id }
-        });
-        const updatedPlayer = await PlayerSQL.findByPk(id);
-        if (!updatedPlayer) {
-            throw new Error("NotFoundError");
-        }
-        return true;
-    }
+        //const createPlayer = this.createPlayerDoc(player)
+       // console.log(createPlayer)
+       const gameDoc = this.createGameDoc(player.games, id)
+       const response = await GameSQL.bulkCreate(gameDoc);
+
+        //const updatedPlayer = await PlayerSQL.findByPk(id);
+        //if (!updatedPlayer) {
+           // throw new Error("NotFoundError");
+        //}
+       
+    return true;
+}
 
     // fake function to test
     async deleteAllGames(player: Player): Promise < boolean > {
