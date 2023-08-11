@@ -3,15 +3,24 @@ import { server } from "../src/Server";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import {} from "../src/infrastructure/mongoDbConnection";
-import { mongoDbConnection as dbConnection } from "../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import {sequelize } from "../src/infrastructure/mySQLConnection";
 
 const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {
+ 
+
+  
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    PlayerSQL.destroy({
+      where: {}
+    })
+    GameSQL.destroy({
+      where: {}
+    })
   });
 
   test("Should return list of players", async () => {
@@ -30,19 +39,19 @@ describe("REST GET PLAYERS TEST", () => {
       .get(`/api/players`)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-
-    console.log(response.body.playerList[0].name);
+    console.log(response.body)
     expect(response.body.playerList.length).toBe(4);
     for (let i = 0; i < 10; i++) {
-      const value = response.body.playerList[0].name;
-      expect(value).toBe(names[0]);
+     
+      const value = [response.body.playerList[0].name, response.body.playerList[1].name, response.body.playerList[2].name,response.body.playerList[3].name]
+      console.log(names.sort())
+      expect(value).toEqual(names);
     }
   });
 
- 
 
   afterAll((done) => {
-    dbConnection.close();
+    sequelize.close();
     server.close();
     done();
   });

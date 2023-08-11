@@ -4,24 +4,12 @@ import bcrypt from "bcrypt";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { connectMySQLDatabase, createDatabase, sequelize } from "../src/infrastructure/mySQLConnection";
+import { sequelize } from "../src/infrastructure/mySQLConnection";
 import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
 const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
-beforeAll(async()=>{
-  await createDatabase();
-  await connectMySQLDatabase();
-  PlayerSQL.hasMany(GameSQL, {
-    foreignKey: "player_id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  });
-
-  await sequelize.sync();
-})
-
   beforeEach(async () => {
     PlayerSQL.destroy({
       where: {}

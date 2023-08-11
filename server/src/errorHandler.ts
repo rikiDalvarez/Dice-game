@@ -9,8 +9,8 @@ export const errorHandler = (
     return next(error);
   }
 
-  if (error.name === "ValidationError") {
-    return response.status(400).send({ Error: "Wrong email format" });
+  if (error.name === "ValidationError" || error.name === "SequelizeValidationError") {
+    return response.status(400).send({ Error: error.message });
   }
 
   switch (error.message) {
