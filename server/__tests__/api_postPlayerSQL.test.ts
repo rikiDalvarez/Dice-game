@@ -57,7 +57,7 @@ beforeAll(async()=>{
       expect(passwordMatch).toBeTruthy;
       expect(email).toBe("mafalda@op.pl");
     expect(Number(successRate)).toBe(0);
-      expect(playerDetails.GameSQLs.length).toBe(0);
+      expect(playerDetails.Games.length).toBe(0);
     }
 
     
