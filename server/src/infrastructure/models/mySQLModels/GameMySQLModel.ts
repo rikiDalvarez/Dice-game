@@ -1,8 +1,19 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
+import { IGameSQL, IGameSQLInput } from "../../../domain/Game";
 // import { PlayerSQL } from "./PlayerMySQLModel";
 
-export const GameSQL = sequelize.define(
+export class GameSQL extends Model<IGameSQL, IGameSQLInput> implements IGameSQL {
+  public id!: string
+  // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
+  public player_id!: string
+  public gameWin!: boolean
+  public dice1Value!: number
+  public dice2Value!: number
+
+}
+
+sequelize.define(
   "GameSQL",
   {
     id: {
@@ -10,7 +21,11 @@ export const GameSQL = sequelize.define(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-
+    // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
+    player_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     gameWin: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

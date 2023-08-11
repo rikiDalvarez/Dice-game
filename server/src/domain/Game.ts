@@ -1,4 +1,16 @@
+import { Optional } from "sequelize";
 import { Dice } from "./Dice";
+
+export interface IGameSQL {
+  id: string;
+  gameWin: boolean;
+  dice1Value: number;
+  dice2Value: number;
+}
+
+export interface IGameSQLInput extends Optional<IGameSQL, "id"> {}
+export interface IGameSQLOutput extends Required<IGameSQL> {}
+
 export class Game {
   readonly gameWin: boolean;
   readonly dice1Value: number;
