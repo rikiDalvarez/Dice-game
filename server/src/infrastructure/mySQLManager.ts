@@ -6,7 +6,6 @@ import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
-import { Game } from "../domain/Game";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op } from "sequelize";
 
@@ -36,8 +35,8 @@ export class PlayerMySQLManager implements PlayerInterface {
     async findPlayerByEmail(playerEmail: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findOne({ where: { email: playerEmail } });
         if (playerDetails) {
-            const { name, email, password, id } = playerDetails;
-            return new Player(email, password, [], name, id);
+            const { name, email, Games, password, id } = playerDetails;
+            return new Player(email, password, Games, name, id);
         } else {
             throw new Error("Player not found");
         }
@@ -45,14 +44,32 @@ export class PlayerMySQLManager implements PlayerInterface {
 
     async createPlayer(player: User): Promise<string> {
 
-        const nameAlreadyInUse = await PlayerSQL.findOne({ where: {[Op.or]: [{email: player.email}, {[Op.and]: [{name:{[Op.not]:'unknown'}}, {name: player.name}]}]  }} )
-        
-          if (nameAlreadyInUse) {
+        const nameAlreadyInUse = await PlayerSQL.findOne({
+            where: {
+                [Op.or]: [
+                    {
+                        email: player.email
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                name:
+                                {
+                                    [Op.not]: 'unknown'
+                                }
+                            },
+                            {
+                                name: player.name
+                            }
+                        ]
+                    }
+                ]
+            }
+        })
+
+        if (nameAlreadyInUse) {
             throw new Error("NameEmailConflictError");
-          }
-
-
-
+        }
 
         const newPlayer = {
             email: player.email,
@@ -63,36 +80,35 @@ export class PlayerMySQLManager implements PlayerInterface {
             registrationDate: player.registrationDate,
         };
 
-        const playerFromDB= await PlayerSQL.create(newPlayer);
+        const playerFromDB = await PlayerSQL.create(newPlayer);
         console.log('email', playerFromDB)
         return playerFromDB.id;
     }
-    // aqui no tiene la propiedad games pero creo que no hace falta porque no ha jugado ningún game
-
     // needs to be fixed
     async findPlayer(playerID: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findByPk(playerID);
         // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
         if (playerDetails) {
-            const { name, email, password, id } = playerDetails;
-            return new Player(email, password, [], name, id);
+            const { name, email, Games, password, id } = playerDetails;
+            return new Player(email, password, Games, name, id);
         } else {
             throw new Error("Player not found");
         }
     }
 
-    // needs to be fixed
+    // I THINK JOIN IS WORKING WELL
     async getPlayerList(): Promise<PlayerList> {
-        const playersFromDB = await PlayerSQL.findAll({});
+        const playersFromDB = await PlayerSQL.findAll({ include: GameSQL });
         const players = playersFromDB.map((players) => {
             return new Player(
                 players.email,
                 players.password,
-                [],
+                players.Games,
                 players.name,
                 players.id
             );
         });
+        console.log(playersFromDB)
         return new PlayerList(players);
     }
 
@@ -101,7 +117,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         playerId: string,
         newName: string
     ): Promise<Partial<Player>> {
-        const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
+        const nameAlreadyInUse = await PlayerSQL.findOne({ where: { name: newName } });
         if (nameAlreadyInUse) {
             throw new Error("NameConflictError");
         }
