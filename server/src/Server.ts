@@ -11,29 +11,32 @@ import {
 } from "./infrastructure/mySQLConnection";
 import { GameSQL } from "./infrastructure/models/mySQLModels/GameMySQLModel";
 import { PlayerSQL } from "./infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { Connection, Model } from "mongoose";
 
 export const server = app.listen(config.PORT, () => {
   console.log(`Server is listening on port ${config.PORT}! 🍄 `);
 });
 
-export const mongoDbConnection = connectDatabase(
-  config.MONGO_URI,
-  config.DATABASE
-);
 
-export const mongoPlayerDocument = mongoDbConnection.model<PlayerType>(
-  "Player",
-  playerSchema
-);
-
-// it needs to be fixed the code I think it won't work to choose database
-
-const mongoDB = true;
+const isMongo = config.NODE_ENV === 'mongo'
+export let mongoDbConnection:Connection;
+export let mongoPlayerDocument: Model<PlayerType>;
 
 const chooseDatabase = async () => {
-  if (mongoDB) {
-    return mongoDbConnection;
+  if (isMongo) {
+    mongoDbConnection = connectDatabase(
+      config.MONGO_URI,
+      config.DATABASE
+    );
+     mongoPlayerDocument = mongoDbConnection.model<PlayerType>(
+      "Player",
+      playerSchema
+    );
+
+    return {mongoDbConnection, mongoPlayerDocument}
+    
   }
+  
   await createDatabase();
   await connectMySQLDatabase();
   PlayerSQL.hasMany(GameSQL, {
@@ -44,5 +47,7 @@ const chooseDatabase = async () => {
 
   await sequelize.sync();
 };
+
+
 
 chooseDatabase();

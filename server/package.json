@@ -8,7 +8,12 @@
     "test": "npx jest --silent --runInBand --detectOpenHandles",
     "build": "npx tsc",
     "eslint": "npx eslint .",
-    "dev": "ts-node ./src/Server.ts"
+    "dev": "ts-node ./src/Server.ts",
+    "devmongo": "cross-env NODE_ENV=mongo ts-node ./src/Server.js",
+    "devsql": "cross-env NODE_ENV=sql ts-node ./src/Server.js",
+    "dev_mongo": "cross-env NODE_ENV=mongo node ./dist/src/Server.js",
+    "dev_sql": "cross-env NODE_ENV=sql node ./dist/src/Server.js",
+    "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +29,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.46.0",
     "jest-mock": "^29.6.2",
     "supertest": "^6.3.3",

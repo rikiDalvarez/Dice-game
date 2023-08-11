@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { server } from "../src/Server";
-
+import bcrypt from "bcrypt";
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { mongoDbConnection as dbConnection } from "../src/Server";
@@ -31,9 +31,10 @@ describe("API POST PLAYER TEST", () => {
     if (playerDetails) {
       console.log(playerDetails);
       const { name, email, password, games, _id, successRate } = playerDetails;
+      const passwordMatch = bcrypt.compare('first password', password)
       expect(_id.toString()).toBe(playerId);
       expect(name).toBe("first user");
-      expect(password).toBe("first password");
+      expect(passwordMatch).toBeTruthy;
       expect(email).toBe("mafalda@op.pl");
       expect(successRate).toBe(0);
       expect(games.length).toBe(0);
