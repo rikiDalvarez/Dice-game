@@ -6,7 +6,7 @@ import { IGameSQL, IGameSQLInput } from "../../../domain/Game";
 export class GameSQL extends Model<IGameSQL, IGameSQLInput> implements IGameSQL {
   public id!: string
   // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
-  public player_id!: string
+  //public player_id!: string
   public gameWin!: boolean
   public dice1Value!: number
   public dice2Value!: number
@@ -21,10 +21,10 @@ GameSQL.init(
       primaryKey: true,
     },
     // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
-    player_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
+    //player_id: {
+    //  type: DataTypes.UUID,
+     // allowNull: false,
+   // },
     gameWin: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
