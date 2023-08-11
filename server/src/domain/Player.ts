@@ -51,9 +51,7 @@ export class Player extends User {
     this._games.push(game);
     this._successRate = this.calcSuccesRate();
   }
-  public get successRate(): number {
-    return this._successRate;
-  }
+  
   public deleteGames() {
     this._games = [];
     this._successRate = this.calcSuccesRate();
@@ -68,6 +66,10 @@ export class Player extends User {
   //public setId(id: string) {
   // this.id = id;
   //}
+
+  public get successRate() {
+    return this._successRate;
+  }
 
   public get games() {
     return this._games;
