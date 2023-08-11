@@ -84,10 +84,9 @@ export class PlayerMySQLManager implements PlayerInterface {
         console.log('email', playerFromDB)
         return playerFromDB.id;
     }
-    // needs to be fixed
+    // maybe we don't need it with SQL
     async findPlayer(playerID: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findByPk(playerID);
-        // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
         if (playerDetails) {
             const { name, email, password, id } = playerDetails;
             return new Player(email, password, [], name, id);
@@ -120,7 +119,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         if (nameAlreadyInUse) {
             throw new Error("NameConflictError");
         }
-        const updatePlayer = await PlayerSQL.update({ name: newName }, {
+        await PlayerSQL.update({ name: newName }, {
             where: { id: playerId }
         });
         const updatedPlayer = await PlayerSQL.findByPk(playerId)
@@ -131,42 +130,43 @@ export class PlayerMySQLManager implements PlayerInterface {
         return returnPlayer;
     }
 
-    // fake function to test
+    // NO ESTÁ BIEN HAY QUE CAMBIARLO
     async addGame(player: Player): Promise<boolean> {
-        console.log(player);
+      // console.log(player);
         const id = player.id;
-        return PlayerDocument.replaceOne(
-            { _id: { $eq: id } },
-            this.createPlayerDoc(player)
-        )
-            .then((response) => {
-                return response.modifiedCount === 1;
-            })
-            .catch((err) => {
-                throw new Error(`error: ${err} `);
-            });
+        const createPlayer = this.createPlayerDoc(player)
+        console.log(createPlayer)
+        await GameSQL.update(createPlayer.games[0], {
+            where: { id: id }
+        });
+        const updatedPlayer = await PlayerSQL.findByPk(id);
+        if (!updatedPlayer) {
+            throw new Error("NotFoundError");
+        }
+        return true;
     }
 
     // fake function to test
-    async deleteAllGames(player: Player): Promise<boolean> {
-        const id = player.id;
-        return PlayerDocument.replaceOne(
-            { _id: { $eq: id } },
-            this.createPlayerDoc(player)
-        )
-            .then((response) => {
-                return response.modifiedCount === 1;
-            })
-            .catch((err) => {
-                throw err;
-            });
-    }
+    async deleteAllGames(player: Player): Promise < boolean > {
+    const id = player.id;
+
+    return PlayerDocument.replaceOne(
+        { _id: { $eq: id } },
+        this.createPlayerDoc(player)
+    )
+        .then((response) => {
+            return response.modifiedCount === 1;
+        })
+        .catch((err) => {
+            throw err;
+        });
+}
 
     // fake function to test
-    async getGames(playerId: string): Promise<GameType[]> {
-        const player = await PlayerDocument.findById(playerId);
-        return player ? player.games : [];
-    }
+    async getGames(playerId: string): Promise < GameType[] > {
+    const player = await PlayerDocument.findById(playerId);
+    return player ? player.games : [];
+}
 }
 
 export class RankingMySQLManager implements RankingInterface {
