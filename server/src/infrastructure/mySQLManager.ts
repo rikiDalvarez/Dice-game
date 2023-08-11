@@ -33,13 +33,13 @@ export class PlayerMySQLManager implements PlayerInterface {
     // }
 
     async findPlayerByEmail(playerEmail: string): Promise<Player> {
-        return new Player(
-            playerEmail,
-            "dummyPlayer",
-            [],
-            "dummyPlayer",
-            "dummyPlayer"
-        );
+        const playerDetails = await PlayerSQL.findOne({ where: { email: playerEmail } });
+        if (playerDetails) {
+            const { name, email, password, id } = playerDetails;
+            return new Player(email, password, [], name, id);
+        } else {
+            throw new Error("Player not found");
+        }
     }
 
     async createPlayer(player: User): Promise<string> {

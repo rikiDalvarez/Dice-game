@@ -18,7 +18,7 @@ import {
 
 export const playerMongoManager = new PlayerMongoDbManager();
 
-const mongo = true;
+const mongo = false;
 const chooseDatabase = () => {
   const ranking = new Ranking();
   if (mongo) {
