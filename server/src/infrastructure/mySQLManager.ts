@@ -8,6 +8,7 @@ import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { Game } from "../domain/Game";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
+import { Op } from "sequelize";
 
 export class PlayerMySQLManager implements PlayerInterface {
     createPlayerDoc(player: Player) {
@@ -43,15 +44,27 @@ export class PlayerMySQLManager implements PlayerInterface {
     }
 
     async createPlayer(player: User): Promise<string> {
+
+        const nameAlreadyInUse = await PlayerSQL.findOne({ where: {[Op.or]: [{email: player.email}, {[Op.and]: [{name:{[Op.not]:'unknown'}}, {name: player.name}]}]  }} )
+        
+          if (nameAlreadyInUse) {
+            throw new Error("NameEmailConflictError");
+          }
+
+
+
+
         const newPlayer = {
             email: player.email,
             password: player.password,
             name: player.name,
             successRate: 0,
+            games: [],
             registrationDate: player.registrationDate,
         };
 
-        const playerFromDB = await PlayerSQL.create(newPlayer);
+        const playerFromDB= await PlayerSQL.create(newPlayer);
+        console.log('email', playerFromDB)
         return playerFromDB.id;
     }
     // aqui no tiene la propiedad games pero creo que no hace falta porque no ha jugado ningún game

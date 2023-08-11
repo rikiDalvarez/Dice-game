@@ -14,7 +14,9 @@
     "devsql": "cross-env NODE_ENV=sql ts-node ./src/Server.ts",
     "dev_mongo": "cross-env NODE_ENV=mongo node ./dist/src/Server.js",
     "dev_sql": "cross-env NODE_ENV=sql node ./dist/src/Server.js",
-    "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --detectOpenHandles"
+    "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --detectOpenHandles",
+    "test_sql": "cross-env NODE_ENV=sql npx jest --silent --runInBand --detectOpenHandles"
+
   },
   "keywords": [],
   "author": "",

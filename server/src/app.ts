@@ -15,10 +15,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/players", postPlayer);
-app.post("/login", handleLogin);
+//app.post("/players", postPlayer);
+//app.post("/login", handleLogin);
 
-app.use("/api", auth, router);
+app.use("/api", router);
 
 app.use(
   (error: Error, _request: Request, response: Response, next: NextFunction) => {

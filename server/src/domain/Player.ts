@@ -23,7 +23,7 @@ export interface IPlayerSQL {
   email: string;
   password: string;
   registrationDate: Date;
-  successRate: number;  
+  successRate: number;
 }
 
 export interface IPlayerSQLInput extends Optional<IPlayerSQL, 'id' > {}
