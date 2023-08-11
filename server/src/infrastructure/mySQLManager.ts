@@ -35,8 +35,8 @@ export class PlayerMySQLManager implements PlayerInterface {
     async findPlayerByEmail(playerEmail: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findOne({ where: { email: playerEmail } });
         if (playerDetails) {
-            const { name, email, Games, password, id } = playerDetails;
-            return new Player(email, password, Games, name, id);
+            const { name, email, password, id } = playerDetails;
+            return new Player(email, password, [], name, id);
         } else {
             throw new Error("Player not found");
         }
