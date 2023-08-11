@@ -44,5 +44,8 @@ PlayerSQL.init({
     allowNull: false,
   }
 },
-  { sequelize }
+  {
+    sequelize,
+    modelName: 'Player'
+  }
 );
