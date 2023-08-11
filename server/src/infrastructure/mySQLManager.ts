@@ -79,14 +79,17 @@ export class PlayerMySQLManager implements PlayerInterface {
             games: [],
             registrationDate: player.registrationDate,
         };
-
+        
         const playerFromDB = await PlayerSQL.create(newPlayer);
         console.log('email', playerFromDB)
         return playerFromDB.id;
     }
     // maybe we don't need it with SQL
     async findPlayer(playerID: string): Promise<Player> {
-        const playerDetails = await PlayerSQL.findByPk(playerID);
+        const playerDetails = await PlayerSQL.findByPk(playerID, { include: GameSQL });
+        // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
+        
+        
         if (playerDetails) {
             const { name, email, password, id } = playerDetails;
             return new Player(email, password, [], name, id);
