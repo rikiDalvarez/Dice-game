@@ -42,7 +42,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         );
     }
 
-    async createPlayer(player: IPlayerSQLInput): Promise<string> {
+    async createPlayer(player: User): Promise<string> {
         const newPlayer = {
             email: player.email,
             password: player.password,
@@ -54,27 +54,28 @@ export class PlayerMySQLManager implements PlayerInterface {
         const playerFromDB = await PlayerSQL.create(newPlayer);
         return playerFromDB.id;
     }
+    // aqui no tiene la propiedad games pero creo que no hace falta porque no ha jugado ningún game
 
-    // fake function to test
+    // needs to be fixed
     async findPlayer(playerID: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findByPk(playerID);
-        // needs to make join with games
+        // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
         if (playerDetails) {
             const { name, email, password, id } = playerDetails;
-            return new Player(email, password, name, id);
+            return new Player(email, password, [], name, id);
         } else {
             throw new Error("Player not found");
         }
     }
 
-    // fake function to test
+    // needs to be fixed
     async getPlayerList(): Promise<PlayerList> {
         const playersFromDB = await PlayerSQL.findAll({});
         const players = playersFromDB.map((players) => {
             return new Player(
                 players.email,
                 players.password,
-                players.games,
+                [],
                 players.name,
                 players.id
             );

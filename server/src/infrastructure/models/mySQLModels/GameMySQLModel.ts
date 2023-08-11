@@ -13,8 +13,7 @@ export class GameSQL extends Model<IGameSQL, IGameSQLInput> implements IGameSQL 
 
 }
 
-sequelize.define(
-  "GameSQL",
+GameSQL.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -39,7 +38,7 @@ sequelize.define(
       allowNull: false,
     },
   },
-  {}
+  { sequelize }
 );
 
 // Define the association between PlayerSQL and GameSQL

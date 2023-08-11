@@ -3,6 +3,7 @@ import { Dice } from "./Dice";
 
 export interface IGameSQL {
   id: string;
+  player_id: string;
   gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
