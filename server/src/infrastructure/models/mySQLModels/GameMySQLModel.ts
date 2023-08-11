@@ -38,7 +38,10 @@ GameSQL.init(
       allowNull: false,
     },
   },
-  { sequelize }
+  {
+    sequelize,
+    modelName: 'Game'
+  }
 );
 
 // Define the association between PlayerSQL and GameSQL

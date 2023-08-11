@@ -47,7 +47,10 @@ PlayerSQL.init({
     allowNull: false,
   }
 },
-  { sequelize }
+  {
+    sequelize,
+    modelName: 'Player'
+  }
 );
 */
 
@@ -93,5 +96,8 @@ PlayerSQL.init({
     allowNull: false,
   }
 },
-  { sequelize }
+  {
+    sequelize,
+    modelName: 'Player'
+  }
 );
