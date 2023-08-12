@@ -7,29 +7,34 @@ import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
 import { playerMongoManager } from "../src/application/controller";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
 describe("API DELETE GAME TEST", () => {
+  let token: string;
+  let playerId: string;
   beforeEach(async () => {
     await PlayerDocument.deleteMany({});
-  });
-
-  test("Should delete all games:", async () => {
     const response = await createUser(
       api,
       "password",
-      "mafalda@gmail.com",
+      "mafalda@op.pl",
       "mafalda"
     );
-    const playerId = response.body.Player_id;
-    await addGame(api, playerId);
-    await addGame(api, playerId);
+    playerId = response.body.Player_id;
+    token = await loginUser(api, "mafalda@op.pl", "password");
+  });
+
+  test("Should delete all games:", async () => {
+    await addGame(api, token, playerId);
+    await addGame(api, token, playerId);
     const player = await playerMongoManager.findPlayer(playerId);
     expect(player.games.length).toBe(2);
 
     await api
       .delete(`/api/games/${playerId}`)
+      .set("Authorization", token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 

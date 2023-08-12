@@ -9,6 +9,7 @@ import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
 import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
@@ -25,21 +26,29 @@ describe("REST GET RANKING TEST", () => {
       "mafalda"
     );
     const playerId1 = response1.body.Player_id;
+    const tokenPlayer1 = await loginUser(api, "mafalda@op.pl", "password");
+
     const response2 = await createUser(api, "password", "ricky@op.pl", "ricky");
     const playerId2 = response2.body.Player_id;
+    const tokenPlayer2 = await loginUser(api, "ricky@op.pl", "password");
+
     const response3 = await createUser(api, "password", "milo@op.pl", "milo");
     const playerId3 = response3.body.Player_id;
-    for (let i = 0; i < 50; i++) {
-      await addGame(api, playerId1);
-      await addGame(api, playerId2);
-      await addGame(api, playerId3);
-    }
+    const tokenPlayer3 = await loginUser(api, "milo@op.pl", "password");
 
-    const response = await api.get(`/api/ranking`);
+    for (let i = 0; i < 50; i++) {
+      await addGame(api, tokenPlayer1, playerId1);
+      await addGame(api, tokenPlayer2, playerId2);
+      await addGame(api, tokenPlayer3, playerId3);
+    }
+    
+
+
+    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const average = response.body.average;
-    const loser = await getLoser(api);
-    const winner = await getWinner(api);
+    const loser = await getLoser(api, tokenPlayer1);
+    const winner = await getWinner(api, tokenPlayer1);
     if (winner.length == 1) {
       expect(rankingList[0]).toStrictEqual(winner[0]);
     }

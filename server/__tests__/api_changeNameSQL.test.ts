@@ -6,9 +6,11 @@ import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
 import { sequelize } from "../src/infrastructure/mySQLConnection";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
-
+let token:string;
+let playerId:string
 describe("REST CHANGE NAME TEST", () => {
   beforeEach(async () => {
     PlayerSQL.destroy({
@@ -17,24 +19,31 @@ describe("REST CHANGE NAME TEST", () => {
     GameSQL.destroy({
       where: {}
     })
-  });
 
-  test("Should change name:", async () => {
+
     const response = await createUser(
       api,
       "password",
       "mafalda@op.pl",
       "mafalda"
     );
-    const userId = response.body.Player_id;
+playerId = response.body.Player_id
+    token = await loginUser(api, 'mafalda@op.pl', 'password' )
+
+ ;
+  });
+
+  test("Should change name:", async () => {
+   
     const newName = "riki";
     const responseAfterChange = await api
-      .put(`/api//players/${userId}`)
+      .put(`/api//players/${playerId}`)
+      .set('Authorization', token)
       .send({ name: newName })
       .expect(200)
       .expect("Content-Type", /application\/json/);
     expect(responseAfterChange).toBeTruthy;
-    const user = await PlayerSQL.findByPk(userId);
+    const user = await PlayerSQL.findByPk(playerId);
     if (user) {
       expect(user.name).toBe(newName);
     }
@@ -45,9 +54,10 @@ describe("REST CHANGE NAME TEST", () => {
 
     const response = await createUser(api, "password", "riki@op.pl", "riki");
     const userId = response.body.Player_id;
-    const newName = "mafalda";
+    const newName = "riki";
     await api
       .put(`/api//players/${userId}`)
+      .set('Authorization', token)
       .send({ name: newName })
       .expect(409)
       .expect("Content-Type", /application\/json/);
@@ -60,6 +70,7 @@ describe("REST CHANGE NAME TEST", () => {
     const newName = "Jose";
     await api
       .put(`/api/players/${nonExistingUserId}`)
+      .set('Authorization', token)
       .send({ name: newName })
       .expect(404)
       .expect("Content-Type", /application\/json/);

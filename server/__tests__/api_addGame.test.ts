@@ -6,38 +6,38 @@ import { mongoDbConnection as dbConnection } from "../src/Server";
 import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
 import { playerMongoManager } from "../src/application/controller";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 const api = supertest(app);
 
-/*
-async function createUser(password: string, email: string, name?: string) {
-  const response = await api
-    .post("/api/players/")
-    .send({ name: name, password: password, email: email });
-  console.log("response", response.body);
-  return response;
-}
-*/
+
 
 describe("API ADD GAME TEST", () => {
+  let token:string;
+  let playerId:string
   beforeEach(async () => {
     await PlayerDocument.deleteMany({});
-  });
-
-  test("Should add games to player:", async () => {
     const response = await createUser(
       api,
       "password",
-      "mafalda@gmail.com",
+      "mafalda@op.pl",
       "mafalda"
     );
-    const playerId = response.body.Player_id;
+playerId = response.body.Player_id
+    token = await loginUser(api, 'mafalda@op.pl', 'password' )
 
+  });
+  
+
+  test("Should add games to player:", async () => {
+    
     await api
       .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
     await api
       .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
     const playerAfterSecondGame = await playerMongoManager.findPlayer(playerId);

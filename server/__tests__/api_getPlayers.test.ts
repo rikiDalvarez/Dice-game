@@ -6,6 +6,7 @@ import {} from "../src/infrastructure/mongoDbConnection";
 import { mongoDbConnection as dbConnection } from "../src/Server";
 import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
@@ -16,7 +17,7 @@ describe("REST GET PLAYERS TEST", () => {
 
   test("Should return list of players", async () => {
     const names = ["mafalda", "ricky", "belinda", "kitten"];
-    const paswords = ["pass1", "pass2", "pass3", "pass4"];
+    const passwords = ["pass1", "pass2", "pass3", "pass4"];
     const emails = [
       "mafalda@gmail.com",
       "ricky@gmail.com",
@@ -24,10 +25,14 @@ describe("REST GET PLAYERS TEST", () => {
       "hello@gmail.com",
     ];
     for (let i = 0; i < 10; i++) {
-      await createUser(api, paswords[i], emails[i], names[i]);
+      await createUser(api, passwords[i], emails[i], names[i]);
     }
+    
+    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0])
+
     const response = await api
       .get(`/api/players`)
+      .set("Authorization", tokenPlayer1)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
