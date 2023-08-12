@@ -39,13 +39,20 @@ playerId = response.body.Player_id
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-    await api
+      await api
       .post(`/api/games/${playerId}`)
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-    const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: GameSQL });
-    expect(playerAfterSecondGame?.Games.length).toBe(2);
+      await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    
+    const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
+    const games = await playerAfterSecondGame?.getGames()
+    expect(games?.length).toBe(3);
   });
 
   afterAll((done) => {

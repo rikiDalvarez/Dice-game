@@ -38,11 +38,14 @@ const chooseDatabase = async () => {
   await connectMySQLDatabase();
   PlayerSQL.hasMany(GameSQL, {
     foreignKey: "player_id",
+    as: 'games',
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   });
 
+
   await sequelize.sync();
 };
+
 
 chooseDatabase();

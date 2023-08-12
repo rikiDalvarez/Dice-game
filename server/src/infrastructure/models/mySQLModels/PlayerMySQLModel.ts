@@ -1,19 +1,29 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, HasManySetAssociationsMixin, Model, Optional, Association, NonAttribute, HasManyGetAssociationsMixin} from "sequelize";
 import { sequelize } from "../../mySQLConnection";
-import { IPlayerSQL, IPlayerSQLInput } from "../../../domain/Player";
+import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
+import { IGameSQL, IGameSQLSinId } from "../../../domain/Game";
+
 // import { PlayerType } from "../../../domain/Player";
 
 
+type PlayerSQLCreationAttributes = Optional<IPlayerSQL, 'id'>;
 
-export class PlayerSQL extends Model<IPlayerSQL, IPlayerSQLInput> implements IPlayerSQL {
-  public id!: string
-  public name!: string
-  public email!: string
-  public password!: string
-  public registrationDate!: Date
-  public successRate!: number
-  public Games!: Array<GameSQL>
+export class PlayerSQL extends Model<IPlayerSQL, PlayerSQLCreationAttributes> {
+
+  declare id: string
+ declare name: string
+  declare email: string
+  declare password: string
+  declare registrationDate: Date
+  declare successRate: number
+//declare Games: Array<GameSQL>
+  declare getGames: HasManyGetAssociationsMixin<GameSQL>
+  declare games?: NonAttribute<GameSQL[]>
+  declare static associations: {
+    games: Association<PlayerSQL, GameSQL>;
+  };
+  
 }
 
 PlayerSQL.init({
@@ -50,6 +60,7 @@ PlayerSQL.init({
 },
   {
     sequelize,
-    modelName: 'Player'
+    modelName: 'Player',
+    tableName: 'players'
   }
 );

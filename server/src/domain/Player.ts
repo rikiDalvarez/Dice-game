@@ -1,4 +1,3 @@
-import { Optional } from "sequelize";
 import { Game } from "./Game";
 import { User } from "./User";
 
@@ -18,7 +17,7 @@ export type PlayerType = {
 };
 
 export interface IPlayerSQL {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   password: string;
@@ -26,8 +25,8 @@ export interface IPlayerSQL {
   successRate: number;
 }
 
-export interface IPlayerSQLInput extends Optional<IPlayerSQL, 'id' > {}
-export interface IPlayerSQLOutput extends Required<IPlayerSQL> {}
+//export interface IPlayerSQLInput extends Optional<IPlayerSQL, 'id' > {}
+//export interface IPlayerSQLOutput extends Required<IPlayerSQL> {}
 
 export class Player extends User {
   readonly id: string;

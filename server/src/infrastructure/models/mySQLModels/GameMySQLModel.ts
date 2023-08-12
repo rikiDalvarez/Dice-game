@@ -1,17 +1,17 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, NonAttribute } from "sequelize";
 import { sequelize } from "../../mySQLConnection";
-import { IGameSQL, IGameSQLInput } from "../../../domain/Game";
+import { IGameSQL} from "../../../domain/Game";
+import { PlayerSQL } from "./PlayerMySQLModel";
 // import { PlayerSQL } from "./PlayerMySQLModel";
 
-export class GameSQL extends Model<IGameSQL, IGameSQLInput> implements IGameSQL {
-  public id!: string
+export class GameSQL extends Model<IGameSQL>{
+  declare id?: string
   // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
   //public player_id!: string
-  
-  public gameWin!: boolean
-  public dice1Value!: number
-  public dice2Value!: number
-
+  declare gameWin: boolean
+  declare dice1Value: number
+  declare dice2Value: number
+  declare player_id:string
 }
 
 GameSQL.init(
@@ -41,7 +41,8 @@ GameSQL.init(
   },
   {
     sequelize,
-    modelName: 'Game'
+    modelName: 'Game',
+    tableName: 'games'
   }
 );
 

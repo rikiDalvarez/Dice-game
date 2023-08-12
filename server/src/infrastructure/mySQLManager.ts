@@ -1,5 +1,5 @@
 import { PlayerInterface } from "../application/PlayerInterface";
-import { GameType, IPlayerSQLInput, IPlayerSQLOutput, Player, PlayerType } from "../domain/Player";
+import { GameType,Player, PlayerType } from "../domain/Player";
 import { PlayerSQL } from "./models/mySQLModels/PlayerMySQLModel";
 import { User } from "../domain/User";
 import { RankingInterface } from "../application/RankingInterface";
@@ -8,7 +8,8 @@ import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op } from "sequelize";
-import { Game } from "../domain/Game";
+import { IGameSQL, IGameSQLSinId } from "../domain/Game";
+import { sequelize } from "./mySQLConnection";
 
 export class PlayerMySQLManager implements PlayerInterface {
     createPlayerDoc(player: Player) {
@@ -34,6 +35,10 @@ export class PlayerMySQLManager implements PlayerInterface {
         })
        
     }
+
+    
+
+   
     // I WAS THINKING MAYBE WE CAN CREATE A FUNCTION THAT MAKES A PLAYER/GAME JOIN, NOT SURE WE NEED IT
     // async createPlayerGameJoin(): Promise<Player> {
     //     const playerGamesJoin = await PlayerSQL.findAll({
@@ -98,13 +103,12 @@ export class PlayerMySQLManager implements PlayerInterface {
     }
     // maybe we don't need it with SQL
     async findPlayer(playerID: string): Promise<Player> {
-        const playerDetails = await PlayerSQL.findByPk(playerID, { include: GameSQL });
-        // en playerDetails tenemos no tenemos Games, hay que hacer JOIN, tengo que mirar bien como hacerlo
-        
+        const playerDetails = await PlayerSQL.findByPk(playerID, { include: [PlayerSQL.associations.games] });
         
         if (playerDetails) {
             const { name, email, password, id } = playerDetails;
-            return new Player(email, password, [], name, id);
+            const games = await playerDetails.getGames()
+            return new Player(email, password, games, name, id);
         } else {
             throw new Error("Player not found");
         }
@@ -113,15 +117,15 @@ export class PlayerMySQLManager implements PlayerInterface {
     // I THINK JOIN IS WORKING WELL, althought we really do not need it
     async getPlayerList(): Promise<PlayerList> {
         const playersFromDB = await PlayerSQL.findAll({ include: GameSQL });
-        const players = playersFromDB.map((players) => {
+        const players = await Promise.all(playersFromDB.map(async (players) => {
             return new Player(
                 players.email,
                 players.password,
-                players.Games,
+                await players.getGames(),
                 players.name,
                 players.id
             );
-        });
+        }))
         console.log(playersFromDB)
         return new PlayerList(players);
     }
@@ -145,19 +149,14 @@ export class PlayerMySQLManager implements PlayerInterface {
         return returnPlayer;
     }
 
-    // NO ESTÁ BIEN HAY QUE CAMBIARLO
     async addGame(player: Player): Promise<boolean> {
         const id = player.id;
-        //const createPlayer = this.createPlayerDoc(player)
-       // console.log(createPlayer)
        const gameDoc = this.createGameDoc(player.games, id)
-       const response = await GameSQL.bulkCreate(gameDoc);
-
-        //const updatedPlayer = await PlayerSQL.findByPk(id);
-        //if (!updatedPlayer) {
-           // throw new Error("NotFoundError");
-        //}
-       
+       GameSQL.destroy({
+        where: {player_id: id}
+      })
+       await GameSQL.bulkCreate(gameDoc);
+      
     return true;
 }
 
