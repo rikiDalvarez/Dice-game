@@ -8,8 +8,6 @@ import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op } from "sequelize";
-import { IGameSQL, IGameSQLSinId } from "../domain/Game";
-import { sequelize } from "./mySQLConnection";
 
 export class PlayerMySQLManager implements PlayerInterface {
     createPlayerDoc(player: Player) {

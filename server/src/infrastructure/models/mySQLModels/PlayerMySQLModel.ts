@@ -2,14 +2,13 @@ import { DataTypes, HasManySetAssociationsMixin, Model, Optional, Association, N
 import { sequelize } from "../../mySQLConnection";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
-import { IGameSQL, IGameSQLSinId } from "../../../domain/Game";
 
 // import { PlayerType } from "../../../domain/Player";
 
 
-type PlayerSQLCreationAttributes = Optional<IPlayerSQL, 'id'>;
+//type PlayerSQLCreationAttributes = Optional<IPlayerSQL, 'id'>;
 
-export class PlayerSQL extends Model<IPlayerSQL, PlayerSQLCreationAttributes> {
+export class PlayerSQL extends Model<IPlayerSQL> {
 
   declare id: string
  declare name: string
@@ -17,12 +16,9 @@ export class PlayerSQL extends Model<IPlayerSQL, PlayerSQLCreationAttributes> {
   declare password: string
   declare registrationDate: Date
   declare successRate: number
-//declare Games: Array<GameSQL>
   declare getGames: HasManyGetAssociationsMixin<GameSQL>
   declare games?: NonAttribute<GameSQL[]>
-  declare static associations: {
-    games: Association<PlayerSQL, GameSQL>;
-  };
+ 
   
 }
 

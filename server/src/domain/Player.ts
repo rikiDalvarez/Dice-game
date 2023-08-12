@@ -25,8 +25,6 @@ export interface IPlayerSQL {
   successRate: number;
 }
 
-//export interface IPlayerSQLInput extends Optional<IPlayerSQL, 'id' > {}
-//export interface IPlayerSQLOutput extends Required<IPlayerSQL> {}
 
 export class Player extends User {
   readonly id: string;

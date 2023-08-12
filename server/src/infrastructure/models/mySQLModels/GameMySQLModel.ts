@@ -1,13 +1,10 @@
-import { DataTypes, Model, NonAttribute } from "sequelize";
+import { DataTypes, Model} from "sequelize";
 import { sequelize } from "../../mySQLConnection";
 import { IGameSQL} from "../../../domain/Game";
-import { PlayerSQL } from "./PlayerMySQLModel";
 // import { PlayerSQL } from "./PlayerMySQLModel";
 
 export class GameSQL extends Model<IGameSQL>{
   declare id?: string
-  // we need to add player_id, otherwise we cannot connected to the PlayerSQL.id
-  //public player_id!: string
   declare gameWin: boolean
   declare dice1Value: number
   declare dice2Value: number

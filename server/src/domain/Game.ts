@@ -8,16 +8,6 @@ export interface IGameSQL {
   player_id?: string
 }
 
-export interface IGameSQLSinId {
-  //player_id: string;
-  gameWin: boolean;
-  dice1Value: number;
-  dice2Value: number;
-}
-
-
-//export interface IGameSQLInput extends Optional<IGameSQL, "id"> {}
-//export interface IGameSQLOutput extends Required<IGameSQL> {}
 
 export class Game {
   readonly gameWin: boolean;

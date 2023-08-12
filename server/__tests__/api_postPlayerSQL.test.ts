@@ -32,10 +32,8 @@ describe("API POST PLAYER TEST", () => {
     const playerId = response.body.Player_id;
     console.log(playerId);
     const playerDetails = await PlayerSQL.findOne({
-      where: { id: playerId }, 
-      include: GameSQL, 
+      where: { id: playerId }
     });
-    console.log('gaaaaa', playerDetails?.toJSON());
 
     if (playerDetails) {
       const { name, email, password, id, successRate } = playerDetails;
@@ -45,7 +43,6 @@ describe("API POST PLAYER TEST", () => {
       expect(passwordMatch).toBeTruthy;
       expect(email).toBe("mafalda@op.pl");
     expect(Number(successRate)).toBe(0);
-      //expect(playerDetails.Games.length).toBe(0);
     }
 
     
@@ -59,7 +56,9 @@ describe("API POST PLAYER TEST", () => {
       .get("/api/players")
       .expect(200)
       .expect("Content-Type", /application\/json/);
-    const listLength = response.body.playerList.length;
+
+    console.log('AAAAAAAAAAAAA', response.body)
+    const listLength = response.body
     expect(listLength).toBe(2);
   });
 
