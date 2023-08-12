@@ -7,6 +7,7 @@ function App() {
 
   return (
     <div className="App">
+      <h1 className="text-5xl font-bold underline">Dice-Game</h1>
       <Login />
     </div>
   )
