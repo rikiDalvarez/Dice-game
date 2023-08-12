@@ -29,7 +29,7 @@ router.put("/players/:id", auth, changeName);
 router.get("/players", auth, getPlayers);
 
 // POST /games/{id}: un jugador/a específic realitza una tirada.
-router.post("/games/:id", addGame);
+router.post("/games/:id", auth, addGame);
 
 // DELETE /games/{id}: elimina les tirades del jugador/a.
 router.delete("/games/:id", auth, deleteAllGames);

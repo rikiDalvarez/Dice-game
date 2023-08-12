@@ -17,11 +17,10 @@ import {
 } from "../infrastructure/mySQLManager";
 
 export const playerMongoManager = new PlayerMongoDbManager();
-
-const mongo = false;
+const isMongo = true;
 const chooseDatabase = () => {
   const ranking = new Ranking();
-  if (mongo) {
+  if (isMongo) {
     const playerService = new PlayerService(playerMongoManager);
     const rankingMongoDbManager = new RankingMongoDbManager(ranking);
     const rankingService = new RankingService(rankingMongoDbManager);
