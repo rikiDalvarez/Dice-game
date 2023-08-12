@@ -15,6 +15,7 @@ import {
   PlayerMySQLManager,
   RankingMySQLManager,
 } from "../infrastructure/mySQLManager";
+// import { loginHandler } from "../infrastructure/loginHandler";
 
 export const playerMongoManager = new PlayerMongoDbManager();
 
@@ -55,6 +56,8 @@ export const handleLogin = async (
     const { email, password } = req.body;
 
     const player = await playerService.findPlayerByEmail(email);
+
+    // const token = await loginHandler(player, password);
 
     if (!player) {
       return res.status(401).json({ error: "no player found with this email" });
