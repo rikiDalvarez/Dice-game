@@ -17,10 +17,11 @@ import {
 } from "../infrastructure/mySQLManager";
 
 export const playerMongoManager = new PlayerMongoDbManager();
-const isMongo = true;
+
+const mongo = true;
 const chooseDatabase = () => {
   const ranking = new Ranking();
-  if (isMongo) {
+  if (mongo) {
     const playerService = new PlayerService(playerMongoManager);
     const rankingMongoDbManager = new RankingMongoDbManager(ranking);
     const rankingService = new RankingService(rankingMongoDbManager);
@@ -45,7 +46,11 @@ const services = chooseDatabase();
 const playerService = services.playerService;
 const rankingService = services.rankingService;
 
-export const handleLogin = async (req: Request, res: Response) => {
+export const handleLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = req.body;
 
@@ -65,7 +70,7 @@ export const handleLogin = async (req: Request, res: Response) => {
     });
     res.json({ token });
   } catch (error) {
-    res.send(error);
+    next(error);
   }
 };
 

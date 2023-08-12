@@ -9,11 +9,18 @@ export const errorHandler = (
     return next(error);
   }
 
-  if (error.name === "ValidationError" || error.name === "SequelizeValidationError") {
+  if (
+    error.name === "ValidationError" ||
+    error.name === "SequelizeValidationError"
+  ) {
     return response.status(400).send({ Error: error.message });
   }
 
   switch (error.message) {
+    case "incorrectEmailOrPassword":
+      return response
+        .status(401)
+        .send({ Error: "Incorrect email or password" });
     case "NameEmailConflictError":
       return response
         .status(409)
