@@ -11,8 +11,6 @@ const Login: React.FC = () => {
 		setFormData(prevData => ({
 			...prevData, [name]: value
 		}))
-		console.log(formData)
-
 	}
 
 	const handleSubmit = async (event: React.FormEvent) => {
@@ -28,6 +26,10 @@ const Login: React.FC = () => {
 			})
 
 			if (response.ok) {
+				const data = await response.json();
+				const token = data.token;
+
+				localStorage.setItem("token", token)
 				console.log("login successful")
 			} else {
 				console.error("login failed")
