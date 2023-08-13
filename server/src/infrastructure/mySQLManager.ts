@@ -157,7 +157,7 @@ export class PlayerMySQLManager implements PlayerInterface {
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
     const gameDoc = this.createGameDoc(player.games, id);
-    GameSQL.destroy({
+    await GameSQL.destroy({
       where: { player_id: id },
     });
     await GameSQL.bulkCreate(gameDoc);

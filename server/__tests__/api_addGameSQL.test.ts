@@ -11,8 +11,8 @@ const api = supertest(app);
 
 
 describe("API ADD GAME TEST", () => {
-  let token:string;
-  let playerId:string
+  let token: string;
+  let playerId: string
   beforeEach(async () => {
     await PlayerSQL.destroy({
       where: {}
@@ -27,48 +27,58 @@ describe("API ADD GAME TEST", () => {
       "mafalda@op.pl",
       "mafalda"
     );
-playerId = response.body.Player_id
-    token = await loginUser(api, 'mafalda@op.pl', 'password' )
+    playerId = response.body.Player_id
+    token = await loginUser(api, 'mafalda@op.pl', 'password')
 
   });
 
   test("Should add games to player:", async () => {
-   
+
     await api
       .post(`/api/games/${playerId}`)
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-      await api
+    await api
       .post(`/api/games/${playerId}`)
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-      await api
+    await api
       .post(`/api/games/${playerId}`)
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-    
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);   
+
     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
     const games = await playerAfterSecondGame?.getGames()
-    expect(games?.length).toBe(3);
+    expect(games?.length).toBe(5);
   });
 
   test("Should actualize succesRate:", async () => {
-    for (let i=0; i<10; i++ ){
+    for (let i = 0; i < 10; i++) {
       await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+        .post(`/api/games/${playerId}`)
+        .set('Authorization', token)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
     }
-    
+
   });
 
   afterAll(async () => {
     await sequelize.close();
     server.close();
-   
+
   });
 });
