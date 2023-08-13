@@ -18,7 +18,7 @@ export const server = app.listen(config.PORT, () => {
 });
 
 //const isMongo = config.NODE_ENV === 'mongo'
-export const isMongo = false;
+export const isMongo = true;
 
 export let mongoDbConnection: Connection;
 export let mongoPlayerDocument: Model<PlayerType>;
