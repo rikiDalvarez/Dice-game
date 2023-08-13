@@ -34,25 +34,17 @@ playerId = response.body.Player_id
 
   test("Should add games to player:", async () => {
    
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+    for (let i=0; i<7; i++ ){
       await api
       .post(`/api/games/${playerId}`)
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-      await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+    }
     
     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
     const games = await playerAfterSecondGame?.getGames()
-    expect(games?.length).toBe(3);
+    expect(games?.length).toBe(7);
   });
 
   test("Should actualize succesRate:", async () => {

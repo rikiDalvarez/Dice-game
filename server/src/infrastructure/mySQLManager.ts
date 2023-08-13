@@ -8,6 +8,7 @@ import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op } from "sequelize";
+import { sequelize } from "./mySQLConnection";
 
 export class PlayerMySQLManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
@@ -155,22 +156,35 @@ export class PlayerMySQLManager implements PlayerInterface {
   }
 
   async addGame(player: Player): Promise<boolean> {
-    const id = player.id;
-    const gameDoc = this.createGameDoc(player.games, id);
-    GameSQL.destroy({
-      where: { player_id: id },
-    });
-    await GameSQL.bulkCreate(gameDoc);
-    await PlayerSQL.update(
-      { successRate: player.successRate },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
+    const transaction = await sequelize.transaction();
 
-    return true;
+    try {
+      const id = player.id;
+      const gameDoc = this.createGameDoc(player.games, id);
+      await GameSQL.destroy({
+        where: { player_id: id },
+        transaction,
+      });
+      await GameSQL.bulkCreate(gameDoc, { transaction });
+      await PlayerSQL.update(
+        { successRate: player.successRate },
+        {
+          where: {
+            id: id,
+          },
+          transaction,
+        }
+      );
+
+      await transaction.commit();
+    } catch (error) {
+      if (transaction) {
+        await transaction.rollback();
+      }
+      throw new Error("transaction failed");
+    }
+    const lastGameResult = player.games[player.games.length - 1].gameWin;
+    return lastGameResult;
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
@@ -180,17 +194,18 @@ export class PlayerMySQLManager implements PlayerInterface {
         player_id: id,
       },
     });
-    return response > 0;
+    const isDeleted = response > 0;
+    return isDeleted;
   }
 
   // fake function to test
   async getGames(playerId: string): Promise<GameType[]> {
     const playerDetails = await PlayerSQL.findByPk(playerId, {
-        include: [PlayerSQL.associations.games],
-      });
+      include: [PlayerSQL.associations.games],
+    });
 
-    const games = await playerDetails?.getGames()
-    return games || []
+    const games = await playerDetails?.getGames();
+    return games || [];
   }
 }
 

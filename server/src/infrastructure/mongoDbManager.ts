@@ -114,7 +114,12 @@ export class PlayerMongoDbManager implements PlayerInterface {
       this.createPlayerDoc(player)
     )
       .then((response: UpdateResult) => {
-        return response.modifiedCount === 1;
+          
+         if (response.modifiedCount === 1){
+          const lastGameResult = player.games[player.games.length - 1].gameWin
+          return lastGameResult
+         }
+         throw new Error("Erorr during deletion")
       })
       .catch((err) => {
         throw err;
@@ -130,7 +135,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
       this.createPlayerDoc(player)
     )
       .then((response) => {
-        return response.modifiedCount === 1;
+        const isDeleted = response.modifiedCount === 1
+        return isDeleted;
       })
       .catch((err) => {
         throw err;
