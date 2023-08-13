@@ -1,14 +1,14 @@
 import supertest from "supertest";
-import { server } from "../src/Server";
-
-import { app } from "../src/app";
+import { server } from "../../src/Server";
+import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
+import { mongoDbConnection as dbConnection } from "../../src/Server";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
-//startServer()
+import { addGame } from "../auxilaryFunctionsForTests/addGame";
+
+
 const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {

@@ -13,7 +13,10 @@ interface ENV {
   MONGO_URI: string | undefined;
   DATABASE: string | undefined;
   JWT_SECRET: string | undefined;
-  REFRESH_TOKEN_SECRET: string | undefined;
+  SQL_URL:string | undefined;
+MYSQL_USER:string | undefined;
+MYSQL_PASSWORD:string | undefined;
+HOST:string | undefined;
 }
 
 interface Config {
@@ -23,7 +26,10 @@ interface Config {
   MONGO_URI: string;
   DATABASE: string;
   JWT_SECRET: string;
-  REFRESH_TOKEN_SECRET: string;
+  SQL_URL:string
+  MYSQL_USER:string
+  MYSQL_PASSWORD:string
+  HOST:string
 }
 
 // Loading process.env as ENV interface
@@ -36,7 +42,10 @@ const getConfig = (): ENV => {
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+    SQL_URL:process.env.SQL_URL,
+    MYSQL_USER:process.env.MYSQL_USER,
+    MYSQL_PASSWORD:process.env.MYSQL_PASSWORD,
+    HOST:process.env.HOST
   };
 };
 

@@ -1,20 +1,21 @@
 import supertest from "supertest";
-import { server } from "../src/Server";
-import { app } from "../src/app";
+import { server } from "../../src/Server";
+import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import {} from "../src/infrastructure/mongoDbConnection";
-import { mongoDbConnection as dbConnection } from "../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
-import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
-import { addGame } from "../auxilaryFunctionsForTests/addGame";
+import { mongoDbConnection as dbConnection } from "../../src/Server";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
-//startServer()
+import { addGame } from "../auxilaryFunctionsForTests/addGame";
+import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
+
 const api = supertest(app);
 
-describe("REST GET WINNER TEST", () => {
+describe("REST GET LOSER TEST", () => {
+ 
   beforeEach(async () => {
     await PlayerDocument.deleteMany({});
+
   });
 
   test("Should return winner", async () => {
@@ -41,17 +42,17 @@ describe("REST GET WINNER TEST", () => {
       await addGame(api, tokenPlayer3, playerId3);
     }
 
-
     const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
-    const winner = await getWinner(api, tokenPlayer1);
-    if (winner.length === 1) {
-      expect(rankingList[0]).toStrictEqual(winner[0]);
+    const loser = await getLoser(api, tokenPlayer1);
+    if (loser.length == 1) {
+      expect(rankingList[2]).toStrictEqual(loser[0]);
     }
   });
 
-  afterAll(async () => {
-    await dbConnection.close();
+  afterAll((done) => {
+    dbConnection.close();
     server.close();
+    done();
   });
 });

@@ -1,4 +1,4 @@
-name: DICE GAME
+name: DICE_GAME
 
 on:
   push:
@@ -13,16 +13,61 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: DICE_GAME
     
     steps:
     - uses: actions/checkout@v3
       with: 
         fetch-depth: 0
+
+    - name: Create .env file
+      env: 
+          MONGO_URI: '${{secrets.MONGO_URI}}'
+          MONGO_URI_TEST: '${{secrets.MONGO_URI_TEST}}'
+          DATABASE: '${{secrets.DATABASE}}'
+          SQL_URI: '${{secrets.SQL_URI}}'
+          PORT: '${{secrets.PORT}}'
+          JWT_SECRET: '${{secrets.JWT_SECRET}}'
+          MYSQL_ROOT_PASSWORD: '${{ secrets.MYSQL_ROOT_PASSWORD}}'
+          MYSQL_USER: '${{ secrets.MYSQL_USER}}' 
+          MYSQL_PASSWORD: '${{ secrets.MYSQL_PASSWORD}}'
+          HOST: '${{ secrets.HOST}}'
+
+
+      run: |
+          cd server
+          echo "MONGO_URI=${MONGO_URI}" >> .env
+          echo "MONGO_URI_TEST=${MONGO_URI_TEST}" >> .env
+          echo "DATABASE=${DATABASE}" >> .env
+          echo "PORT=${PORT}" >> .env
+          echo "SQL_URI=${SQL_URI}" >> .env
+          echo "JWT_SECRET=${SQL_URI}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" >> .env
+          echo "MYSQL_USER=${MYSQL_USER}" >> .env
+          echo "MYSQL_PASSWORD=${MYSQL_PASSWORD}" >> .env
+          echo "HOST=${HOST}" >> .env
+
+    - name: Print .env file
+      run: |
+          echo "Printing .env:"
+          cat server/.env
    
     - name: Install Node.js 
       uses: actions/setup-node@v3
       with:
         node-version: 16
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.8.0
+      with:
+          mongodb-version: 6.0
+          mongodb-port: 27017
+
+    - name: Start mySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+            mysql version: '8.0'
+            
     
     - name: Build NODE APP
       run: |
@@ -30,8 +75,14 @@ jobs:
         npm run eslint
         npm run build
       working-directory: ./server
-    - name: Run tests
-      run: npm run test
+    - name: Run sql_test
+      run: npm run test_sql
+      working-directory: ./server
+    - name: Run mongo_test
+      run: npm run test_mongo
+      working-directory: ./server
+    - name: Run domain_test
+      run: npm run test_domain
       working-directory: ./server
     
       

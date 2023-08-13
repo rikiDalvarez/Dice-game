@@ -1,13 +1,14 @@
-import supertest from "supertest";
-import { server } from "../src/Server";
 import bcrypt from "bcrypt";
-import { app } from "../src/app";
+import supertest from "supertest";
+import { server } from "../../src/Server";
+import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { sequelize } from "../src/infrastructure/mySQLConnection";
-import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/mySQLConnection";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
+
 const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {

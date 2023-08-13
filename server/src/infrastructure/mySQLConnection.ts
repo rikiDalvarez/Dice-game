@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import "dotenv/config";
 import { createConnection } from "mysql2/promise";
+import config from "../../config/config";
 
 // const connectionString = process.env.SQL_URL ?? "";
 // const database = process.env.SQL_DATABASE;
@@ -27,8 +28,8 @@ export const createDatabase = async () => {
   }
 };
 
-export const sequelize = new Sequelize("dice-game", "root", "password", {
-  host: "127.0.0.1",
+export const sequelize = new Sequelize(config.DATABASE, config.MYSQL_USER, config.MYSQL_PASSWORD, {
+  host: config.HOST,
   dialect: "mysql",
 });
 

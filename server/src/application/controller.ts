@@ -15,14 +15,17 @@ import {
   PlayerMySQLManager,
   RankingMySQLManager,
 } from "../infrastructure/mySQLManager";
+import config from "../../config/config";
 // import { loginHandler } from "../infrastructure/loginHandler";
 
 export const playerMongoManager = new PlayerMongoDbManager();
 
-const mongo = false;
+const isMongo = config.NODE_ENV === 'mongo'
+
+//const isMongo = false;
 const chooseDatabase = () => {
   const ranking = new Ranking();
-  if (mongo) {
+  if (isMongo) {
     const playerService = new PlayerService(playerMongoManager);
     const rankingMongoDbManager = new RankingMongoDbManager(ranking);
     const rankingService = new RankingService(rankingMongoDbManager);

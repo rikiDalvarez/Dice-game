@@ -1,11 +1,11 @@
 import { describe, test } from "@jest/globals";
-import { Player } from "../src/domain/Player";
-import { Dice } from "../src/domain/Dice";
+import { Player } from "../../src/domain/Player";
+import { Dice } from "../../src/domain/Dice";
 import { mocked } from "jest-mock";
-import { Game } from "../src/domain/Game";
-import { Ranking } from "../src/domain/Ranking";
+import { Game } from "../../src/domain/Game";
+import { Ranking } from "../../src/domain/Ranking";
 
-jest.mock("../src/domain/Dice");
+jest.mock("../../src/domain/Dice");
 
 describe("Ranking class test", () => {
   const diceRoller = new Dice();

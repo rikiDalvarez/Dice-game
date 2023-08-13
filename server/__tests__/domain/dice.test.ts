@@ -1,5 +1,5 @@
 import { describe, test } from "@jest/globals";
-import { Dice } from "../src/domain/Dice";
+import { Dice } from "../../src/domain/Dice";
 describe("Dice class test", () => {
   test("Dice should return values between 1 and 6", () => {
     const diceRoller = new Dice();

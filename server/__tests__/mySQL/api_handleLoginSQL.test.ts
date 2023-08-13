@@ -1,16 +1,22 @@
 import supertest from "supertest";
-import { server } from "../src/Server";
-// import bcrypt from "bcrypt";
-import { app } from "../src/app";
-import { describe, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../src/Server";
+import { server } from "../../src/Server";
+import { app } from "../../src/app";
+import { describe,  afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/mySQLConnection";
+
 const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    await PlayerSQL.destroy({
+      where: {}
+    })
+    await GameSQL.destroy({
+      where: {}
+    })
     await createUser(api, "first password", "first.anonim@op.pl");
   });
 
@@ -38,9 +44,9 @@ describe("API POST PLAYER TEST", () => {
       .expect("Content-Type", /application\/json/);
   });
 
-  afterAll((done) => {
-    dbConnection.close();
+  afterAll(async () => {
+    await sequelize.close();
     server.close();
-    done();
+    
   });
 });

@@ -1,14 +1,13 @@
 import supertest from "supertest";
-import { server } from "../src/Server";
-
-import { app } from "../src/app";
+import { server } from "../../src/Server";
+import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { addGame } from "../auxilaryFunctionsForTests/addGame";
+import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/mySQLConnection";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
-import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../src/infrastructure/mySQLConnection";
+import { addGame } from "../auxilaryFunctionsForTests/addGame";
 
 const api = supertest(app);
 
