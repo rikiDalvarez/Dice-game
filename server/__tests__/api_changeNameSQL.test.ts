@@ -13,10 +13,10 @@ let token:string;
 let playerId:string
 describe("REST CHANGE NAME TEST", () => {
   beforeEach(async () => {
-    PlayerSQL.destroy({
+    await PlayerSQL.destroy({
       where: {}
     })
-    GameSQL.destroy({
+    await GameSQL.destroy({
       where: {}
     })
 
@@ -76,9 +76,9 @@ playerId = response.body.Player_id
       .expect("Content-Type", /application\/json/);
   });
 
-  afterAll((done) => {
-    sequelize.close();
+  afterAll(async () => {
+    await sequelize.close();
     server.close();
-    done();
+   
   });
 });

@@ -1,5 +1,6 @@
 import supertest from "supertest";
 import { server } from "../src/Server";
+
 import { app } from "../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
@@ -11,7 +12,7 @@ import { sequelize } from "../src/infrastructure/mySQLConnection";
 
 const api = supertest(app);
 
-describe("API DELETE GAME TEST", () => {
+describe("REST GET PLAYERS TEST", () => {
   let token: string;
   let playerId: string;
   beforeEach(async () => {
@@ -31,23 +32,17 @@ describe("API DELETE GAME TEST", () => {
     token = await loginUser(api, "mafalda@op.pl", "password");
   });
 
-  test("Should delete all games:", async () => {
+  test("Should return list of games", async () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
-    const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
-    const games = await player?.getGames()
-    expect(games?.length).toBe(2);
-
-    await api
-      .delete(`/api/games/${playerId}`)
+    const games = await api
+      .get(`/api/games/${playerId}`)
       .set("Authorization", token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-
-    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const gamesAfterDelete = await playerAfterDeleteGames?.getGames()
-    expect(gamesAfterDelete?.length).toBe(0);
+    expect(games.body.length).toBe(2);
   });
+
 
   afterAll(async () => {
     await sequelize.close();

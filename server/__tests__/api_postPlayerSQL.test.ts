@@ -12,10 +12,10 @@ const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    PlayerSQL.destroy({
+   await  PlayerSQL.destroy({
       where: {}
     })
-    GameSQL.destroy({
+   await GameSQL.destroy({
       where: {}
     })
   });
@@ -142,9 +142,9 @@ describe("API POST PLAYER TEST", () => {
   });
   
 
-  afterAll((done) => {
-    sequelize.close();
+  afterAll(async () => {
+    await sequelize.close();
     server.close();
-    done();
+   
   });
 });

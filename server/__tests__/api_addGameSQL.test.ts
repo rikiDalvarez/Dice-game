@@ -14,10 +14,10 @@ describe("API ADD GAME TEST", () => {
   let token:string;
   let playerId:string
   beforeEach(async () => {
-    PlayerSQL.destroy({
+    await PlayerSQL.destroy({
       where: {}
     })
-    GameSQL.destroy({
+    await GameSQL.destroy({
       where: {}
     })
 
@@ -65,10 +65,10 @@ playerId = response.body.Player_id
     }
     
   });
-  
-  afterAll((done) => {
-    sequelize.close();
+
+  afterAll(async () => {
+    await sequelize.close();
     server.close();
-    done();
+   
   });
 });

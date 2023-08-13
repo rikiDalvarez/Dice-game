@@ -13,10 +13,10 @@ const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {
   beforeEach(async () => {
-    PlayerSQL.destroy({
+    await PlayerSQL.destroy({
       where: {},
     });
-    GameSQL.destroy({
+    await GameSQL.destroy({
       where: {},
     });
   });
@@ -50,9 +50,9 @@ describe("REST GET PLAYERS TEST", () => {
     expect(value.sort()).toStrictEqual(names.sort());
   });
 
-  afterAll((done) => {
-    sequelize.close();
+  afterAll(async () => {
+    await sequelize.close();
     server.close();
-    done();
+   
   });
 });
