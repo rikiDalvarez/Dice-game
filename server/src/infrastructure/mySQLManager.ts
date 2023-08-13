@@ -114,7 +114,8 @@ export class PlayerMySQLManager implements PlayerInterface {
 
     // I THINK JOIN IS WORKING WELL, althought we really do not need it
     async getPlayerList(): Promise<PlayerList> {
-        const playersFromDB = await PlayerSQL.findAll({ include: GameSQL });
+        const playersFromDB = await PlayerSQL.findAll({ include: [PlayerSQL.associations.games] });
+        console.log('ZERO', playersFromDB[0])
         const players = await Promise.all(playersFromDB.map(async (players) => {
             return new Player(
                 players.email,
@@ -124,7 +125,7 @@ export class PlayerMySQLManager implements PlayerInterface {
                 players.id
             );
         }))
-        console.log(playersFromDB)
+       console.log('PLLLLLLLLL', players)
         return new PlayerList(players);
     }
 
@@ -153,7 +154,12 @@ export class PlayerMySQLManager implements PlayerInterface {
        GameSQL.destroy({
         where: {player_id: id}
       })
-       await GameSQL.bulkCreate(gameDoc);
+       await GameSQL.bulkCreate(gameDoc)
+       await PlayerSQL.update({ successRate: player.successRate }, {
+        where: {
+          id: id
+        }
+      });
       
     return true;
 }
@@ -161,17 +167,13 @@ export class PlayerMySQLManager implements PlayerInterface {
     // fake function to test
     async deleteAllGames(player: Player): Promise < boolean > {
     const id = player.id;
-
-    return PlayerDocument.replaceOne(
-        { _id: { $eq: id } },
-        this.createPlayerDoc(player)
-    )
-        .then((response) => {
-            return response.modifiedCount === 1;
-        })
-        .catch((err) => {
-            throw err;
-        });
+    const a = await GameSQL.destroy({
+        where: {
+          player_id:id
+        }
+      })
+console.log('DELETE', a)
+    return true
 }
 
     // fake function to test

@@ -7,6 +7,7 @@ import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { sequelize } from "../src/infrastructure/mySQLConnection";
 import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
@@ -30,7 +31,6 @@ describe("API POST PLAYER TEST", () => {
       .expect(201)
       .expect("Content-Type", /application\/json/);
     const playerId = response.body.Player_id;
-    console.log(playerId);
     const playerDetails = await PlayerSQL.findOne({
       where: { id: playerId }
     });
@@ -51,22 +51,25 @@ describe("API POST PLAYER TEST", () => {
   test("Should create more than one anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
     await createUser(api, "second password", "second.anonim@op.pl");
+    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
 
     const response = await api
       .get("/api/players")
+      .set("Authorization", token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    console.log('AAAAAAAAAAAAA', response.body)
-    const listLength = response.body
+    const listLength = response.body.playerList.length
     expect(listLength).toBe(2);
   });
 
   test("Should create anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
+    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
 
     const response = await api
       .get("/api/players")
+      .set("Authorization", token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
     const listLength = response.body.playerList.length;
@@ -77,9 +80,11 @@ describe("API POST PLAYER TEST", () => {
 
   test("two anonim should have different emails:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
+    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
 
     await api
       .post("/api/players")
+      .set("Authorization", token)
       .send({ password: "second password", email: "first.anonim@op.pl" })
       .expect(409)
       .expect("Content-Type", /application\/json/);
@@ -129,12 +134,11 @@ describe("API POST PLAYER TEST", () => {
 
   test("Should return ValidationError if wrong email format:", async () => {
     await createUser(api, "password", "mafalda@op.pl", "mafalda");
-    const a = await api
+    await api
       .post("/api/players")
       .send({ name: "riki", password: "password", email: "mafaldaop.pl" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
-      console.log('email',a)
   });
   
 

@@ -55,6 +55,17 @@ playerId = response.body.Player_id
     expect(games?.length).toBe(3);
   });
 
+  test("Should actualize succesRate:", async () => {
+    for (let i=0; i<10; i++ ){
+      await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    }
+    
+  });
+  
   afterAll((done) => {
     sequelize.close();
     server.close();

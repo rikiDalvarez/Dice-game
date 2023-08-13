@@ -44,6 +44,7 @@ playerId = response.body.Player_id
     expect(playerAfterSecondGame.games.length).toBe(2);
   });
 
+ 
   afterAll((done) => {
     dbConnection.close();
     server.close();

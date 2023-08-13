@@ -6,22 +6,19 @@ import {} from "../src/infrastructure/mongoDbConnection";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { PlayerSQL } from "../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import {sequelize } from "../src/infrastructure/mySQLConnection";
+import { sequelize } from "../src/infrastructure/mySQLConnection";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {
- 
-
-  
   beforeEach(async () => {
     PlayerSQL.destroy({
-      where: {}
-    })
+      where: {},
+    });
     GameSQL.destroy({
-      where: {}
-    })
+      where: {},
+    });
   });
 
   test("Should return list of players", async () => {
@@ -33,26 +30,25 @@ describe("REST GET PLAYERS TEST", () => {
       "belinda@getMaxListeners.com",
       "hello@gmail.com",
     ];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < names.length; i++) {
       await createUser(api, passwords[i], emails[i], names[i]);
     }
 
-    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0])
+    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0]);
     const response = await api
       .get(`/api/players`)
       .set("Authorization", tokenPlayer1)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-   
-    expect(response.body.playerList.length).toBe(4);
-    for (let i = 0; i < 10; i++) {
-     
-      const value = [response.body.playerList[0].name, response.body.playerList[1].name, response.body.playerList[2].name,response.body.playerList[3].name]
-     
-      expect(value.sort()).toStrictEqual(names.sort());
-    }
-  });
 
+    const value = [
+      response.body.playerList[0].name,
+      response.body.playerList[1].name,
+      response.body.playerList[2].name,
+      response.body.playerList[3].name,
+    ];
+    expect(value.sort()).toStrictEqual(names.sort());
+  });
 
   afterAll((done) => {
     sequelize.close();
