@@ -5,12 +5,14 @@
 :root {
   --color-primary: #199a48;
   /* Replace with your primary color */
-  --color-secondary: #abb158;
+  --color-secondary: #bfb02a;
   /* Replace with your secondary color */
 }
 
 @keyframes colorMovement {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0 0;
   }
 
@@ -20,9 +22,9 @@
 }
 
 .bg-color-movement {
-  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
-  background-size: 200% 100%;
-  /* Double the width for smooth movement */
-  animation: colorMovement 5s infinite linear;
+  background: linear-gradient(to right, var(--color-primary), white, var(--color-secondary));
+  background-size: 300% 100%;
+  /* Triple the width for smooth movement */
+  animation: colorMovement 20s infinite linear;
 }
 

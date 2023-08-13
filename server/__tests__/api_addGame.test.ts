@@ -40,8 +40,48 @@ playerId = response.body.Player_id
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set('Authorization', token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
     const playerAfterSecondGame = await playerMongoManager.findPlayer(playerId);
-    expect(playerAfterSecondGame.games.length).toBe(2);
+    expect(playerAfterSecondGame.games.length).toBe(10);
   });
 
  

@@ -43,6 +43,18 @@ describe("REST GET PLAYERS TEST", () => {
     expect(games.body.length).toBe(2);
   });
 
+  test("Should throw an error if player doesn't exists", async () => {
+    const fakePlayerId = "fakeid"
+    await addGame(api, token, playerId);
+    await addGame(api, token, playerId);
+    const games = await api
+      .get(`/api/games/${fakePlayerId}`)
+      .set("Authorization", token)
+      .expect(500)
+      .expect("Content-Type", /application\/json/);
+    expect(games.body.length).toBe(undefined);
+  });
+
 
   afterAll(async () => {
     await sequelize.close();

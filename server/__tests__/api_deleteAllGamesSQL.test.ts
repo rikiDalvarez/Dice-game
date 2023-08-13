@@ -48,6 +48,25 @@ describe("API DELETE GAME TEST", () => {
     const gamesAfterDelete = await playerAfterDeleteGames?.getGames()
     expect(gamesAfterDelete?.length).toBe(0);
   });
+  
+  test("Should throw an error if can't delete games:", async () => {
+    const fakePlayerId = "fakeid"
+    await addGame(api, token, playerId);
+    await addGame(api, token, playerId);
+    const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
+    const games = await player?.getGames()
+    expect(games?.length).toBe(2);
+
+    await api
+      .delete(`/api/games/${fakePlayerId}`)
+      .set("Authorization", token)
+      .expect(500)
+      .expect("Content-Type", /application\/json/);
+
+    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
+    const gamesAfterDelete = await playerAfterDeleteGames?.getGames()
+    expect(gamesAfterDelete?.length).toBe(2);
+  });
 
   afterAll(async () => {
     await sequelize.close();
