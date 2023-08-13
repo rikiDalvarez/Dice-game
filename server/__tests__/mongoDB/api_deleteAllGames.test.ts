@@ -7,7 +7,7 @@ import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
-import { playerMongoManager } from "../../src/application/controller";
+import { playerMongoManager } from "../../src/application/chooseDatabase";
 
 const api = supertest(app);
 
@@ -29,6 +29,9 @@ describe("API DELETE GAME TEST", () => {
   test("Should delete all games:", async () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
+    if (!playerMongoManager) {
+      throw new Error("playerMongoManager is not defined");
+    }
     const player = await playerMongoManager.findPlayer(playerId);
     expect(player.games.length).toBe(2);
 
