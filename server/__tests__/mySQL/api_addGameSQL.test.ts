@@ -44,31 +44,29 @@ describe("API ADD GAME TEST", () => {
     
     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
     const games = await playerAfterSecondGame?.getGames()
+    console.log('GAAAAAAA', games?.[0].toJSON())
     expect(games?.length).toBe(7);
   });
 
-  /*
+  
   test("Should actualize succesRate:", async () => {
     for (let i = 0; i < 10; i++) {
-      await api
+       await api
         .post(`/api/games/${playerId}`)
         .set('Authorization', token)
         .expect(200)
         .expect("Content-Type", /application\/json/);
     }
-    const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const games = await playerAfterSecondGame?.getGames()
-    const successRate = games?.reduce((sum, value) => {
-      if (value.gameWin){
-        return sum + 1
-      
-      }},0)
-    console.log(playerAfterSecondGame)
-    expect(games?.length).toBe(7);
+     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
+    const games = await playerAfterSecondGame?.getGames() || []
+    const gameWin = games.filter((game)=>game.gameWin)
+    const successRate = gameWin.length/games.length * 100
+    expect(Number(playerAfterSecondGame?.successRate)).toBe(successRate);
+   
 
 
   });
-*/
+
   test("If player id don't exists throw error:", async () => {
     const nonExistingPlayerId = '987c1361-c396-4294-93bb-71987fa0486d'
    
