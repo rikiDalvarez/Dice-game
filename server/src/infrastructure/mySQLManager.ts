@@ -154,7 +154,6 @@ export class PlayerMySQLManager implements PlayerInterface {
         transaction,
       });
       await GameSQL.bulkCreate(gameDoc, { transaction });
-      //await sequelize.close()
       await PlayerSQL.update(
         { successRate: player.successRate },
         {
@@ -212,33 +211,18 @@ export class RankingMySQLManager implements RankingInterface {
   constructor(ranking: Ranking) {
     this.ranking = ranking;
   }
-
-  // he intentado así pero es demasiado complicado parece
-  // async getMeanSuccesRate(): Promise<number> {
-  //     const meanValue = await PlayerSQL.findAll({
-  //         attributes: [
-  //             [sequelize.fn("AVG", sequelize.col("successRate")), "meanValue"]
-  //         ]
-  //     });
-  //     return meanValue.length > 0 ? meanValue[0].getDataValue("meanValue") : 0;
-  // }
-
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const sumSuccessRate = await PlayerSQL.sum("successRate");
     const players = await PlayerSQL.findAll();
-    console.log("sum: ", sumSuccessRate);
-    console.log("players-getMeanSuccesRate: ", players);
     return players.length > 0 ? sumSuccessRate / players.length : 0;
   }
 
-  // fake function to test
   async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
-      order: ["successRate", "DESC"],
+      order: [["successRate", "DESC"]],
     });
-    console.log(playerRanking);
     if (!playerRanking) {
       throw new Error("no players found");
     }
@@ -251,18 +235,26 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
-    console.log("players-getPlayersRanking: ", players);
     return players;
   }
 
-  // fake function to test
   async getRankingWithAverage(): Promise<Ranking> {
     this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
-      throw new Error(`error: ${err} `);
+      throw err;
     });
-    this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
-      throw new Error(`error: ${err} `);
-    });
+
+    if (!this.ranking.rankingList) {
+      console.log("not getting ranking");
+    }
+
+    this.ranking.average = await this.getMeanSuccesRate();
+    // .catch((err) => {
+    //     throw new Error(`error: ${err} `);
+    // });
+
+    if (!this.ranking.average) {
+      console.log("not getting average");
+    }
     return this.ranking;
   }
 
@@ -302,35 +294,12 @@ export class RankingMySQLManager implements RankingInterface {
 
   // fake function to test
   async getLoser(): Promise<Ranking> {
-    try {
-      const groupedPlayers = await PlayerDocument.aggregate([
-        {
-          $group: {
-            _id: "$successRate",
-            wholeDocument: { $push: "$$ROOT" },
-          },
-        },
-        { $sort: { _id: 1 } },
-      ]);
+    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
 
-      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
-      const losersDoc =
-        groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
-      const losers = losersDoc.map((players: PlayerType) => {
-        return new Player(
-          players.email,
-          players.password,
-          players.games,
-          players.name,
-          players._id.toString()
-        );
-      });
+    console.log(this.ranking.rankingList);
 
-      this.ranking.losers = losers;
-      return this.ranking;
-    } catch (error) {
-      console.error("Error getting losers:", error);
-      throw error;
-    }
+    return this.ranking;
   }
 }

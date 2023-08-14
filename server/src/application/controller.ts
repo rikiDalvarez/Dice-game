@@ -143,6 +143,7 @@ export const getGames = async (
 export const getRankingWithAverage = async (req: Request, res: Response) => {
   try {
     const ranking = await rankingService.getRankingWithAverage();
+    
     res
       .status(200)
       .json({ ranking: ranking.rankingList, average: ranking.average });
