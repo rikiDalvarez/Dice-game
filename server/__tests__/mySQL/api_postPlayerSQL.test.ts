@@ -13,6 +13,7 @@ const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
    await  PlayerSQL.destroy({
       where: {}
     })
