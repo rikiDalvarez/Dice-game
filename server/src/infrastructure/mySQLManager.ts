@@ -211,49 +211,49 @@ export class PlayerMySQLManager implements PlayerInterface {
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
 
-    constructor(ranking: Ranking) {
-        this.ranking = ranking;
-    }
-    // así es más fácil
-    async getMeanSuccesRate(): Promise<number> {
-        const sumSuccessRate = await PlayerSQL.sum('successRate');
-        const players = await PlayerSQL.findAll();
-        return players.length > 0 ? sumSuccessRate / players.length : 0
-    }
+  constructor(ranking: Ranking) {
+    this.ranking = ranking;
+  }
+  // así es más fácil
+  async getMeanSuccesRate(): Promise<number> {
+    const sumSuccessRate = await PlayerSQL.sum("successRate");
+    const players = await PlayerSQL.findAll();
+    return players.length > 0 ? sumSuccessRate / players.length : 0;
+  }
 
-    // fake function to test
-    async getPlayersRanking(): Promise<Player[]> {
-        const playerRanking = await PlayerSQL.findAll({
-            include: [PlayerSQL.associations.games],
-            order: ["successRate", "DESC"],
-        });
-        console.log(playerRanking)
-        if (!playerRanking) {
-            throw new Error("no players found");
-        }
-        const players = playerRanking.map((players) => {
-            return new Player(
-                players.email,
-                players.password,
-                players.games!,
-                players.name,
-                players.id
-            );
-        });
-        console.log("players-getPlayersRanking: ", players)
-        return players;
+  // fake function to test
+  async getPlayersRanking(): Promise<Player[]> {
+    const playerRanking = await PlayerSQL.findAll({
+      include: [PlayerSQL.associations.games],
+      order: ["successRate", "DESC"],
+    });
+    console.log(playerRanking);
+    if (!playerRanking) {
+      throw new Error("no players found");
     }
+    const players = playerRanking.map((players) => {
+      return new Player(
+        players.email,
+        players.password,
+        players.games!,
+        players.name,
+        players.id
+      );
+    });
+    console.log("players-getPlayersRanking: ", players);
+    return players;
+  }
 
-    // fake function to test
-    async getRankingWithAverage(): Promise<Ranking> {
-        this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
-            throw new Error(`error: ${err} `);
-        });
-        this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
-            throw new Error(`error: ${err} `);
-        });
-        return this.ranking;
-    }
+  // fake function to test
+  async getRankingWithAverage(): Promise<Ranking> {
+    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
+    this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
+    return this.ranking;
+  }
 
   // fake function to test
   async getWinner(): Promise<Ranking> {
@@ -289,37 +289,33 @@ export class RankingMySQLManager implements RankingInterface {
     }
   }
 
-    // fake function to test
-    async getLoser(): Promise<Ranking> {
-        try {
-            const groupedPlayers = await PlayerDocument.aggregate([
-                {
-                    $group: {
-                        _id: "$successRate",
-                        wholeDocument: { $push: "$$ROOT" },
-                    },
-                },
-                { $sort: { _id: 1 } },
-            ]);
+  // fake function to test
+  async getLoser(): Promise<Ranking> {
+    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
+      throw new Error(`error: ${err} `);
+    });
 
-      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
-      const losersDoc =
-        groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
-      const losers = losersDoc.map((players: PlayerType) => {
-        return new Player(
-          players.email,
-          players.password,
-          players.games,
-          players.name,
-          players._id.toString()
-        );
-      });
+    console.log(this.ranking.rankingList);
 
-      this.ranking.losers = losers;
-      return this.ranking;
-    } catch (error) {
-      console.error("Error getting losers:", error);
-      throw error;
-    }
+    //added validation if groupedPlayers is not empty, e.g. when we dont have any player
+    //   const losersDoc =
+    //     groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
+    //   const losers = losersDoc.map((players: PlayerType) => {
+    //     return new Player(
+    //       players.email,
+    //       players.password,
+    //       players.games,
+    //       players.name,
+    //       players._id.toString()
+    //     );
+    //   });
+
+    //   this.ranking.losers = losers;
+    //   return this.ranking;
+    // } catch (error) {
+    //   console.error("Error getting losers:", error);
+    //   throw error;
+    // }
+    return this.ranking;
   }
 }
