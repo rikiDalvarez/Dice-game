@@ -1,4 +1,4 @@
-import { DataTypes, Model, NonAttribute, HasManyGetAssociationsMixin} from "sequelize";
+import { DataTypes, Model} from "sequelize";
 import { sequelize } from "../../mySQLConnection";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
@@ -16,8 +16,8 @@ export class PlayerSQL extends Model<IPlayerSQL> {
   declare password: string
   declare registrationDate: Date
   declare successRate: number
-  declare getGames: HasManyGetAssociationsMixin<GameSQL>
-  declare games?: NonAttribute<GameSQL[]>
+  //declare getGames: HasManyGetAssociationsMixin<GameSQL>
+  declare games: GameSQL[]
  
 }
 

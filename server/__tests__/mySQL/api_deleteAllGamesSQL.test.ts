@@ -34,8 +34,8 @@ describe("API DELETE GAME TEST", () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
     const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
-    const games = await player?.getGames()
-    expect(games?.length).toBe(2);
+    const games = player?.games ||[]
+    expect(games.length).toBe(2);
 
     await api
       .delete(`/api/games/${playerId}`)
@@ -44,7 +44,7 @@ describe("API DELETE GAME TEST", () => {
       .expect("Content-Type", /application\/json/);
 
     const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const gamesAfterDelete = await playerAfterDeleteGames?.getGames()
+    const gamesAfterDelete =  playerAfterDeleteGames?.games ||[]
     expect(gamesAfterDelete?.length).toBe(0);
   });
   
@@ -53,7 +53,7 @@ describe("API DELETE GAME TEST", () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
     const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
-    const games = await player?.getGames()
+    const games = player?.games ||[]
     expect(games?.length).toBe(2);
 
     await api
@@ -63,7 +63,7 @@ describe("API DELETE GAME TEST", () => {
       .expect("Content-Type", /application\/json/);
 
     const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const gamesAfterDelete = await playerAfterDeleteGames?.getGames()
+    const gamesAfterDelete = playerAfterDeleteGames?.games ||[]
     expect(gamesAfterDelete?.length).toBe(2);
   });
 

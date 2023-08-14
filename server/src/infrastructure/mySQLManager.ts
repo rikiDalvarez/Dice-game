@@ -92,10 +92,10 @@ export class PlayerMySQLManager implements PlayerInterface {
 
     if (playerDetails) {
       const { name, email, password, id } = playerDetails;
-      const games = await playerDetails.getGames();
+      const games = playerDetails.games
       return new Player(email, password, games, name, id);
     } else {
-      throw new Error("Player not found");
+      throw new Error("PlayerNotFound");
     }
   }
 
@@ -104,17 +104,17 @@ export class PlayerMySQLManager implements PlayerInterface {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
-    const players = await Promise.all(
-      playersFromDB.map(async (players) => {
+    
+      const players = playersFromDB.map((players) => {
         return new Player(
           players.email,
           players.password,
-          await players.getGames(),
+          players.games,
           players.name,
           players.id
         );
       })
-    );
+
     return new PlayerList(players);
   }
 
@@ -153,6 +153,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         transaction,
       });
       await GameSQL.bulkCreate(gameDoc, { transaction });
+    
       await PlayerSQL.update(
         { successRate: player.successRate },
         {
@@ -168,6 +169,7 @@ export class PlayerMySQLManager implements PlayerInterface {
       if (transaction) {
         await transaction.rollback();
       }
+      
       throw new Error("transaction failed");
     }
     const lastGameResult = player.games[player.games.length - 1].gameWin;
@@ -199,7 +201,7 @@ export class PlayerMySQLManager implements PlayerInterface {
       throw new Error("Player doesn't exist");
     }
 
-    const games = await playerDetails?.getGames();
+    const games =  playerDetails.games;
     return games;
   }
 }

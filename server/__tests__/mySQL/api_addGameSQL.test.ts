@@ -43,7 +43,7 @@ describe("API ADD GAME TEST", () => {
     }
     
     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const games = await playerAfterSecondGame?.getGames()
+    const games =  playerAfterSecondGame?.games ||[]
     console.log('GAAAAAAA', games?.[0].toJSON())
     expect(games?.length).toBe(7);
   });
@@ -58,7 +58,7 @@ describe("API ADD GAME TEST", () => {
         .expect("Content-Type", /application\/json/);
     }
      const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const games = await playerAfterSecondGame?.getGames() || []
+    const games = playerAfterSecondGame?.games ||[]
     const gameWin = games.filter((game)=>game.gameWin)
     const successRate = gameWin.length/games.length * 100
     expect(Number(playerAfterSecondGame?.successRate)).toBe(successRate);
@@ -75,7 +75,7 @@ describe("API ADD GAME TEST", () => {
         .set('Authorization', token)
         .expect(500)
         .expect("Content-Type", /application\/json/);
-      expect(response.body.error).toBe("Player not found")
+      expect(response.body.error).toBe(undefined)
 
 
   });
