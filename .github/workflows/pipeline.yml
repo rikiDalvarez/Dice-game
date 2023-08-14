@@ -5,10 +5,12 @@ on:
     branches: 
       - "main"
       - "development"
+      - "working_area"
   pull_request:
     branches: 
       - "main" 
       - "development"
+      - "working_area"
 
 jobs:
   build:
@@ -66,23 +68,33 @@ jobs:
     - name: Start mySQL
       uses: mirromutth/mysql-action@v1.1
       with:
-            mysql version: '8.0'
-            
+        mysql version: '8.0'
+        mysql database: '${{secrets.DATABASE}}'
+        mysql root password: '${{secrets.MYSQL_ROOT_PASSWORD}}'
+        mysql user: '${{ secrets.MYSQL_USER}}' 
+        mysql password: '${{ secrets.MYSQL_PASSWORD}}' 
     
+  
     - name: Build NODE APP
       run: |
         npm ci
         npm run eslint
         npm run build
       working-directory: ./server
+   
+    
     - name: Run sql_test
-      run: npm run test_sql
+      run: |
+        npm run test_sql
       working-directory: ./server
+
     - name: Run mongo_test
-      run: npm run test_mongo
+      run: |
+        npm run test_mongo
       working-directory: ./server
     - name: Run domain_test
-      run: npm run test_domain
+      run: |
+         npm run test_domain
       working-directory: ./server
     
       

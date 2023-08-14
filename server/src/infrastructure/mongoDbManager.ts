@@ -64,7 +64,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       const { name, email, password, games, id } = playerDetails;
       return new Player(email, password, games, name, id);
     } else {
-      throw new Error("incorrectEmailOrPassword");
+      throw new Error("EmailNotExists");
     }
   }
 
