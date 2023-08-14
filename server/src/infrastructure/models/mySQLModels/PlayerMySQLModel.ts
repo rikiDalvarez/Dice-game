@@ -19,7 +19,6 @@ export class PlayerSQL extends Model<IPlayerSQL> {
   declare getGames: HasManyGetAssociationsMixin<GameSQL>
   declare games?: NonAttribute<GameSQL[]>
  
-  
 }
 
 PlayerSQL.init({

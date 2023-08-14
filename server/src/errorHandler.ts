@@ -9,6 +9,7 @@ export const errorHandler = (
     return next(error);
   }
 
+  //email validation
   if (
     error.name === "ValidationError" ||
     error.name === "SequelizeValidationError"
@@ -35,6 +36,6 @@ export const errorHandler = (
     default:
       return response
         .status(500)
-        .json({ error: error.message, error_code: "PP001" });
+        .json({ error: error.message });
   }
 };
