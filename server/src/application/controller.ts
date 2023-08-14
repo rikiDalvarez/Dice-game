@@ -1,54 +1,12 @@
 // import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response, NextFunction } from "express";
 import { User } from "../domain/User";
-import { Ranking } from "../domain/Ranking";
-import { PlayerService } from "./PlayerService";
-import {
-  PlayerMongoDbManager,
-  RankingMongoDbManager,
-} from "../infrastructure/mongoDbManager";
-import { RankingService } from "./RankingService";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sanitizedConfig from "../../config/config";
-import {
-  PlayerMySQLManager,
-  RankingMySQLManager,
-} from "../infrastructure/mySQLManager";
-import config from "../../config/config";
+import { playerService, rankingService } from "./chooseDatabase";
 // import { loginHandler } from "../infrastructure/loginHandler";
 
-export const playerMongoManager = new PlayerMongoDbManager();
-
-const isMongo = config.NODE_ENV === 'mongo'
-
-//const isMongo = false;
-const chooseDatabase = () => {
-  const ranking = new Ranking();
-  if (isMongo) {
-    const playerService = new PlayerService(playerMongoManager);
-    const rankingMongoDbManager = new RankingMongoDbManager(ranking);
-    const rankingService = new RankingService(rankingMongoDbManager);
-    return {
-      playerMongoManager: playerMongoManager,
-      playerService: playerService,
-      rankingService: rankingService,
-    };
-  } else {
-    const playerMySQLManager = new PlayerMySQLManager();
-    const playerService = new PlayerService(playerMySQLManager);
-    const rankingMySQLManager = new RankingMySQLManager(ranking);
-    const rankingService = new RankingService(rankingMySQLManager);
-    return {
-      playerService: playerService,
-      rankingService: rankingService,
-    };
-  }
-};
-
-const services = chooseDatabase();
-const playerService = services.playerService;
-const rankingService = services.rankingService;
 
 export const handleLogin = async (
   req: Request,
