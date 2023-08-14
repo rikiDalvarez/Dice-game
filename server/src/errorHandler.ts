@@ -25,14 +25,26 @@ export const errorHandler = (
     case "NameEmailConflictError":
       return response
         .status(409)
-        .send({ Error: "name or email already exists" });
+        .send({ Error: "Name or email already exists" });
     case "NameConflictError":
-      return response.status(409).send({ Error: "name already exists" });
+      return response.status(409).send({ Error: "Name already exists" });
     case "NoToken":
     case "jwt expired":
       return response.status(401).json({ Error: "Authentication required" });
     case "NotFoundError":
       return response.status(404).send({ Error: "Resource not exists" });
+    case "PlayerNotFound":
+      return response
+        .status(500)
+        .send({ Error: "Player(s) not found" });
+    case "CreatingPlayerError":
+      return response
+        .status(500)
+        .send({ Error: "Couldn't create the player" });
+    case "DeletingError":
+      return response
+        .status(500)
+        .send({ Error: "Error during deletion" });
     default:
       return response
         .status(500)

@@ -1,15 +1,12 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
-//mongodbResponse type
 import { UpdateResult } from "mongodb";
-//import { PlayerDocument } from "./models/mongoDbModel";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-//import { dbConnection } from "../app";
 export class PlayerMongoDbManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
     return {
@@ -27,15 +24,15 @@ export class PlayerMongoDbManager implements PlayerInterface {
       $or: [
         { email: player.email },
         {
-          $and: [{ name: { $ne: "unknown" } }, { name: player.name }],
+          $and: [
+            { name: { $ne: "unknown" } },
+            { name: player.name }],
         },
       ],
     });
-
     if (nameAlreadyInUse) {
       throw new Error("NameEmailConflictError");
     }
-
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -45,6 +42,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
       registrationDate: player.registrationDate,
     };
     const playerFromDB = await PlayerDocument.create(newPlayer);
+    if (!playerFromDB) {
+      throw new Error("CreatingPlayerError")
+    }
     return playerFromDB.id;
   }
 
@@ -54,22 +54,23 @@ export class PlayerMongoDbManager implements PlayerInterface {
       const { name, email, password, games, id } = playerDetails;
       return new Player(email, password, games, name, id);
     } else {
-      throw new Error("Player not found");
+      throw new Error("PlayerNotFound");
     }
   }
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await PlayerDocument.findOne({ email: playerEmail });
-    console.log({ playerDetails });
-    if (playerDetails) {
-      const { name, email, password, games, id } = playerDetails;
-      return new Player(email, password, games, name, id);
-    } else {
+    if (!playerDetails) {
       throw new Error("EmailNotExists");
     }
+    const { name, email, password, games, id } = playerDetails;
+    return new Player(email, password, games, name, id);
   }
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerDocument.find({});
+    if (!playersFromDB) {
+      throw new Error("PlayerNotFound")
+    }
     const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
         players.email,
@@ -79,7 +80,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
         players._id
       );
     });
-
     return new PlayerList(players);
   }
 
@@ -96,59 +96,76 @@ export class PlayerMongoDbManager implements PlayerInterface {
       name: newName,
     });
     if (!player) {
+      //  yo veo mejor un --> case "PlayerNotFound": <--
       throw new Error("NotFoundError");
     }
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
   }
+  // I HAVE CHANGED IT
 
-  async addGame(player: Player): Promise<boolean> {
-    // hacer PATCH, cambiar solo el game y no reemplazar el player
-    // wouldn't it be better to use updateOne and only change games and successRate?
-    // same with deleteAllGames()
-    //--------> lets talk about this toogether
-
+  /* async addGame(player: Player): Promise<boolean> {
     const id = player.id;
     return PlayerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
       .then((response: UpdateResult) => {
-          
-         if (response.modifiedCount === 1){
+        if (response.modifiedCount === 1) {
           const lastGameResult = player.games[player.games.length - 1].gameWin
           return lastGameResult
-         }
-         throw new Error("Erorr during deletion")
+        }
+        throw new Error("Erorr during deletion")
       })
       .catch((err) => {
         throw err;
         //---> not sure but is it enough just throw err to pass it down???
         //throw new Error(`error: ${err} `);
       });
+  } */
+  async addGame(player: Player): Promise<boolean> {
+    const id = player.id;
+    try {
+      const response = await PlayerDocument.replaceOne(
+        { _id: { $eq: id } },
+        this.createPlayerDoc(player)
+      );
+      if (response.modifiedCount === 1) {
+        const lastGameResult = player.games[player.games.length - 1].gameWin;
+        return lastGameResult;
+      }
+      throw new Error("DeletionError");
+    } catch (err) {
+      throw err;
+    }
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
-    return PlayerDocument.replaceOne(
-      { _id: { $eq: id } },
-      this.createPlayerDoc(player)
-    )
-      .then((response) => {
-        const isDeleted = response.modifiedCount === 1
-        return isDeleted;
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }
+    try {
+      const response = await PlayerDocument.replaceOne(
+        { _id: { $eq: id } },
+        this.createPlayerDoc(player)
+      )
+      if (!response) {
+        throw new Error("DeletionError");
+      }
+      const isDeleted = response.modifiedCount === 1
+      return isDeleted;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);
+    if (!player) {
+      throw new Error("PlayerNotFound")
+    }
     return player ? player.games : [];
   }
 }
-//Better to seperate in another file
+// SHOULD WE SEPARATE RANKING IN ANOTHER FILE ?
 export class RankingMongoDbManager implements RankingInterface {
   ranking: Ranking;
 
