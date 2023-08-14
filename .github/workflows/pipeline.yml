@@ -43,7 +43,7 @@ jobs:
           echo "DATABASE=${DATABASE}" >> .env
           echo "PORT=${PORT}" >> .env
           echo "SQL_URI=${SQL_URI}" >> .env
-          echo "JWT_SECRET=${SQL_URI}" >> .env
+          echo "JWT_SECRET=${JWT_SECRET}" >> .env
           echo "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" >> .env
           echo "MYSQL_USER=${MYSQL_USER}" >> .env
           echo "MYSQL_PASSWORD=${MYSQL_PASSWORD}" >> .env
@@ -72,7 +72,6 @@ jobs:
         mysql database: '${{secrets.DATABASE}}'
         mysql root password: '${{secrets.MYSQL_ROOT_PASSWORD}}'
         mysql user: '${{ secrets.MYSQL_USER}}' 
-        mysql password: '${{ secrets.MYSQL_PASSWORD}}' 
     
   
     - name: Build NODE APP

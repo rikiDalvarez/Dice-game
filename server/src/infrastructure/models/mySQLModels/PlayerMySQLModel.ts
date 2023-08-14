@@ -1,4 +1,4 @@
-import { DataTypes, HasManySetAssociationsMixin, Model, Optional, Association, NonAttribute, HasManyGetAssociationsMixin} from "sequelize";
+import { DataTypes, Model, NonAttribute, HasManyGetAssociationsMixin} from "sequelize";
 import { sequelize } from "../../mySQLConnection";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";

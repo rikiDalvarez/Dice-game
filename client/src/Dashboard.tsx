@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+interface Player {
+	name: string,
+	rating: number,
+	registrationDate: string
+}
 
 const Dashboard: React.FC = () => {
-	const [data, setData] = useState<string | null>(null);
+	const [data, setData] = useState<Array<Player> | null>(null);
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {
@@ -18,7 +23,9 @@ const Dashboard: React.FC = () => {
 
 					if (response.ok) {
 						const responseData = await response.json();
-						setData(JSON.stringify(responseData));
+
+						setData(responseData.playerList);
+
 					} else {
 						console.error('Fetching players');
 					}
@@ -36,7 +43,16 @@ const Dashboard: React.FC = () => {
 	return (
 		<div>
 			<h2>Dashboard</h2>
-			{data ? <pre>{data}</pre> : <p>Loading...</p>}
+			{/* add loading skeleton shadcn */}
+			{data ? (
+				data.map((player) => (
+					<div key={player.name}>
+						<h3>{player.name}</h3>
+						<p>Rating: {player.rating}</p>
+						<p>Registration Date: {player.registrationDate}</p>
+					</div>
+				))
+			) : <p>Loading...</p>}
 		</div>
 	);
 };

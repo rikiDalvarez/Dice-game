@@ -7,7 +7,6 @@ import sanitizedConfig from "../../config/config";
 import { playerService, rankingService } from "./chooseDatabase";
 // import { loginHandler } from "../infrastructure/loginHandler";
 
-
 export const handleLogin = async (
   req: Request,
   res: Response,
@@ -89,7 +88,7 @@ export const addGame = async (
   const playerId = req.params.id;
   try {
     const responseFromDatabase = await playerService.addGame(playerId);
-    return res.status(200).json({ game_saved: responseFromDatabase });
+    return res.status(200).json({ game_won: responseFromDatabase });
   } catch (err) {
     next(err);
   }

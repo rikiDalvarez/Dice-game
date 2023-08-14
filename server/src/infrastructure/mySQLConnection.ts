@@ -13,9 +13,9 @@ export const sequelize = new Sequelize(connectionString, {
 */
 export const createDatabase = async () => {
   const connection = await createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    password: "password",
+    host: config.HOST,
+    user: config.MYSQL_USER,
+    password: config.MYSQL_PASSWORD,
   });
   try {
     await connection.query("CREATE DATABASE IF NOT EXISTS `dice-game`");
@@ -28,10 +28,15 @@ export const createDatabase = async () => {
   }
 };
 
-export const sequelize = new Sequelize(config.DATABASE, config.MYSQL_USER, config.MYSQL_PASSWORD, {
-  host: config.HOST,
-  dialect: "mysql",
-});
+export const sequelize = new Sequelize(
+  config.DATABASE,
+  config.MYSQL_USER,
+  config.MYSQL_PASSWORD,
+  {
+    host: config.HOST,
+    dialect: "mysql",
+  }
+);
 
 export const connectMySQLDatabase = async () => {
   try {
