@@ -57,6 +57,7 @@ describe("REST GET WINNER TEST", () => {
     }
   });
 
+
   afterAll(async () => {
     await sequelize.close();
     server.close();

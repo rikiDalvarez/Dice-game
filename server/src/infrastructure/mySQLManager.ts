@@ -148,11 +148,13 @@ export class PlayerMySQLManager implements PlayerInterface {
     try {
       const id = player.id;
       const gameDoc = this.createGameDoc(player.games, id);
+
       await GameSQL.destroy({
         where: { player_id: id },
         transaction,
       });
-      await GameSQL.bulkCreate(gameDoc, { transaction });
+      await GameSQL.bulkCreate(gameDoc, { transaction })
+        .catch(() => { throw new Error("couldn't create games for the player")})
     
       await PlayerSQL.update(
         { successRate: player.successRate },
@@ -166,7 +168,9 @@ export class PlayerMySQLManager implements PlayerInterface {
 
       await transaction.commit();
     } catch (error) {
+        console.log('ERRRRRRR', error)
       if (transaction) {
+        
         await transaction.rollback();
       }
       
@@ -236,7 +240,7 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
-    return players;
+    return players 
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
@@ -260,9 +264,13 @@ export class RankingMySQLManager implements RankingInterface {
   }
 
   async getWinner(): Promise<Ranking> {
+    let winners;
     const rankingList = await this.getPlayersRanking();
-    const winningSuccessrate = rankingList[0].successRate;
-    const winners = rankingList.filter((player) => {
+    if (rankingList.length != 0){
+        winners = []
+    }
+    const winningSuccessrate =  rankingList[0].successRate
+    winners = rankingList.filter((player) => {
       return player.successRate === winningSuccessrate;
     });
     this.ranking.winners = winners;
