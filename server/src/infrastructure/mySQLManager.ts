@@ -105,7 +105,6 @@ export class PlayerMySQLManager implements PlayerInterface {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
-    console.log("ZERO", playersFromDB[0]);
     const players = await Promise.all(
       playersFromDB.map(async (players) => {
         return new Player(
@@ -117,7 +116,6 @@ export class PlayerMySQLManager implements PlayerInterface {
         );
       })
     );
-    console.log("PLLLLLLLLL", players);
     return new PlayerList(players);
   }
 
