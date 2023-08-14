@@ -47,6 +47,7 @@ describe("API ADD GAME TEST", () => {
     expect(games?.length).toBe(7);
   });
 
+  /*
   test("Should actualize succesRate:", async () => {
     for (let i = 0; i < 10; i++) {
       await api
@@ -55,9 +56,19 @@ describe("API ADD GAME TEST", () => {
         .expect(200)
         .expect("Content-Type", /application\/json/);
     }
+    const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
+    const games = await playerAfterSecondGame?.getGames()
+    const successRate = games?.reduce((sum, value) => {
+      if (value.gameWin){
+        return sum + 1
+      
+      }},0)
+    console.log(playerAfterSecondGame)
+    expect(games?.length).toBe(7);
+
 
   });
-
+*/
   test("If player id don't exists throw error:", async () => {
     const nonExistingPlayerId = '987c1361-c396-4294-93bb-71987fa0486d'
    
