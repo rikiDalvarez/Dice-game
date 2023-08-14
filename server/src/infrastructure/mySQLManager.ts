@@ -156,6 +156,7 @@ export class PlayerMySQLManager implements PlayerInterface {
                 transaction,
             });
             await GameSQL.bulkCreate(gameDoc, { transaction });
+            //await sequelize.close()
             await PlayerSQL.update(
                 { successRate: player.successRate },
                 {
@@ -169,6 +170,7 @@ export class PlayerMySQLManager implements PlayerInterface {
             await transaction.commit();
         } catch (error) {
             if (transaction) {
+             
                 await transaction.rollback();
             }
             throw new Error("transaction failed");
