@@ -28,10 +28,15 @@ export const createDatabase = async () => {
   }
 };
 
-export const sequelize = new Sequelize(config.DATABASE, config.MYSQL_USER, config.MYSQL_PASSWORD, {
-  host: config.HOST,
-  dialect: "mysql",
-});
+export const sequelize = new Sequelize(
+  config.DATABASE,
+  config.MYSQL_USER,
+  config.MYSQL_PASSWORD,
+  {
+    host: config.HOST,
+    dialect: "mysql",
+  }
+);
 
 export const connectMySQLDatabase = async () => {
   try {

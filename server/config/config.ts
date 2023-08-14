@@ -13,10 +13,10 @@ interface ENV {
   MONGO_URI: string | undefined;
   DATABASE: string | undefined;
   JWT_SECRET: string | undefined;
-  SQL_URI:string | undefined;
-MYSQL_USER:string | undefined;
-MYSQL_PASSWORD:string | undefined;
-HOST:string | undefined;
+  SQL_URI: string | undefined;
+  MYSQL_USER: string | undefined;
+  MYSQL_PASSWORD: string | undefined;
+  HOST: string | undefined;
 }
 
 interface Config {
@@ -26,10 +26,10 @@ interface Config {
   MONGO_URI: string;
   DATABASE: string;
   JWT_SECRET: string;
-  SQL_URI:string
-  MYSQL_USER:string
-  MYSQL_PASSWORD:string
-  HOST:string
+  SQL_URI: string;
+  MYSQL_USER: string;
+  MYSQL_PASSWORD: string;
+  HOST: string;
 }
 
 // Loading process.env as ENV interface
@@ -42,10 +42,10 @@ const getConfig = (): ENV => {
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
-    SQL_URI:process.env.SQL_URI,
-    MYSQL_USER:process.env.MYSQL_USER,
-    MYSQL_PASSWORD:process.env.MYSQL_PASSWORD,
-    HOST:process.env.HOST
+    SQL_URI: process.env.SQL_URI,
+    MYSQL_USER: process.env.MYSQL_USER,
+    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
+    HOST: process.env.HOST,
   };
 };
 

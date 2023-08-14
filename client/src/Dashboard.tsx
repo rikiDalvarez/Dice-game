@@ -36,6 +36,7 @@ const Dashboard: React.FC = () => {
 	return (
 		<div>
 			<h2>Dashboard</h2>
+			{/* add loading skeleton shadcn */}
 			{data ? <pre>{data}</pre> : <p>Loading...</p>}
 		</div>
 	);
