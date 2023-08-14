@@ -33,16 +33,6 @@ export class PlayerMySQLManager implements PlayerInterface {
         });
     }
 
-    // I WAS THINKING MAYBE WE CAN CREATE A FUNCTION THAT MAKES A PLAYER/GAME JOIN, NOT SURE WE NEED IT
-    // async createPlayerGameJoin(): Promise<Player> {
-    //     const playerGamesJoin = await PlayerSQL.findAll({
-    //         include: [{
-    //             model: GameSQL
-    //         }]
-    //     })
-    //     return playerGamesJoin
-    // }
-
     async findPlayerByEmail(playerEmail: string): Promise<Player> {
         const playerDetails = await PlayerSQL.findOne({
             where: { email: playerEmail },
@@ -155,66 +145,66 @@ export class PlayerMySQLManager implements PlayerInterface {
         return returnPlayer;
     }
 
-  async addGame(player: Player): Promise<boolean> {
-    const transaction = await sequelize.transaction();
+    async addGame(player: Player): Promise<boolean> {
+        const transaction = await sequelize.transaction();
 
-    try {
-      const id = player.id;
-      const gameDoc = this.createGameDoc(player.games, id);
-      await GameSQL.destroy({
-        where: { player_id: id },
-        transaction,
-      });
-      await GameSQL.bulkCreate(gameDoc, { transaction });
-      await PlayerSQL.update(
-        { successRate: player.successRate },
-        {
-          where: {
-            id: id,
-          },
-          transaction,
+        try {
+            const id = player.id;
+            const gameDoc = this.createGameDoc(player.games, id);
+            await GameSQL.destroy({
+                where: { player_id: id },
+                transaction,
+            });
+            await GameSQL.bulkCreate(gameDoc, { transaction });
+            await PlayerSQL.update(
+                { successRate: player.successRate },
+                {
+                    where: {
+                        id: id,
+                    },
+                    transaction,
+                }
+            );
+
+            await transaction.commit();
+        } catch (error) {
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw new Error("transaction failed");
         }
-      );
-
-      await transaction.commit();
-    } catch (error) {
-      if (transaction) {
-        await transaction.rollback();
-      }
-      throw new Error("transaction failed");
-    }
-    const lastGameResult = player.games[player.games.length - 1].gameWin;
+        const lastGameResult = player.games[player.games.length - 1].gameWin;
         return lastGameResult;
     }
 
-  async deleteAllGames(player: Player): Promise<boolean> {
-    const id = player.id;
-    const response = await GameSQL.destroy({
-      where: {
-        player_id: id,
-      },
-    });
- //----> en este caso podemos pensar si se debe hacer throw Error 
- //---->porque cuando 'no deletion' vamos a revolver false, otross errores va a coger nuestro errerHandler 
-    //if (response === 0) {
-     //   throw new Error("Error deleting all games")
-    //}
-    const isDeleted = response > 0;
-    return isDeleted;
-  }
-
-  async getGames(playerId: string): Promise<GameType[]> {
-    const playerDetails = await PlayerSQL.findByPk(playerId, {
-      include: [PlayerSQL.associations.games],
-    });
-
-    if (playerDetails === null) {
-        throw new Error("Player doesn't exist")
+    async deleteAllGames(player: Player): Promise<boolean> {
+        const id = player.id;
+        const response = await GameSQL.destroy({
+            where: {
+                player_id: id,
+            },
+        });
+        //----> en este caso podemos pensar si se debe hacer throw Error 
+        //---->porque cuando 'no deletion' vamos a revolver false, otross errores va a coger nuestro errerHandler 
+        //if (response === 0) {
+        //   throw new Error("Error deleting all games")
+        //}
+        const isDeleted = response > 0;
+        return isDeleted;
     }
 
-    const games = await playerDetails?.getGames();
-    return games;
-  }
+    async getGames(playerId: string): Promise<GameType[]> {
+        const playerDetails = await PlayerSQL.findByPk(playerId, {
+            include: [PlayerSQL.associations.games],
+        });
+
+        if (playerDetails === null) {
+            throw new Error("Player doesn't exist")
+        }
+
+        const games = await playerDetails?.getGames();
+        return games;
+    }
 }
 
 export class RankingMySQLManager implements RankingInterface {
@@ -224,22 +214,32 @@ export class RankingMySQLManager implements RankingInterface {
         this.ranking = ranking;
     }
 
-    // fake function to test
+    // he intentado así pero es demasiado complicado parece
+    // async getMeanSuccesRate(): Promise<number> {
+    //     const meanValue = await PlayerSQL.findAll({
+    //         attributes: [
+    //             [sequelize.fn("AVG", sequelize.col("successRate")), "meanValue"]
+    //         ]
+    //     });
+    //     return meanValue.length > 0 ? meanValue[0].getDataValue("meanValue") : 0;
+    // }
+
+    // así es más fácil
     async getMeanSuccesRate(): Promise<number> {
-        const meanValue = await PlayerDocument.aggregate([
-            {
-                $group: {
-                    _id: null,
-                    meanValue: { $avg: "$successRate" },
-                },
-            },
-        ]);
-        return meanValue.length > 0 ? meanValue[0].meanValue : 0;
+        const sumSuccessRate = await PlayerSQL.sum('successRate');
+        const players = await PlayerSQL.findAll();
+        console.log("sum: ", sumSuccessRate)
+        console.log("players-getMeanSuccesRate: ", players)
+        return players.length > 0 ? sumSuccessRate / players.length : 0
     }
 
     // fake function to test
     async getPlayersRanking(): Promise<Player[]> {
-        const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+        const playerRanking = await PlayerSQL.findAll({
+            include: [PlayerSQL.associations.games],
+            order: ["successRate", "DESC"],
+        });
+        console.log(playerRanking)
         if (!playerRanking) {
             throw new Error("no players found");
         }
@@ -247,12 +247,12 @@ export class RankingMySQLManager implements RankingInterface {
             return new Player(
                 players.email,
                 players.password,
-                players.games,
+                players.games!,
                 players.name,
                 players.id
             );
         });
-
+        console.log("players-getPlayersRanking: ", players)
         return players;
     }
 
