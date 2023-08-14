@@ -7,7 +7,7 @@ import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { sequelize } from "./mySQLConnection";
 
 export class PlayerMySQLManager implements PlayerInterface {
@@ -258,41 +258,16 @@ export class RankingMySQLManager implements RankingInterface {
     return this.ranking;
   }
 
-  // fake function to test
   async getWinner(): Promise<Ranking> {
-    try {
-      const groupedPlayers = await PlayerDocument.aggregate([
-        {
-          $group: {
-            _id: "$successRate",
-            wholeDocument: { $push: "$$ROOT" },
-          },
-        },
-        { $sort: { _id: -1 } },
-      ]);
-
-      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
-      const winnersDoc =
-        groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
-      const winners = winnersDoc.map((players: PlayerType) => {
-        return new Player(
-          players.email,
-          players.password,
-          players.games,
-          players.name,
-          players._id.toString()
-        );
-      });
-
-      this.ranking.winners = winners;
-      return this.ranking;
-    } catch (error) {
-      console.error("Error getting winners:", error);
-      throw error;
-    }
+    const rankingList = await this.getPlayersRanking();
+    const winningSuccessrate = rankingList[0].successRate;
+    const winners = rankingList.filter((player) => {
+      return player.successRate === winningSuccessrate;
+    });
+    this.ranking.winners = winners;
+    return this.ranking;
   }
 
-  // fake function to test
   async getLoser(): Promise<Ranking> {
     this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
       throw new Error(`error: ${err} `);

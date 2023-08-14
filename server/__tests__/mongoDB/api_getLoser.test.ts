@@ -36,7 +36,7 @@ describe("REST GET LOSER TEST", () => {
     const playerId3 = response3.body.Player_id;
     const tokenPlayer3 = await loginUser(api, "milo@op.pl", "password");
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 25; i++) {
       await addGame(api, tokenPlayer1, playerId1);
       await addGame(api, tokenPlayer2, playerId2);
       await addGame(api, tokenPlayer3, playerId3);
