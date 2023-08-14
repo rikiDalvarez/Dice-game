@@ -1,6 +1,6 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
-import { UpdateResult } from "mongodb";
+// import { UpdateResult } from "mongodb";
 import { mongoPlayerDocument as PlayerDocument } from "../Server";
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
@@ -53,9 +53,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (playerDetails) {
       const { name, email, password, games, id } = playerDetails;
       return new Player(email, password, games, name, id);
-    } else {
-      throw new Error("PlayerNotFound");
     }
+    throw new Error("PlayerNotFound");
   }
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await PlayerDocument.findOne({ email: playerEmail });
@@ -125,37 +124,29 @@ export class PlayerMongoDbManager implements PlayerInterface {
   } */
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
-    try {
-      const response = await PlayerDocument.replaceOne(
-        { _id: { $eq: id } },
-        this.createPlayerDoc(player)
-      );
-      if (response.modifiedCount === 1) {
-        const lastGameResult = player.games[player.games.length - 1].gameWin;
-        return lastGameResult;
-      }
-      throw new Error("DeletionError");
-    } catch (err) {
-      throw err;
+    const response = await PlayerDocument.replaceOne(
+      { _id: { $eq: id } },
+      this.createPlayerDoc(player)
+    );
+    if (response.modifiedCount === 1) {
+      const lastGameResult = player.games[player.games.length - 1].gameWin;
+      return lastGameResult;
     }
+    throw new Error("ErrorAddingGame");
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
-    try {
-      const response = await PlayerDocument.replaceOne(
-        { _id: { $eq: id } },
-        this.createPlayerDoc(player)
-      )
-      if (!response) {
-        throw new Error("DeletionError");
-      }
-      const isDeleted = response.modifiedCount === 1
-      return isDeleted;
-    } catch (err) {
-      throw err;
+    const response = await PlayerDocument.replaceOne(
+      { _id: { $eq: id } },
+      this.createPlayerDoc(player)
+    )
+    if (!response) {
+      throw new Error("DeletionError");
     }
-  };
+    const isDeleted = response.modifiedCount === 1
+    return isDeleted;
+  }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await PlayerDocument.findById(playerId);

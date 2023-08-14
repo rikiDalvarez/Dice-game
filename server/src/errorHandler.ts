@@ -41,6 +41,10 @@ export const errorHandler = (
       return response
         .status(500)
         .send({ Error: "Couldn't create the player" });
+    case "UpdatingError":
+      return response
+        .status(500)
+        .send({ Error: "Error playing one game" });
     case "DeletingError":
       return response
         .status(500)
