@@ -17,7 +17,7 @@ export const errorHandler = (
   }
 
   switch (error.message) {
-    case "incorrectEmailOrPassword":
+    case "EmailNotExists":
       return response
         .status(401)
         .send({ Error: "Incorrect email or password" });

@@ -41,7 +41,7 @@ export class PlayerMySQLManager implements PlayerInterface {
             const { name, email, password, id } = playerDetails;
             return new Player(email, password, [], name, id);
         } else {
-            throw new Error("Player not found");
+            throw new Error("EmailNotExists");
         }
     }
 
