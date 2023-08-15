@@ -220,7 +220,7 @@ export class RankingMySQLManager implements RankingInterface {
   constructor(ranking: Ranking) {
     this.ranking = ranking;
   }
-  
+  // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const response: SuccesRateObject = await sequelize.query(
       "SELECT ROUND(AVG(successRate),2) as successRate FROM `dice-game`.players",
@@ -285,12 +285,19 @@ export class RankingMySQLManager implements RankingInterface {
   }
 
   async getLoser(): Promise<Ranking> {
-    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
-      throw new Error(`error: ${err} `);
+    let losers = [];
+    const rankingList = await this.getPlayersRanking();
+
+    const minSuccessRate = Math.min(
+      ...rankingList.map((player) => {
+        return player.successRate;
+      })
+    );
+
+    losers = rankingList.filter((player) => {
+      return player.successRate === minSuccessRate;
     });
-
-    console.log(this.ranking.rankingList);
-
+    this.ranking.losers = losers;
     return this.ranking;
   }
 }
