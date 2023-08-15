@@ -1,12 +1,12 @@
 import { PlayerInterface } from "../application/PlayerInterface";
-import { GameType, Player} from "../domain/Player";
+import { GameType, Player } from "../domain/Player";
 import { PlayerSQL } from "./models/mySQLModels/PlayerMySQLModel";
 import { User } from "../domain/User";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op} from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { sequelize } from "./mySQLConnection";
 
 export class PlayerMySQLManager implements PlayerInterface {
@@ -92,7 +92,7 @@ export class PlayerMySQLManager implements PlayerInterface {
 
     if (playerDetails) {
       const { name, email, password, id } = playerDetails;
-      const games = playerDetails.games
+      const games = playerDetails.games;
       return new Player(email, password, games, name, id);
     } else {
       throw new Error("PlayerNotFound");
@@ -104,16 +104,16 @@ export class PlayerMySQLManager implements PlayerInterface {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
-    
-      const players = playersFromDB.map((players) => {
-        return new Player(
-          players.email,
-          players.password,
-          players.games,
-          players.name,
-          players.id
-        );
-      })
+
+    const players = playersFromDB.map((players) => {
+      return new Player(
+        players.email,
+        players.password,
+        players.games,
+        players.name,
+        players.id
+      );
+    });
 
     return new PlayerList(players);
   }
@@ -153,9 +153,10 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { player_id: id },
         transaction,
       });
-      await GameSQL.bulkCreate(gameDoc, { transaction })
-        .catch(() => { throw new Error("couldn't create games for the player")})
-    
+      await GameSQL.bulkCreate(gameDoc, { transaction }).catch(() => {
+        throw new Error("couldn't create games for the player");
+      });
+
       await PlayerSQL.update(
         { successRate: player.successRate },
         {
@@ -168,12 +169,11 @@ export class PlayerMySQLManager implements PlayerInterface {
 
       await transaction.commit();
     } catch (error) {
-        console.log('ERRRRRRR', error)
+      console.log("ERRRRRRR", error);
       if (transaction) {
-        
         await transaction.rollback();
       }
-      
+
       throw new Error("transaction failed");
     }
     const lastGameResult = player.games[player.games.length - 1].gameWin;
@@ -205,10 +205,14 @@ export class PlayerMySQLManager implements PlayerInterface {
       throw new Error("Player doesn't exist");
     }
 
-    const games =  playerDetails.games;
+    const games = playerDetails.games;
     return games;
   }
 }
+
+type SuccesRateObject = {
+  successRate: number;
+}[];
 
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
@@ -216,11 +220,14 @@ export class RankingMySQLManager implements RankingInterface {
   constructor(ranking: Ranking) {
     this.ranking = ranking;
   }
-  // así es más fácil
+  
   async getMeanSuccesRate(): Promise<number> {
-    const sumSuccessRate = await PlayerSQL.sum("successRate");
-    const players = await PlayerSQL.findAll();
-    return players.length > 0 ? sumSuccessRate / players.length : 0;
+    const response: SuccesRateObject = await sequelize.query(
+      "SELECT ROUND(AVG(successRate),2) as successRate FROM `dice-game`.players",
+      { type: QueryTypes.SELECT }
+    );
+    const successRate = Number(response[0].successRate);
+    return successRate;
   }
 
   async getPlayersRanking(): Promise<Player[]> {
@@ -240,7 +247,7 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
-    return players 
+    return players;
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
@@ -266,10 +273,10 @@ export class RankingMySQLManager implements RankingInterface {
   async getWinner(): Promise<Ranking> {
     let winners;
     const rankingList = await this.getPlayersRanking();
-    if (rankingList.length != 0){
-        winners = []
+    if (rankingList.length != 0) {
+      winners = [];
     }
-    const winningSuccessrate =  rankingList[0].successRate
+    const winningSuccessrate = rankingList[0].successRate;
     winners = rankingList.filter((player) => {
       return player.successRate === winningSuccessrate;
     });
