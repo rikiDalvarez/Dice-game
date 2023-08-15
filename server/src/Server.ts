@@ -17,7 +17,9 @@ export const server = app.listen(config.PORT, () => {
   console.log(`Server is listening on port ${config.PORT}! 🍄 `);
 });
 
-const isMongo = config.NODE_ENV === "mongo"
+// export const mongoDbConnection = connectDatabase(config.MONGO_URI, config.DATABASE);
+
+export const isMongo = config.NODE_ENV === "mongo";
 // export const isMongo = true;
 
 export let mongoDbConnection: Connection;

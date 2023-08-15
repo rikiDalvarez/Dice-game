@@ -28,6 +28,7 @@ export const createDatabase = async () => {
   }
 };
 
+//Crea instancia de DB
 export const sequelize = new Sequelize(
   config.DATABASE,
   config.MYSQL_USER,
@@ -37,7 +38,7 @@ export const sequelize = new Sequelize(
     dialect: "mysql",
   }
 );
-
+// Connect to database
 export const connectMySQLDatabase = async () => {
   try {
     await sequelize.authenticate();
