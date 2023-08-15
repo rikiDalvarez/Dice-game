@@ -14,7 +14,7 @@
     "dev_mongo": "cross-env NODE_ENV=mongo node ./dist/src/Server.js",
     "dev_sql": "cross-env NODE_ENV=sql node ./dist/src/Server.js",
     "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --testPathPattern=./__tests__/mongoDB",
-    "test_sql": "cross-env NODE_ENV=sql npx jest --runInBand --testPathPattern=./__tests__/mySQL",
+    "test_sql": "cross-env NODE_ENV=sql npx jest --silent --runInBand --testPathPattern=./__tests__/mySQL",
     "test_domain": "npx jest --silent --runInBand --testPathPattern=./__tests__/domain"
   },
   "keywords": [],
