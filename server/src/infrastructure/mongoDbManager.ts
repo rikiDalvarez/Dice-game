@@ -86,7 +86,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    //check if name is in use
     const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
@@ -95,8 +94,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       name: newName,
     });
     if (!player) {
-      //  yo veo mejor un --> case "PlayerNotFound": <--
-      throw new Error("NotFoundError");
+      throw new Error("PlayerNotFound");
     }
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
@@ -122,6 +120,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
         //throw new Error(`error: ${err} `);
       });
   } */
+  // OS GUSTA ASÍ addGame ?
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
     const response = await PlayerDocument.replaceOne(
@@ -132,7 +131,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       const lastGameResult = player.games[player.games.length - 1].gameWin;
       return lastGameResult;
     }
-    throw new Error("ErrorAddingGame");
+    throw new Error("AddingGameError");
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
@@ -173,15 +172,16 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
-    //this.ranking.average = meanValue.length > 0 ? meanValue[0].meanValue : 0;
-    //return this.ranking;
+    if (!meanValue) {
+      throw new Error("GettingSuccessRateAvgError")
+    }
     return meanValue.length > 0 ? meanValue[0].meanValue : 0;
   }
 
   async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
     if (!playerRanking) {
-      throw new Error("no players found");
+      throw new Error("PlayerNotFound");
     }
     const players = playerRanking.map((players) => {
       return new Player(
@@ -192,7 +192,6 @@ export class RankingMongoDbManager implements RankingInterface {
         players.id
       );
     });
-
     return players;
   }
 
@@ -217,8 +216,6 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: -1 } },
       ]);
-
-      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const winnersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const winners = winnersDoc.map((players: PlayerType) => {
@@ -249,8 +246,6 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: 1 } },
       ]);
-
-      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const losersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const losers = losersDoc.map((players: PlayerType) => {
@@ -262,7 +257,6 @@ export class RankingMongoDbManager implements RankingInterface {
           players._id.toString()
         );
       });
-
       this.ranking.losers = losers;
       return this.ranking;
     } catch (error) {
