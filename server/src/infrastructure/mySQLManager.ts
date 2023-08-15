@@ -276,14 +276,13 @@ export class RankingMySQLManager implements RankingInterface {
     let winners;
     const rankingList = await this.getPlayersRanking();
     if (rankingList.length != 0) {
-      winners = [];
+      const winningSuccessRate = rankingList[0].successRate;
+      winners = rankingList.filter((player) => {
+        return player.successRate === winningSuccessRate;
+      });
     }
-    const winningSuccessrate = rankingList[0].successRate;
-    winners = rankingList.filter((player) => {
-      return player.successRate === winningSuccessrate;
-    });
-    this.ranking.winners = winners;
-    console.log("WWWWWWWWW", winners)
+   
+    this.ranking.winners = winners ||[]
     return this.ranking;
   }
 

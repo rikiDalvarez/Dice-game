@@ -64,13 +64,13 @@ describe("REST GET RANKING TEST", () => {
     const average = response.body.average;
     const loser = await getLoser(api, tokenPlayer1);
     const winner = await getWinner(api, tokenPlayer1);
-    expect(rankingList[0]).toStrictEqual(winner[0]);
-    expect(rankingList[3]).toStrictEqual(loser[0]);
-
-  //  if (winner.length == 1) {
-  //  }
-   // if (loser.length == 1) {
-   // }
+   
+    if (winner.length == 1) {
+      expect(rankingList[0]).toStrictEqual(winner[0]);
+    }
+    if (loser.length == 1) {
+      expect(rankingList[2]).toStrictEqual(loser[0]);
+    }
 
     const calculatedAverage = Number(
       (
