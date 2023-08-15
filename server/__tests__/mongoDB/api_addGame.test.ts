@@ -2,11 +2,11 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import { connection as dbConnection } from "../../src/application/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
-import { playerMongoManager } from "../../src/application/chooseDatabase";
+import { playerService } from "../../src/application/dependencias";
 const api = supertest(app);
 
 describe("API ADD GAME TEST", () => {
@@ -78,10 +78,12 @@ describe("API ADD GAME TEST", () => {
       .set('Authorization', token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-    if (!playerMongoManager) {
-      throw new Error("playerMongoManager is not defined");
-    }
-    const playerAfterSecondGame = await playerMongoManager.findPlayer(playerId);
+    
+      if (!playerService) {
+        throw new Error("playerMongoManager is not defined");
+      }
+    
+    const playerAfterSecondGame = await playerService.findPlayer(playerId);
     expect(playerAfterSecondGame.games.length).toBe(10);
   });
 

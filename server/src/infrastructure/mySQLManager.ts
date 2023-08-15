@@ -6,8 +6,9 @@ import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op, QueryTypes } from "sequelize";
-import { sequelize } from "./mySQLConnection";
+import { Op, QueryTypes} from "sequelize";
+import { sequelize } from "../application/dependencias";
+
 
 export class PlayerMySQLManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
@@ -153,6 +154,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { player_id: id },
         transaction,
       });
+      
       await GameSQL.bulkCreate(gameDoc, { transaction }).catch(() => {
         throw new Error("couldn't create games for the player");
       });

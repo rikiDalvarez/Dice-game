@@ -4,7 +4,7 @@ import { User } from "../domain/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sanitizedConfig from "../../config/config";
-import { playerService, rankingService } from "./chooseDatabase";
+import { playerService, rankingService } from "./dependencias"
 // import { loginHandler } from "../infrastructure/loginHandler";
 
 export const handleLogin = async (
@@ -14,7 +14,6 @@ export const handleLogin = async (
 ) => {
   try {
     const { email, password } = req.body;
-
     const player = await playerService.findPlayerByEmail(email);
 
     // const token = await loginHandler(player, password);
@@ -61,6 +60,7 @@ export const postPlayer = async (
   res: Response,
   next: NextFunction
 ) => {
+
   if (!("email" in req.body) || !("password" in req.body)) {
     return res.status(400).json({ Bad_reqest: "email and password required" });
   }

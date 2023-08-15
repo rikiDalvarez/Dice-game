@@ -1,12 +1,14 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
 // import { UpdateResult } from "mongodb";
-import { mongoPlayerDocument as PlayerDocument } from "../Server";
+import { mongoPlayerDocument as PlayerDocument } from "../application/dependencias"
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
+
+
 export class PlayerMongoDbManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
     return {

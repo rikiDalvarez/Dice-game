@@ -1,7 +1,7 @@
-import { DataTypes, Model} from "sequelize";
-import { sequelize } from "../../mySQLConnection";
+import { DataTypes, Model, Sequelize} from "sequelize";
 import { IGameSQL} from "../../../domain/Game";
 // import { PlayerSQL } from "./PlayerMySQLModel";
+
 
 export class GameSQL extends Model<IGameSQL>{
   declare id?: string
@@ -10,6 +10,9 @@ export class GameSQL extends Model<IGameSQL>{
   declare dice2Value: number
   declare player_id:string
 }
+
+export function initializationGameTable(sequelize:Sequelize) {
+
 
 GameSQL.init(
   {
@@ -42,7 +45,7 @@ GameSQL.init(
     tableName: 'games'
   }
 );
-
+}
 // Define the association between PlayerSQL and GameSQL
 //PlayerSQL.hasMany(GameSQL, {
 // foreignKey: "player_id",

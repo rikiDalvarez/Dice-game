@@ -1,5 +1,4 @@
-import { DataTypes, Model} from "sequelize";
-import { sequelize } from "../../mySQLConnection";
+import { DataTypes, Model, Sequelize} from "sequelize";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
 
@@ -20,6 +19,8 @@ export class PlayerSQL extends Model<IPlayerSQL> {
   declare games: GameSQL[]
  
 }
+
+export function initializationPlayerTable(sequelize:Sequelize) {
 
 PlayerSQL.init({
   // MAYBE IS BETTER TO NAME IT _id THEN IT IS LIKE IN MONGODB
@@ -58,4 +59,4 @@ PlayerSQL.init({
     modelName: 'Player',
     tableName: 'players'
   }
-);
+);}
