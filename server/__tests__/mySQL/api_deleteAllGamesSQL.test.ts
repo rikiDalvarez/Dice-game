@@ -59,7 +59,7 @@ describe("API DELETE GAME TEST", () => {
     await api
       .delete(`/api/games/${fakePlayerId}`)
       .set("Authorization", token)
-      .expect(500)
+      .expect(404)
       .expect("Content-Type", /application\/json/);
 
     const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });

@@ -72,7 +72,7 @@ describe("API ADD GAME TEST", () => {
       const response = await api
         .post(`/api/games/${nonExistingPlayerId}`)
         .set('Authorization', token)
-        .expect(500)
+        .expect(404)
         .expect("Content-Type", /application\/json/);
       expect(response.body.error).toBe(undefined)
 
