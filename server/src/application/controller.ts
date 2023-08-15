@@ -4,7 +4,7 @@ import { User } from "../domain/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sanitizedConfig from "../../config/config";
-import { playerService, rankingService } from "./chooseDatabase";
+import { playerService, rankingService } from "./dependencies/controllerDependencies";
 // import { loginHandler } from "../infrastructure/loginHandler";
 
 export const handleLogin = async (
