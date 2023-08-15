@@ -42,10 +42,19 @@ describe("REST GET RANKING TEST", () => {
     const playerId3 = response3.body.Player_id;
     const tokenPlayer3 = await loginUser(api, "milo@op.pl", "password");
 
+
+    
+    const response4 = await createUser(api, "password", "eric@op.pl");
+    const playerId4= response4.body.Player_id;
+    const tokenPlayer4 = await loginUser(api, "eric@op.pl", "password");
+
+
     for (let i = 0; i < 25; i++) {
       await addGame(api, tokenPlayer1, playerId1);
       await addGame(api, tokenPlayer2, playerId2);
       await addGame(api, tokenPlayer3, playerId3);
+      await addGame(api, tokenPlayer4, playerId4);
+
     }
     
 
@@ -55,19 +64,21 @@ describe("REST GET RANKING TEST", () => {
     const average = response.body.average;
     const loser = await getLoser(api, tokenPlayer1);
     const winner = await getWinner(api, tokenPlayer1);
-    if (winner.length == 1) {
-      expect(rankingList[0]).toStrictEqual(winner[0]);
-    }
-    if (loser.length == 1) {
-      expect(rankingList[2]).toStrictEqual(loser[0]);
-    }
+    expect(rankingList[0]).toStrictEqual(winner[0]);
+    expect(rankingList[3]).toStrictEqual(loser[0]);
+
+  //  if (winner.length == 1) {
+  //  }
+   // if (loser.length == 1) {
+   // }
 
     const calculatedAverage = Number(
       (
         (rankingList[0].successRate +
           rankingList[1].successRate +
-          rankingList[2].successRate) /
-        3
+          rankingList[2].successRate+
+          rankingList[3].successRate) /
+        4
       ).toFixed(2)
     );
     expect(calculatedAverage).toBe(average);

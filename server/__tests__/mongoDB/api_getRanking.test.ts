@@ -39,6 +39,7 @@ describe("REST GET RANKING TEST", () => {
       await addGame(api, tokenPlayer1, playerId1);
       await addGame(api, tokenPlayer2, playerId2);
       await addGame(api, tokenPlayer3, playerId3);
+
     }
     
 

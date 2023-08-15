@@ -44,7 +44,6 @@ describe("API ADD GAME TEST", () => {
     
     const playerAfterSecondGame = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
     const games =  playerAfterSecondGame?.games ||[]
-    console.log('GAAAAAAA', games?.[0].toJSON())
     expect(games?.length).toBe(7);
   });
 

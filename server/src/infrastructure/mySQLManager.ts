@@ -247,6 +247,8 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
+    console.log("RANKING", players)
+
     return players;
   }
 
@@ -281,6 +283,7 @@ export class RankingMySQLManager implements RankingInterface {
       return player.successRate === winningSuccessrate;
     });
     this.ranking.winners = winners;
+    console.log("WWWWWWWWW", winners)
     return this.ranking;
   }
 
