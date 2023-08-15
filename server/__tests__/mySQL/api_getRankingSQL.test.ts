@@ -10,6 +10,7 @@ import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
 import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
 import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import {PlayerType } from "../../src/domain/Player";
 
 const api = supertest(app);
 
@@ -62,15 +63,20 @@ describe("REST GET RANKING TEST", () => {
     const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const average = response.body.average;
-    const loser = await getLoser(api, tokenPlayer1);
-    const winner = await getWinner(api, tokenPlayer1);
+    const losers = await getLoser(api, tokenPlayer1);
+    const winners = await getWinner(api, tokenPlayer1);
    
-    if (winner.length == 1) {
-      expect(rankingList[0]).toStrictEqual(winner[0]);
-    }
-    if (loser.length == 1) {
-      expect(rankingList[2]).toStrictEqual(loser[0]);
-    }
+    
+      const winnerNumbers = winners.length
+      const sortedWinnersFromRanking = rankingList.slice(0,winnerNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      const sortedWinners = winners.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      expect(sortedWinnersFromRanking).toStrictEqual(sortedWinners);
+
+      const loserNumbers = losers.length
+      const sortedLosersFromRanking = rankingList.slice(-loserNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      const sortedLosers = losers.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      expect(sortedLosersFromRanking).toStrictEqual(sortedLosers);
+
 
     const calculatedAverage = Number(
       (
