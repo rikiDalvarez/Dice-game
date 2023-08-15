@@ -2,21 +2,28 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
-import { PlayerType } from "../../src/domain/Player";
+import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import {PlayerType } from "../../src/domain/Player";
 
 const api = supertest(app);
 
 describe("REST GET RANKING TEST", () => {
+ 
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
-  });
+    await PlayerSQL.destroy({
+      where: {}
+    })
+    await GameSQL.destroy({
+      where: {}
+    })
+  })
 
   test("Should return ranking list:", async () => {
     const response1 = await createUser(
@@ -37,10 +44,17 @@ describe("REST GET RANKING TEST", () => {
     const tokenPlayer3 = await loginUser(api, "milo@op.pl", "password");
 
 
-    for (let i = 0; i < 50; i++) {
+    
+    const response4 = await createUser(api, "password", "eric@op.pl");
+    const playerId4= response4.body.Player_id;
+    const tokenPlayer4 = await loginUser(api, "eric@op.pl", "password");
+
+
+    for (let i = 0; i < 25; i++) {
       await addGame(api, tokenPlayer1, playerId1);
       await addGame(api, tokenPlayer2, playerId2);
       await addGame(api, tokenPlayer3, playerId3);
+      await addGame(api, tokenPlayer4, playerId4);
 
     }
     
@@ -63,19 +77,21 @@ describe("REST GET RANKING TEST", () => {
       const sortedLosers = losers.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
       expect(sortedLosersFromRanking).toStrictEqual(sortedLosers);
 
+
     const calculatedAverage = Number(
       (
         (rankingList[0].successRate +
           rankingList[1].successRate +
-          rankingList[2].successRate) /
-        3
+          rankingList[2].successRate+
+          rankingList[3].successRate) /
+        4
       ).toFixed(2)
     );
-    expect(calculatedAverage).toBe(Number(average.toFixed(2)));
+    expect(calculatedAverage).toBe(average);
   });
 
   afterAll((done) => {
-    dbConnection.close();
+    sequelize.close();
     server.close();
     done();
   });

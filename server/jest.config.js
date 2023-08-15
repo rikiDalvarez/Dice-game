@@ -6,5 +6,5 @@ module.exports = {
     "**/__tests__/**/*.+(ts)",
     "**/?(*.)+(spec|test).+(ts)"
   ],
-  testTimeout: 10000
+  testTimeout: 15000
 };

@@ -1,9 +1,8 @@
-{  "name": "server",
+{
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
-
   "scripts": {
     "start": "node ./dist/src/Server.js",
     "test": "npx jest --silent --runInBand --detectOpenHandles",
@@ -17,8 +16,6 @@
     "test_mongo": "cross-env NODE_ENV=mongo npx jest --silent --runInBand --testPathPattern=./__tests__/mongoDB",
     "test_sql": "cross-env NODE_ENV=sql npx jest --silent --runInBand --testPathPattern=./__tests__/mySQL",
     "test_domain": "npx jest --silent --runInBand --testPathPattern=./__tests__/domain"
-
-
   },
   "keywords": [],
   "author": "",
