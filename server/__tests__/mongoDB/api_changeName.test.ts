@@ -2,8 +2,7 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { connection as dbConnection } from "../../src/application/dependencias";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/application/dependencias";
+import { connection as dbConnection, playerService } from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
@@ -13,7 +12,7 @@ describe("REST CHANGE NAME TEST", () => {
   let token:string;
 let playerId:string
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    await dbConnection.dropCollection('players')
     const response = await createUser(
       api,
       "password",
@@ -35,7 +34,7 @@ playerId = response.body.Player_id
       .expect(200)
       .expect("Content-Type", /application\/json/);
     expect(responseAfterChange).toBeTruthy;
-    const user = await PlayerDocument.findOne({ _id: playerId });
+    const user = await playerService.findPlayer(playerId);
     if (user) {
       expect(user.name).toBe(newName);
     }

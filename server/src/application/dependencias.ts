@@ -10,7 +10,7 @@ import {
 } from "../infrastructure/mySQLManager";
 import { PlayerService } from "./PlayerService";
 import { RankingService } from "./RankingService";
-import { Connection, Model } from "mongoose";
+import { Connection} from "mongoose";
 import { Sequelize } from "sequelize";
 import { PlayerType } from "../domain/Player";
 import { playerSchema } from "../infrastructure/models/mongoDbModel";
@@ -24,7 +24,8 @@ import { initializationGameTable } from "../infrastructure/models/mySQLModels/Ga
 import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
 
-const isMongo = config.NODE_ENV === "mongo";
+//const isMongo = config.NODE_ENV === "mongo";
+const isMongo = true
 const ranking = new Ranking();
 
 let playerManager: PlayerMongoDbManager | PlayerMySQLManager;
@@ -32,13 +33,12 @@ let rankingManager: RankingMongoDbManager | RankingMySQLManager;
 
 export let connection: Connection 
 export let sequelize: Sequelize;
-export let mongoPlayerDocument: Model<PlayerType>;
 
 if (isMongo) {
   connection = connectDatabase(config.MONGO_URI, config.DATABASE);
-  mongoPlayerDocument = connection.model<PlayerType>("Player", playerSchema);
-  playerManager = new PlayerMongoDbManager();
-  rankingManager = new RankingMongoDbManager(ranking);
+  const playerDocument = connection.model<PlayerType>("Player", playerSchema);
+  playerManager = new PlayerMongoDbManager(playerDocument);
+  rankingManager = new RankingMongoDbManager(playerDocument,ranking);
 } else {
   createSQLDatabase()
   sequelize = createSQLConnection();

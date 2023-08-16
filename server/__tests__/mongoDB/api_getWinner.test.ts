@@ -3,7 +3,6 @@ import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { connection as dbConnection } from "../../src/application/dependencias";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
@@ -14,7 +13,7 @@ const api = supertest(app);
 
 describe("REST GET WINNER TEST", () => {
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    await dbConnection.dropCollection('players')
   });
 
   test("Should return winner", async () => {

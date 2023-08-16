@@ -3,7 +3,6 @@ import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { connection as dbConnection, playerService } from "../../src/application/dependencias";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/application/dependencias"
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
@@ -14,7 +13,7 @@ describe("API DELETE GAME TEST", () => {
   let token: string;
   let playerId: string;
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    await dbConnection.dropCollection('players')
     const response = await createUser(
       api,
       "password",

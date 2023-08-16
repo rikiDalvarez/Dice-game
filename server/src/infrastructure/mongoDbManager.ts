@@ -1,15 +1,20 @@
 import { Player, PlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
 // import { UpdateResult } from "mongodb";
-import { mongoPlayerDocument as PlayerDocument } from "../application/dependencias"
+//import { mongoPlayerDocument as PlayerDocument } from "../application/dependencias"
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
+import { Model } from "mongoose";
 
 
 export class PlayerMongoDbManager implements PlayerInterface {
+  private playerDocument: Model<PlayerType>
+  constructor(playerDocument:Model<PlayerType>){
+    this.playerDocument = playerDocument
+  }
   createPlayerDoc(player: Player) {
     return {
       id: player.id,
@@ -22,7 +27,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
   async createPlayer(player: User): Promise<string> {
-    const nameAlreadyInUse = await PlayerDocument.findOne({
+    const nameAlreadyInUse = await this.playerDocument.findOne({
       $or: [
         { email: player.email },
         {
@@ -43,7 +48,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: 0,
       registrationDate: player.registrationDate,
     };
-    const playerFromDB = await PlayerDocument.create(newPlayer);
+    const playerFromDB = await this.playerDocument.create(newPlayer);
     if (!playerFromDB) {
       throw new Error("CreatingPlayerError")
     }
@@ -51,7 +56,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async findPlayer(playerID: string): Promise<Player> {
-    const playerDetails = await PlayerDocument.findById(playerID);
+    const playerDetails = await this.playerDocument.findById(playerID);
     if (playerDetails) {
       const { name, email, password, games, id } = playerDetails;
       return new Player(email, password, games, name, id);
@@ -59,7 +64,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     throw new Error("PlayerNotFound");
   }
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
-    const playerDetails = await PlayerDocument.findOne({ email: playerEmail });
+    const playerDetails = await this.playerDocument.findOne({ email: playerEmail });
     if (!playerDetails) {
       throw new Error("EmailNotExists");
     }
@@ -68,7 +73,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async getPlayerList(): Promise<PlayerList> {
-    const playersFromDB = await PlayerDocument.find({});
+    const playersFromDB = await this.playerDocument.find({});
     if (!playersFromDB) {
       throw new Error("PlayerNotFound")
     }
@@ -89,11 +94,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
     newName: string
   ): Promise<Partial<Player>> {
     //check if name is in use
-    const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
+    const nameAlreadyInUse = await this.playerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
     }
-    const player = await PlayerDocument.findByIdAndUpdate(playerId, {
+    const player = await this.playerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
     if (!player) {
@@ -107,7 +112,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   /* async addGame(player: Player): Promise<boolean> {
     const id = player.id;
-    return PlayerDocument.replaceOne(
+    return this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
@@ -126,7 +131,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   } */
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
-    const response = await PlayerDocument.replaceOne(
+    const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     );
@@ -139,7 +144,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
-    const response = await PlayerDocument.replaceOne(
+    const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
@@ -151,7 +156,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
-    const player = await PlayerDocument.findById(playerId);
+    const player = await this.playerDocument.findById(playerId);
     if (!player) {
       throw new Error("PlayerNotFound")
     }
@@ -161,13 +166,14 @@ export class PlayerMongoDbManager implements PlayerInterface {
 // SHOULD WE SEPARATE RANKING IN ANOTHER FILE ?
 export class RankingMongoDbManager implements RankingInterface {
   ranking: Ranking;
-
-  constructor(ranking: Ranking) {
-    this.ranking = ranking;
+  private playerDocument: Model<PlayerType>
+  constructor(playerDocument:Model<PlayerType>, ranking:Ranking){
+    this.playerDocument = playerDocument
+    this.ranking = ranking
   }
 
   async getMeanSuccesRate(): Promise<number> {
-    const meanValue = await PlayerDocument.aggregate([
+    const meanValue = await this.playerDocument.aggregate([
       {
         $group: {
           _id: null,
@@ -181,7 +187,7 @@ export class RankingMongoDbManager implements RankingInterface {
   }
 
   async getPlayersRanking(): Promise<Player[]> {
-    const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+    const playerRanking = await this.playerDocument.find().sort({ successRate: -1 });
     if (!playerRanking) {
       throw new Error("no players found");
     }
@@ -210,7 +216,7 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getWinner(): Promise<Ranking> {
     try {
-      const groupedPlayers = await PlayerDocument.aggregate([
+      const groupedPlayers = await this.playerDocument.aggregate([
         {
           $group: {
             _id: "$successRate",
@@ -242,7 +248,7 @@ export class RankingMongoDbManager implements RankingInterface {
   }
   async getLoser(): Promise<Ranking> {
     try {
-      const groupedPlayers = await PlayerDocument.aggregate([
+      const groupedPlayers = await this.playerDocument.aggregate([
         {
           $group: {
             _id: "$successRate",

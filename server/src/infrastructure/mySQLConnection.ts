@@ -39,9 +39,9 @@ export const createSQLConnection = () => {
   }
 };
 
-export const testSQLConnection = async (connection: Sequelize) => {
+export const testSQLConnection = async (sequelize: Sequelize) => {
   try {
-    await connection.authenticate();
+    await sequelize.authenticate();
     console.log(
       "Connection to MySQL database has been established successfully."
     );

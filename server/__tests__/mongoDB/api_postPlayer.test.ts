@@ -1,6 +1,5 @@
 import {server} from "../../src/Server"
-import { connection as dbConnection } from "../../src/application/dependencias";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/application/dependencias";
+import { connection as dbConnection, playerService } from "../../src/application/dependencias";
 import bcrypt from "bcrypt";
 import supertest from "supertest";
 import { app } from "../../src/app";
@@ -13,7 +12,9 @@ const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    await PlayerDocument.deleteMany({});
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    await dbConnection.dropCollection('players')
+await dbConnection.createCollection('players')
   });
 
   test("Should create player:", async () => {
@@ -28,14 +29,14 @@ describe("API POST PLAYER TEST", () => {
       .expect("Content-Type", /application\/json/);
     const playerId = response.body.Player_id;
     console.log(playerId);
-    const playerDetails = await PlayerDocument.findById(playerId);
+    const playerDetails = await playerService.findPlayer(playerId)
     console.log(playerDetails);
 
     if (playerDetails) {
       console.log(playerDetails);
-      const { name, email, password, games, _id, successRate } = playerDetails;
+      const { name, email, password, games, id, successRate } = playerDetails;
       const passwordMatch = bcrypt.compare('first password', password)
-      expect(_id.toString()).toBe(playerId);
+      expect(id).toBe(playerId);
       expect(name).toBe("first user");
       expect(passwordMatch).toBeTruthy;
       expect(email).toBe("mafalda@op.pl");
