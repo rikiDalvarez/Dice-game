@@ -34,8 +34,8 @@ if (config.NODE_ENV === "production"|| config.NODE_ENV === "dev"){
   dataBaseName = config.TEST_DATABASE
 }
 
-//const isMongo = config.DATABASE_ENV === "mongo";
-const isMongo = false
+const isMongo = config.DATABASE_ENV === "mongo";
+//const isMongo = false
 const ranking = new Ranking();
 
 let playerManager: PlayerInterface
