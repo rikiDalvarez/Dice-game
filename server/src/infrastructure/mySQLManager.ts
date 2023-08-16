@@ -7,7 +7,7 @@ import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op, QueryTypes} from "sequelize";
-import { sequelize } from "../application/dependencias";
+import { dataBaseName, sequelize } from "../application/dependencias";
 
 
 export class PlayerMySQLManager implements PlayerInterface {
@@ -214,7 +214,7 @@ export class RankingMySQLManager implements RankingInterface {
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const response: SuccesRateObject = await sequelize.query(
-      "SELECT ROUND(AVG(successRate),2) as successRate FROM `dice-game`.players",
+      `SELECT ROUND(AVG(successRate),2) as successRate FROM ${dataBaseName}.players`,
       { type: QueryTypes.SELECT }
     );
     const successRate = Number(response[0].successRate);
@@ -253,6 +253,7 @@ export class RankingMySQLManager implements RankingInterface {
     }
 
     this.ranking.average = await this.getMeanSuccesRate();
+ 
     // .catch((err) => {
     //     throw new Error(`error: ${err} `);
     // });

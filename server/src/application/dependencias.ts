@@ -27,15 +27,15 @@ import { PlayerInterface } from "./PlayerInterface";
 import { RankingInterface } from "./RankingInterface";
 
 
-let dataBaseName: string;
+export let dataBaseName: string;
 if (config.NODE_ENV === "production"|| config.NODE_ENV === "dev"){
   dataBaseName = config.DATABASE
-}else  {
+}else {
   dataBaseName = config.TEST_DATABASE
 }
 
-const isMongo = config.DATABASE_ENV === "mongo";
-//const isMongo = true
+//const isMongo = config.DATABASE_ENV === "mongo";
+const isMongo = false
 const ranking = new Ranking();
 
 let playerManager: PlayerInterface
@@ -50,7 +50,7 @@ if (isMongo) {
   playerManager = new PlayerMongoDbManager(playerDocument);
   rankingManager = new RankingMongoDbManager(playerDocument,ranking);
 } else {
-  createSQLDatabase({
+  createSQLDatabase(dataBaseName, {
     host: config.HOST,
     user: config.MYSQL_USER,
     password: config.MYSQL_PASSWORD,

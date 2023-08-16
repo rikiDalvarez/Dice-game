@@ -8,11 +8,11 @@ type connectionConfig ={
 
 }
 
-export const createSQLDatabase = async (connectionConfig:connectionConfig) => {
+export const createSQLDatabase = async (dataBaseName:string, connectionConfig:connectionConfig) => {
   const connection = await createConnection(connectionConfig);
   try {
-    await connection.query("CREATE DATABASE IF NOT EXISTS `dice-game`");
-    console.log('Database "dice-game" created successfully.');
+    await connection.query(`CREATE DATABASE IF NOT EXISTS ${dataBaseName}`);
+    console.log(`Database ${dataBaseName} created successfully.`);
   } catch (error) {
     console.error("Unable to create database:", error);
     throw error;
