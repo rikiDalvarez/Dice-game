@@ -1,0 +1,30 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --color-primary: #199a48;
+  /* Replace with your primary color */
+  --color-secondary: #bfb02a;
+  /* Replace with your secondary color */
+}
+
+@keyframes colorMovement {
+
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+
+  50% {
+    background-position: 100% 0;
+  }
+}
+
+.bg-color-movement {
+  background: linear-gradient(to right, var(--color-primary), white, var(--color-secondary));
+  background-size: 300% 100%;
+  /* Triple the width for smooth movement */
+  animation: colorMovement 20s infinite linear;
+}
+

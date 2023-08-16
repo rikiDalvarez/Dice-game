@@ -1,0 +1,100 @@
+name: DICE_GAME
+
+on:
+  push:
+    branches: 
+      - "main"
+      - "development"
+      - "working_area"
+  pull_request:
+    branches: 
+      - "main" 
+      - "development"
+      - "working_area"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: DICE_GAME
+    
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        fetch-depth: 0
+
+    - name: Create .env file
+      env: 
+          MONGO_URI: '${{secrets.MONGO_URI}}'
+          TEST_DATABASE: '${{secrets.TEST_DATABASE}}'
+          SQL_URI: '${{secrets.SQL_URI}}'
+          PORT: '${{secrets.PORT}}'
+          JWT_SECRET: '${{secrets.JWT_SECRET}}'
+          MYSQL_ROOT_PASSWORD: '${{ secrets.MYSQL_ROOT_PASSWORD}}'
+          MYSQL_USER: '${{ secrets.MYSQL_USER}}' 
+          MYSQL_PASSWORD: '${{ secrets.MYSQL_PASSWORD}}'
+          HOST: '${{ secrets.HOST}}'
+
+
+      run: |
+          cd server
+          echo "MONGO_URI=${MONGO_URI}" >> .env
+          echo "DATABASE=${DATABASE}" >> .env
+          echo "TEST_DATABASE"="test" >> .env
+          echo "PORT=${PORT}" >> .env
+          echo "SQL_URI=${SQL_URI}" >> .env
+          echo "JWT_SECRET=${JWT_SECRET}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" >> .env
+          echo "MYSQL_USER=${MYSQL_USER}" >> .env
+          echo "MYSQL_PASSWORD=${MYSQL_PASSWORD}" >> .env
+          echo "HOST=${HOST}" >> .env
+
+    - name: Print .env file
+      run: |
+          echo "Printing .env:"
+          cat server/.env
+   
+    - name: Install Node.js 
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.8.0
+      with:
+          mongodb-version: 6.0
+          mongodb-port: 27017
+
+    - name: Start mySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql version: '8.0'
+        mysql database: 'test'
+        mysql root password: '${{secrets.MYSQL_ROOT_PASSWORD}}'
+        mysql user: '${{ secrets.MYSQL_USER}}' 
+    
+  
+    - name: Build NODE APP
+      run: |
+        npm ci
+        npm run eslint
+        npm run build
+      working-directory: ./server
+   
+    
+    - name: Run sql_test
+      run: |
+        npm run test_sql
+      working-directory: ./server
+
+    - name: Run mongo_test
+      run: |
+        npm run test_mongo
+      working-directory: ./server
+    - name: Run domain_test
+      run: |
+         npm run test_domain
+      working-directory: ./server
+    
+      
+    
+        
