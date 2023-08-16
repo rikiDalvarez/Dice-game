@@ -1,14 +1,15 @@
 import { Sequelize } from "sequelize";
-import "dotenv/config";
 import { createConnection } from "mysql2/promise";
-import config from "../../config/config";
 
-export const createSQLDatabase = async () => {
-  const connection = await createConnection({
-    host: config.HOST,
-    user: config.MYSQL_USER,
-    password: config.MYSQL_PASSWORD,
-  });
+type connectionConfig ={
+  host: string
+    user: string
+    password: string
+
+}
+
+export const createSQLDatabase = async (connectionConfig:connectionConfig) => {
+  const connection = await createConnection(connectionConfig);
   try {
     await connection.query("CREATE DATABASE IF NOT EXISTS `dice-game`");
     console.log('Database "dice-game" created successfully.');
@@ -20,14 +21,13 @@ export const createSQLDatabase = async () => {
   }
 };
 
-export const createSQLConnection = () => {
+export const createSQLConnection = (database:string,user:string, password:string, host:string) => {
   try {
     const connection = new Sequelize(
-      config.DATABASE,
-      config.MYSQL_USER,
-      config.MYSQL_PASSWORD,
-      {
-        host: config.HOST,
+      database,
+      user,
+password,      {
+        host: host,
         dialect: "mysql",
       }
     );

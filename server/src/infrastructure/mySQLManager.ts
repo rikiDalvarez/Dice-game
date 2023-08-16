@@ -11,17 +11,6 @@ import { sequelize } from "../application/dependencias";
 
 
 export class PlayerMySQLManager implements PlayerInterface {
-  createPlayerDoc(player: Player) {
-    return {
-      id: player.id,
-      email: player.email,
-      password: player.password,
-      registrationDate: player.registrationDate,
-      games: player.games,
-      name: player.name,
-      successRate: player.successRate,
-    };
-  }
   createGameDoc(games: Array<GameType>, id: string) {
     return games.map((game) => {
       return {

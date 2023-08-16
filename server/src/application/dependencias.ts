@@ -24,8 +24,8 @@ import { initializationGameTable } from "../infrastructure/models/mySQLModels/Ga
 import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
 
-//const isMongo = config.NODE_ENV === "mongo";
-const isMongo = true
+const isMongo = config.NODE_ENV === "mongo";
+//const isMongo = false
 const ranking = new Ranking();
 
 let playerManager: PlayerMongoDbManager | PlayerMySQLManager;
@@ -40,8 +40,16 @@ if (isMongo) {
   playerManager = new PlayerMongoDbManager(playerDocument);
   rankingManager = new RankingMongoDbManager(playerDocument,ranking);
 } else {
-  createSQLDatabase()
-  sequelize = createSQLConnection();
+  createSQLDatabase({
+    host: config.HOST,
+    user: config.MYSQL_USER,
+    password: config.MYSQL_PASSWORD,
+  })
+  sequelize = createSQLConnection( config.DATABASE,
+    config.MYSQL_USER,
+    config.MYSQL_PASSWORD,
+     config.HOST,
+    );
   testSQLConnection(sequelize)
   initializationGameTable(sequelize)
   initializationPlayerTable(sequelize)
