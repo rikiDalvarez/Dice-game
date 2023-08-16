@@ -1,10 +1,12 @@
 import { Ranking } from "../../domain/Ranking";
 import { GameSQL } from "../../infrastructure/models/mySQLModels/GameMySQLModel";
 import { PlayerSQL } from "../../infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { createDatabase, sequelize } from "../../infrastructure/mySQLConnection";
+import { connectMySQLDatabase, createDatabase, sequelize } from "../../infrastructure/mySQLConnection";
 import { PlayerMySQLManager, RankingMySQLManager } from "../../infrastructure/mySQLManager";
 import { PlayerService } from "../PlayerService";
 import { RankingService } from "../RankingService";
+
+export let mySQLConnection = connectMySQLDatabase();
 
 const ranking = new Ranking();
 

@@ -5,9 +5,9 @@ import { RankingService } from "../RankingService";
 import { mongoDependencies } from "./mongoDependecies";
 import { mySQLDependencies } from "./sqlDependencies";
 
-export let playerService: PlayerService;
-export let rankingService: RankingService;
-export let playerMongoManager: PlayerMongoDbManager;
+export let playerService: PlayerService
+export let rankingService: RankingService
+export let playerMongoManager: PlayerMongoDbManager | undefined
 
 const chooseDatabase = async () => {
   if (config.NODE_ENV === "mongo") {
@@ -26,4 +26,7 @@ const chooseDatabase = async () => {
   }
 }
 
-chooseDatabase()
+chooseDatabase().then(services => {
+  return { playerService, rankingService, playerMongoManager } = services;
+});
+

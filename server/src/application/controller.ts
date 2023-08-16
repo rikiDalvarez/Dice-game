@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sanitizedConfig from "../../config/config";
 import { playerService, rankingService } from "./dependencies/controllerDependencies";
+
+
 // import { loginHandler } from "../infrastructure/loginHandler";
 
 export const handleLogin = async (
