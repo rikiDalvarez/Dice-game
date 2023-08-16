@@ -24,8 +24,8 @@ import { initializationGameTable } from "../infrastructure/models/mySQLModels/Ga
 import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
 
-const isMongo = config.NODE_ENV === "mongo";
-//const isMongo = false
+//const isMongo = config.NODE_ENV === "mongo";
+const isMongo = false
 const ranking = new Ranking();
 
 let playerManager: PlayerMongoDbManager | PlayerMySQLManager;
