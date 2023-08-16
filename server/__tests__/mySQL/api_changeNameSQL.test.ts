@@ -1,16 +1,18 @@
 import supertest from "supertest";
-import { server } from "../../src/Server";
+// import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/application/dependencias";
+import { initDatabase, sequelize } from "../../src/application/dependencias";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
+
 const api = supertest(app);
 let token:string;
 let playerId:string
 describe("REST CHANGE NAME TEST", () => {
+  beforeAll(async () => await initDatabase())
   beforeEach(async () => {
     await PlayerSQL.destroy({
       where: {}
@@ -49,13 +51,11 @@ playerId = response.body.Player_id
   });
 
   test("Should return confict if new name is used by other player:", async () => {
-    await createUser(api, "password", "mafalda@op.pl", "mafalda");
 
-    const response = await createUser(api, "password", "riki@op.pl", "riki");
-    const userId = response.body.Player_id;
+    await createUser(api, "password", "riki@op.pl", "riki");
     const newName = "riki";
     await api
-      .put(`/api//players/${userId}`)
+      .put(`/api//players/${playerId}`)
       .set('Authorization', token)
       .send({ name: newName })
       .expect(409)
@@ -63,7 +63,6 @@ playerId = response.body.Player_id
   });
 
   test("Should return NotFoundError if wrong id:", async () => {
-    await createUser(api, "password", "mafalda@op.pl", "mafalda");
     await createUser(api, "password", "riki@op.pl", "riki");
     const nonExistingUserId = "00d203afb61233613317249a";
     const newName = "Jose";
@@ -77,7 +76,7 @@ playerId = response.body.Player_id
 
   afterAll(async () => {
     await sequelize.close();
-    server.close();
+    // server.close();
    
   });
 });

@@ -1,8 +1,8 @@
 import supertest from "supertest";
-import { server } from "../../src/Server";
+//import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { connection as dbConnection } from "../../src/application/dependencias";
+import { connection as dbConnection, initDatabase } from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { playerService } from "../../src/application/dependencias";
@@ -11,6 +11,8 @@ const api = supertest(app);
 describe("API ADD GAME TEST", () => {
   let token: string;
   let playerId: string
+  beforeAll(async () => await initDatabase())
+
   beforeEach(async () => {
    await dbConnection.dropCollection('players')
     
@@ -88,9 +90,7 @@ describe("API ADD GAME TEST", () => {
   });
 
 
-  afterAll((done) => {
-    dbConnection.close();
-    server.close();
-    done();
+  afterAll(async () => {
+    await dbConnection.close();
   });
 });

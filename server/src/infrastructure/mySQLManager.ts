@@ -7,10 +7,21 @@ import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op, QueryTypes} from "sequelize";
-import { dataBaseName, sequelize } from "../application/dependencias";
+import { sequelize } from "../application/dependencias";
 
 
 export class PlayerMySQLManager implements PlayerInterface {
+  createPlayerDoc(player: Player) {
+    return {
+      id: player.id,
+      email: player.email,
+      password: player.password,
+      registrationDate: player.registrationDate,
+      games: player.games,
+      name: player.name,
+      successRate: player.successRate,
+    };
+  }
   createGameDoc(games: Array<GameType>, id: string) {
     return games.map((game) => {
       return {
@@ -214,7 +225,8 @@ export class RankingMySQLManager implements RankingInterface {
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const response: SuccesRateObject = await sequelize.query(
-      `SELECT ROUND(AVG(successRate),2) as successRate FROM ${dataBaseName}.players`,
+      // TODO: stop hardcoding database name in code!
+      "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
       { type: QueryTypes.SELECT }
     );
     const successRate = Number(response[0].successRate);
@@ -238,7 +250,6 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
-    console.log("RANKING", players)
 
     return players;
   }
@@ -253,7 +264,6 @@ export class RankingMySQLManager implements RankingInterface {
     }
 
     this.ranking.average = await this.getMeanSuccesRate();
- 
     // .catch((err) => {
     //     throw new Error(`error: ${err} `);
     // });
@@ -267,12 +277,14 @@ export class RankingMySQLManager implements RankingInterface {
   async getWinner(): Promise<Ranking> {
     let winners;
     const rankingList = await this.getPlayersRanking();
+    console.log("RANKING LIST:", rankingList)
     if (rankingList.length != 0) {
       const winningSuccessRate = rankingList[0].successRate;
       winners = rankingList.filter((player) => {
         return player.successRate === winningSuccessRate;
       });
     }
+    console.log("WINNERS:", winners)
    
     this.ranking.winners = winners ||[]
     return this.ranking;

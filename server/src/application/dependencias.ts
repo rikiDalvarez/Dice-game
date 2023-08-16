@@ -10,65 +10,67 @@ import {
 } from "../infrastructure/mySQLManager";
 import { PlayerService } from "./PlayerService";
 import { RankingService } from "./RankingService";
-import { Connection} from "mongoose";
+import { Connection } from "mongoose";
 import { Sequelize } from "sequelize";
 import { PlayerType } from "../domain/Player";
 import { playerSchema } from "../infrastructure/models/mongoDbModel";
 import { connectDatabase } from "../infrastructure/mongoDbConnection";
 import {
-    createSQLConnection,
+  createSequelizer,
   createSQLDatabase,
-  testSQLConnection,
 } from "../infrastructure/mySQLConnection";
-import { initializationGameTable } from "../infrastructure/models/mySQLModels/GameMySQLModel";
-import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
+import { initializeGameTable } from "../infrastructure/models/mySQLModels/GameMySQLModel";
 import { PlayerInterface } from "./PlayerInterface";
 import { RankingInterface } from "./RankingInterface";
+import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
+import { initializePlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
 
 
 export let dataBaseName: string;
-if (config.NODE_ENV === "production"|| config.NODE_ENV === "dev"){
-  dataBaseName = config.DATABASE
-}else {
-  dataBaseName = config.TEST_DATABASE
+if (config.NODE_ENV === "production" || config.NODE_ENV === "dev") {
+  dataBaseName = config.DATABASE;
+} else {
+  dataBaseName = config.TEST_DATABASE;
 }
 
-const isMongo = config.DATABASE_ENV === "mongo";
-//const isMongo = false
+//const isMongo = config.DATABASE_ENV === "mongo";
+const isMongo = true;
 const ranking = new Ranking();
 
-let playerManager: PlayerInterface
-let rankingManager: RankingInterface
+let playerManager: PlayerInterface;
+let rankingManager: RankingInterface;
 
-export let connection: Connection 
+export let connection: Connection;
 export let sequelize: Sequelize;
 
-if (isMongo) {
-  connection = connectDatabase(config.MONGO_URI, dataBaseName);
-  const playerDocument = connection.model<PlayerType>("Player", playerSchema);
-  playerManager = new PlayerMongoDbManager(playerDocument);
-  rankingManager = new RankingMongoDbManager(playerDocument,ranking);
-} else {
-  createSQLDatabase(dataBaseName, {
-    host: config.HOST,
-    user: config.MYSQL_USER,
-    password: config.MYSQL_PASSWORD,
-  })
-  sequelize = createSQLConnection( dataBaseName,
-    config.MYSQL_USER,
-    config.MYSQL_PASSWORD,
-     config.HOST,
+export async function initDatabase(): Promise<void> {
+  if (isMongo) {
+    connection = connectDatabase(config.MONGO_URI, dataBaseName);
+    const playerDocument = connection.model<PlayerType>("Player", playerSchema);
+    playerManager = new PlayerMongoDbManager(playerDocument);
+    rankingManager = new RankingMongoDbManager(playerDocument, ranking);
+    return Promise.resolve();
+  } else {
+    await createSQLDatabase(dataBaseName, {
+      host: config.HOST,
+      user: config.MYSQL_USER,
+      password: config.MYSQL_PASSWORD,
+    });
+    sequelize = createSequelizer(
+      dataBaseName,
+      config.MYSQL_USER,
+      config.MYSQL_PASSWORD,
+      config.HOST
     );
-  testSQLConnection(sequelize)
-  initializationGameTable(sequelize)
-  initializationPlayerTable(sequelize)
-  createSQLTableRelations(sequelize)
-  
-  playerManager = new PlayerMySQLManager();
-  rankingManager = new RankingMySQLManager(ranking);
+    initializeGameTable(sequelize);
+    initializePlayerTable(sequelize);
+    await createSQLTableRelations(sequelize);
+  }
 }
 
+playerManager = new PlayerMySQLManager();
+rankingManager = new RankingMySQLManager(ranking);
 export const playerService = new PlayerService(playerManager);
 export const rankingService = new RankingService(rankingManager);
+
 
