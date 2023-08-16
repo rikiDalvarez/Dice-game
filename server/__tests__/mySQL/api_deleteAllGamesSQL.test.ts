@@ -3,9 +3,9 @@ import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import { PlayerSQL } from "../../src/infrastructure/mySql/models/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/mySql/models/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/dependencias";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 const api = supertest(app);
@@ -15,11 +15,11 @@ describe("API DELETE GAME TEST", () => {
   let playerId: string;
   beforeEach(async () => {
     await PlayerSQL.destroy({
-      where: {}
-    })
+      where: {},
+    });
     await GameSQL.destroy({
-      where: {}
-    })
+      where: {},
+    });
     const response = await createUser(
       api,
       "password",
@@ -33,8 +33,10 @@ describe("API DELETE GAME TEST", () => {
   test("Should delete all games:", async () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
-    const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
-    const games = player?.games ||[]
+    const player = await PlayerSQL.findByPk(playerId, {
+      include: [PlayerSQL.associations.games],
+    });
+    const games = player?.games || [];
     expect(games.length).toBe(2);
 
     await api
@@ -43,33 +45,38 @@ describe("API DELETE GAME TEST", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const gamesAfterDelete =  playerAfterDeleteGames?.games ||[]
+    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, {
+      include: [PlayerSQL.associations.games],
+    });
+    const gamesAfterDelete = playerAfterDeleteGames?.games || [];
     expect(gamesAfterDelete?.length).toBe(0);
   });
-  
+
   test("Should throw an error if can't delete games:", async () => {
-    const fakePlayerId = "fakeid"
+    const fakePlayerId = "fakeid";
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
-    const player =  await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] })
-    const games = player?.games ||[]
+    const player = await PlayerSQL.findByPk(playerId, {
+      include: [PlayerSQL.associations.games],
+    });
+    const games = player?.games || [];
     expect(games?.length).toBe(2);
 
     await api
       .delete(`/api/games/${fakePlayerId}`)
       .set("Authorization", token)
-      .expect(404)
+      .expect(500)
       .expect("Content-Type", /application\/json/);
 
-    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, { include: [PlayerSQL.associations.games] });
-    const gamesAfterDelete = playerAfterDeleteGames?.games ||[]
+    const playerAfterDeleteGames = await PlayerSQL.findByPk(playerId, {
+      include: [PlayerSQL.associations.games],
+    });
+    const gamesAfterDelete = playerAfterDeleteGames?.games || [];
     expect(gamesAfterDelete?.length).toBe(2);
   });
 
   afterAll(async () => {
     await sequelize.close();
     server.close();
-   
   });
 });

@@ -2,12 +2,11 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import { mongoConnection as dbConnection } from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
-
 
 const api = supertest(app);
 
@@ -36,7 +35,6 @@ describe("REST GET PLAYERS TEST", () => {
       .expect("Content-Type", /application\/json/);
     expect(games.body.length).toBe(2);
   });
-
 
   afterAll((done) => {
     dbConnection.close();

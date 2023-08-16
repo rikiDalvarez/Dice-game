@@ -2,8 +2,8 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import { mongoConnection as dbConnection } from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
@@ -26,8 +26,8 @@ describe("REST GET PLAYERS TEST", () => {
     for (let i = 0; i < 10; i++) {
       await createUser(api, passwords[i], emails[i], names[i]);
     }
-    
-    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0])
+
+    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0]);
 
     const response = await api
       .get(`/api/players`)
@@ -42,8 +42,6 @@ describe("REST GET PLAYERS TEST", () => {
       expect(value).toBe(names[0]);
     }
   });
-
- 
 
   afterAll((done) => {
     dbConnection.close();

@@ -2,12 +2,14 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import {
+  mongoConnection as dbConnection,
+  playerService,
+} from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
-import { playerMongoManager } from "../../src/application/chooseDatabase";
 
 const api = supertest(app);
 
@@ -29,10 +31,10 @@ describe("API DELETE GAME TEST", () => {
   test("Should delete all games:", async () => {
     await addGame(api, token, playerId);
     await addGame(api, token, playerId);
-    if (!playerMongoManager) {
+    if (!playerService) {
       throw new Error("playerMongoManager is not defined");
     }
-    const player = await playerMongoManager.findPlayer(playerId);
+    const player = await playerService.findPlayer(playerId);
     expect(player.games.length).toBe(2);
 
     await api
@@ -41,7 +43,7 @@ describe("API DELETE GAME TEST", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    const playerAfterSecondGame = await playerMongoManager.findPlayer(playerId);
+    const playerAfterSecondGame = await playerService.findPlayer(playerId);
     expect(playerAfterSecondGame.games.length).toBe(0);
   });
 

@@ -1,11 +1,10 @@
-// import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response, NextFunction } from "express";
 import { User } from "../domain/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sanitizedConfig from "../../config/config";
-import { playerService, rankingService } from "./chooseDatabase";
-// import { loginHandler } from "../infrastructure/loginHandler";
+import config from "../../config/config";
+import { playerService, rankingService } from "../infrastructure/dependencias";
+import { CustomRequest } from "../infrastructure/middleware/auth";
 
 export const handleLogin = async (
   req: Request,
@@ -14,10 +13,7 @@ export const handleLogin = async (
 ) => {
   try {
     const { email, password } = req.body;
-
     const player = await playerService.findPlayerByEmail(email);
-
-    // const token = await loginHandler(player, password);
 
     if (!player) {
       return res.status(401).json({ error: "no player found with this email" });
@@ -28,7 +24,7 @@ export const handleLogin = async (
       return res.status(401).json({ error: "authentication failed" });
     }
 
-    const token = jwt.sign({ userId: player.id }, sanitizedConfig.JWT_SECRET, {
+    const token = jwt.sign({ userId: player.id }, config.JWT_SECRET, {
       expiresIn: "1h",
     });
     res.json({ token });
@@ -111,10 +107,12 @@ export const deleteAllGames = async (
 };
 
 export const changeName = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
+  //using id from token
+  // console.log(req.userId === req.params.id);
   const playerId = req.params.id;
   const newName = req.body.name;
   try {
@@ -143,7 +141,7 @@ export const getGames = async (
 export const getRankingWithAverage = async (req: Request, res: Response) => {
   try {
     const ranking = await rankingService.getRankingWithAverage();
-    
+
     res
       .status(200)
       .json({ ranking: ranking.rankingList, average: ranking.average });

@@ -1,17 +1,9 @@
 import { Sequelize } from "sequelize";
 import "dotenv/config";
 import { createConnection } from "mysql2/promise";
-import config from "../../config/config";
+import config from "../../../config/config";
 
-// const connectionString = process.env.SQL_URL ?? "";
-// const database = process.env.SQL_DATABASE;
-/*
-export const sequelize = new Sequelize(connectionString, {
-  dialect: 'mysql',
-  database: database,
-});
-*/
-export const createDatabase = async () => {
+export const createSQLDatabase = async () => {
   const connection = await createConnection({
     host: config.HOST,
     user: config.MYSQL_USER,
@@ -28,20 +20,28 @@ export const createDatabase = async () => {
   }
 };
 
-//Crea instancia de DB
-export const sequelize = new Sequelize(
-  config.DATABASE,
-  config.MYSQL_USER,
-  config.MYSQL_PASSWORD,
-  {
-    host: config.HOST,
-    dialect: "mysql",
-  }
-);
-// Connect to database
-export const connectMySQLDatabase = async () => {
+export const createSQLConnection = () => {
   try {
-    await sequelize.authenticate();
+    const connection = new Sequelize(
+      config.DATABASE,
+      config.MYSQL_USER,
+      config.MYSQL_PASSWORD,
+      {
+        host: config.HOST,
+        dialect: "mysql",
+      }
+    );
+    console.log("Connected to SQL DB");
+    return connection;
+  } catch (err) {
+    console.log("DB conection error");
+    throw err;
+  }
+};
+
+export const testSQLConnection = async (connection: Sequelize) => {
+  try {
+    await connection.authenticate();
     console.log(
       "Connection to MySQL database has been established successfully."
     );

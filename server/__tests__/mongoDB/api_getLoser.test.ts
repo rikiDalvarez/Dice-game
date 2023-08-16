@@ -2,8 +2,8 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import { mongoConnection as dbConnection } from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
@@ -12,10 +12,8 @@ import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 const api = supertest(app);
 
 describe("REST GET LOSER TEST", () => {
- 
   beforeEach(async () => {
     await PlayerDocument.deleteMany({});
-
   });
 
   test("Should return winner", async () => {
@@ -42,7 +40,9 @@ describe("REST GET LOSER TEST", () => {
       await addGame(api, tokenPlayer3, playerId3);
     }
 
-    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
+    const response = await api
+      .get(`/api/ranking`)
+      .set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const loser = await getLoser(api, tokenPlayer1);
     if (loser.length == 1) {

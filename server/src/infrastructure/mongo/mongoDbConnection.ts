@@ -9,11 +9,9 @@ export function connectDatabase(
   try {
     const options = { dbName };
 
-    const connection = mongoose.createConnection(url, options);
-    //const PModel = connection.model<PlayerType>("player",
-    //playerSchema)
+    const mongoConnection = mongoose.createConnection(url, options);
     console.log("Connected to the database 🌱");
-    return connection;
+    return mongoConnection;
   } catch (error) {
     console.error("Error connecting to the database:", error);
     throw error;

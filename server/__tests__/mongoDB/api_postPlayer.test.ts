@@ -1,10 +1,11 @@
+import { server } from "../../src/Server";
+import { mongoConnection as dbConnection } from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import bcrypt from "bcrypt";
 import supertest from "supertest";
-import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
@@ -33,7 +34,7 @@ describe("API POST PLAYER TEST", () => {
     if (playerDetails) {
       console.log(playerDetails);
       const { name, email, password, games, _id, successRate } = playerDetails;
-      const passwordMatch = bcrypt.compare('first password', password)
+      const passwordMatch = bcrypt.compare("first password", password);
       expect(_id.toString()).toBe(playerId);
       expect(name).toBe("first user");
       expect(passwordMatch).toBeTruthy;
@@ -46,7 +47,7 @@ describe("API POST PLAYER TEST", () => {
   test("Should create more than one anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
     await createUser(api, "second password", "second.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -59,7 +60,7 @@ describe("API POST PLAYER TEST", () => {
 
   test("Should create anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -74,7 +75,7 @@ describe("API POST PLAYER TEST", () => {
 
   test("two anonim should have different emails:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     await api
       .post("/api/players")

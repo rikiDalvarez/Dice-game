@@ -1,13 +1,13 @@
-import { PlayerInterface } from "../application/PlayerInterface";
-import { GameType, Player } from "../domain/Player";
-import { PlayerSQL } from "./models/mySQLModels/PlayerMySQLModel";
-import { User } from "../domain/User";
-import { RankingInterface } from "../application/RankingInterface";
-import { Ranking } from "../domain/Ranking";
-import { PlayerList } from "../domain/PlayerList";
-import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
+import { PlayerInterface } from "../../application/PlayerInterface";
+import { GameType, Player } from "../../domain/Player";
+import { PlayerSQL } from "./models/PlayerMySQLModel";
+import { User } from "../../domain/User";
+import { RankingInterface } from "../../application/RankingInterface";
+import { Ranking } from "../../domain/Ranking";
+import { PlayerList } from "../../domain/PlayerList";
+import { GameSQL } from "./models/GameMySQLModel";
 import { Op, QueryTypes } from "sequelize";
-import { sequelize } from "./mySQLConnection";
+import { sequelize } from "../dependencias";
 
 export class PlayerMySQLManager implements PlayerInterface {
   createPlayerDoc(player: Player) {
@@ -153,6 +153,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { player_id: id },
         transaction,
       });
+
       await GameSQL.bulkCreate(gameDoc, { transaction }).catch(() => {
         throw new Error("couldn't create games for the player");
       });
@@ -247,7 +248,7 @@ export class RankingMySQLManager implements RankingInterface {
         players.id
       );
     });
-    console.log("RANKING", players)
+    console.log("RANKING", players);
 
     return players;
   }
@@ -281,8 +282,8 @@ export class RankingMySQLManager implements RankingInterface {
         return player.successRate === winningSuccessRate;
       });
     }
-   
-    this.ranking.winners = winners ||[]
+
+    this.ranking.winners = winners || [];
     return this.ranking;
   }
 

@@ -2,16 +2,16 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { mongoDbConnection as dbConnection } from "../../src/Server";
-import { mongoPlayerDocument as PlayerDocument } from "../../src/Server";
+import { mongoConnection as dbConnection } from "../../src/infrastructure/dependencias";
+import { mongoPlayerDocument as PlayerDocument } from "../../src/infrastructure/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
 describe("REST CHANGE NAME TEST", () => {
-  let token:string;
-let playerId:string
+  let token: string;
+  let playerId: string;
   beforeEach(async () => {
     await PlayerDocument.deleteMany({});
     const response = await createUser(
@@ -20,17 +20,15 @@ let playerId:string
       "mafalda@op.pl",
       "mafalda"
     );
-playerId = response.body.Player_id
-    token = await loginUser(api, 'mafalda@op.pl', 'password' )
-
+    playerId = response.body.Player_id;
+    token = await loginUser(api, "mafalda@op.pl", "password");
   });
 
   test("Should change name:", async () => {
-    
     const newName = "riki";
     const responseAfterChange = await api
       .put(`/api//players/${playerId}`)
-      .set('Authorization', token)
+      .set("Authorization", token)
       .send({ name: newName })
       .expect(200)
       .expect("Content-Type", /application\/json/);
@@ -47,7 +45,7 @@ playerId = response.body.Player_id
     const newName = "riki";
     await api
       .put(`/api//players/${userId}`)
-      .set('Authorization', token)
+      .set("Authorization", token)
       .send({ name: newName })
       .expect(409)
       .expect("Content-Type", /application\/json/);
@@ -58,7 +56,7 @@ playerId = response.body.Player_id
     const newName = "Jose";
     await api
       .put(`/api/players/${nonExistingUserId}`)
-      .set('Authorization', token)
+      .set("Authorization", token)
       .send({ name: newName })
       .expect(404)
       .expect("Content-Type", /application\/json/);

@@ -4,22 +4,22 @@ import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import { PlayerSQL } from "../../src/infrastructure/mySql/models/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/mySql/models/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/dependencias";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 
 const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-   await  PlayerSQL.destroy({
-      where: {}
-    })
-   await GameSQL.destroy({
-      where: {}
-    })
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await PlayerSQL.destroy({
+      where: {},
+    });
+    await GameSQL.destroy({
+      where: {},
+    });
   });
 
   test("Should create player:", async () => {
@@ -34,26 +34,24 @@ describe("API POST PLAYER TEST", () => {
       .expect("Content-Type", /application\/json/);
     const playerId = response.body.Player_id;
     const playerDetails = await PlayerSQL.findOne({
-      where: { id: playerId }
+      where: { id: playerId },
     });
 
     if (playerDetails) {
       const { name, email, password, id, successRate } = playerDetails;
-      const passwordMatch = bcrypt.compare('first password', password)
+      const passwordMatch = bcrypt.compare("first password", password);
       expect(id.toString()).toBe(playerId);
       expect(name).toBe("first user");
       expect(passwordMatch).toBeTruthy;
       expect(email).toBe("mafalda@op.pl");
-    expect(Number(successRate)).toBe(0);
+      expect(Number(successRate)).toBe(0);
     }
-
-    
   });
 
   test("Should create more than one anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
     await createUser(api, "second password", "second.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -61,13 +59,13 @@ describe("API POST PLAYER TEST", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    const listLength = response.body.playerList.length
+    const listLength = response.body.playerList.length;
     expect(listLength).toBe(2);
   });
 
   test("Should create anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -82,7 +80,7 @@ describe("API POST PLAYER TEST", () => {
 
   test("two anonim should have different emails:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     await api
       .post("/api/players")
@@ -142,11 +140,9 @@ describe("API POST PLAYER TEST", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
   });
-  
 
   afterAll(async () => {
     await sequelize.close();
     server.close();
-   
   });
 });

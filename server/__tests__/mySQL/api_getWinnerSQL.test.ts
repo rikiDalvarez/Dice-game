@@ -6,22 +6,20 @@ import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
-import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/infrastructure/mySQLConnection";
-
+import { PlayerSQL } from "../../src/infrastructure/mySql/models/PlayerMySQLModel";
+import { GameSQL } from "../../src/infrastructure/mySql/models/GameMySQLModel";
+import { sequelize } from "../../src/infrastructure/dependencias";
 
 const api = supertest(app);
 
 describe("REST GET WINNER TEST", () => {
   beforeEach(async () => {
     await PlayerSQL.destroy({
-      where: {}
-    })
+      where: {},
+    });
     await GameSQL.destroy({
-      where: {}
-    })
-  
+      where: {},
+    });
   });
   test("Should return winner", async () => {
     const response1 = await createUser(
@@ -47,8 +45,9 @@ describe("REST GET WINNER TEST", () => {
       await addGame(api, tokenPlayer3, playerId3);
     }
 
-
-    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
+    const response = await api
+      .get(`/api/ranking`)
+      .set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const winner = await getWinner(api, tokenPlayer1);
 
@@ -56,7 +55,6 @@ describe("REST GET WINNER TEST", () => {
       expect(rankingList[0]).toStrictEqual(winner[0]);
     }
   });
-
 
   afterAll(async () => {
     await sequelize.close();

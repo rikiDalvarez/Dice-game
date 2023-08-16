@@ -1,13 +1,15 @@
-import { Player, PlayerType } from "../domain/Player";
-import { PlayerInterface } from "../application/PlayerInterface";
+import { Player, PlayerType } from "../../domain/Player";
+import { PlayerInterface } from "../../application/PlayerInterface";
 // import { UpdateResult } from "mongodb";
-import { mongoPlayerDocument as PlayerDocument } from "../Server";
-import { User } from "../domain/User";
-import { GameType } from "../domain/Player";
-import { RankingInterface } from "../application/RankingInterface";
-import { Ranking } from "../domain/Ranking";
-import { PlayerList } from "../domain/PlayerList";
+import { mongoPlayerDocument } from "../dependencias";
+import { User } from "../../domain/User";
+import { GameType } from "../../domain/Player";
+import { RankingInterface } from "../../application/RankingInterface";
+import { Ranking } from "../../domain/Ranking";
+import { PlayerList } from "../../domain/PlayerList";
+
 export class PlayerMongoDbManager implements PlayerInterface {
+  //define Player Type
   createPlayerDoc(player: Player) {
     return {
       id: player.id,
@@ -19,14 +21,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: player.successRate,
     };
   }
+
   async createPlayer(player: User): Promise<string> {
-    const nameAlreadyInUse = await PlayerDocument.findOne({
+    const nameAlreadyInUse = await mongoPlayerDocument.findOne({
       $or: [
         { email: player.email },
         {
-          $and: [
-            { name: { $ne: "unknown" } },
-            { name: player.name }],
+          $and: [{ name: { $ne: "unknown" } }, { name: player.name }],
         },
       ],
     });
@@ -41,15 +42,15 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: 0,
       registrationDate: player.registrationDate,
     };
-    const playerFromDB = await PlayerDocument.create(newPlayer);
+    const playerFromDB = await mongoPlayerDocument.create(newPlayer);
     if (!playerFromDB) {
-      throw new Error("CreatingPlayerError")
+      throw new Error("CreatingPlayerError");
     }
     return playerFromDB.id;
   }
 
   async findPlayer(playerID: string): Promise<Player> {
-    const playerDetails = await PlayerDocument.findById(playerID);
+    const playerDetails = await mongoPlayerDocument.findById(playerID);
     if (playerDetails) {
       const { name, email, password, games, id } = playerDetails;
       return new Player(email, password, games, name, id);
@@ -57,7 +58,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
     throw new Error("PlayerNotFound");
   }
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
-    const playerDetails = await PlayerDocument.findOne({ email: playerEmail });
+    const playerDetails = await mongoPlayerDocument.findOne({
+      email: playerEmail,
+    });
     if (!playerDetails) {
       throw new Error("EmailNotExists");
     }
@@ -66,9 +69,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async getPlayerList(): Promise<PlayerList> {
-    const playersFromDB = await PlayerDocument.find({});
+    const playersFromDB = await mongoPlayerDocument.find({});
     if (!playersFromDB) {
-      throw new Error("PlayerNotFound")
+      throw new Error("PlayerNotFound");
     }
     const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
@@ -86,15 +89,19 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    const nameAlreadyInUse = await PlayerDocument.findOne({ name: newName });
+    //check if name is in use
+    const nameAlreadyInUse = await mongoPlayerDocument.findOne({
+      name: newName,
+    });
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
     }
-    const player = await PlayerDocument.findByIdAndUpdate(playerId, {
+    const player = await mongoPlayerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
     if (!player) {
-      throw new Error("PlayerNotFound");
+      //  yo veo mejor un --> case "PlayerNotFound": <--
+      throw new Error("NotFoundError");
     }
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
@@ -103,7 +110,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   /* async addGame(player: Player): Promise<boolean> {
     const id = player.id;
-    return PlayerDocument.replaceOne(
+    return mongoPlayerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
@@ -120,10 +127,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
         //throw new Error(`error: ${err} `);
       });
   } */
-  // OS GUSTA ASÍ addGame ?
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
-    const response = await PlayerDocument.replaceOne(
+    const response = await mongoPlayerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     );
@@ -131,26 +137,26 @@ export class PlayerMongoDbManager implements PlayerInterface {
       const lastGameResult = player.games[player.games.length - 1].gameWin;
       return lastGameResult;
     }
-    throw new Error("AddingGameError");
+    throw new Error("ErrorAddingGame");
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
-    const response = await PlayerDocument.replaceOne(
+    const response = await mongoPlayerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
-    )
+    );
     if (!response) {
       throw new Error("DeletionError");
     }
-    const isDeleted = response.modifiedCount === 1
+    const isDeleted = response.modifiedCount === 1;
     return isDeleted;
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
-    const player = await PlayerDocument.findById(playerId);
+    const player = await mongoPlayerDocument.findById(playerId);
     if (!player) {
-      throw new Error("PlayerNotFound")
+      throw new Error("PlayerNotFound");
     }
     return player ? player.games : [];
   }
@@ -164,7 +170,7 @@ export class RankingMongoDbManager implements RankingInterface {
   }
 
   async getMeanSuccesRate(): Promise<number> {
-    const meanValue = await PlayerDocument.aggregate([
+    const meanValue = await mongoPlayerDocument.aggregate([
       {
         $group: {
           _id: null,
@@ -172,16 +178,17 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
-    if (!meanValue) {
-      throw new Error("GettingSuccessRateAvgError")
-    }
+    //this.ranking.average = meanValue.length > 0 ? meanValue[0].meanValue : 0;
+    //return this.ranking;
     return meanValue.length > 0 ? meanValue[0].meanValue : 0;
   }
 
   async getPlayersRanking(): Promise<Player[]> {
-    const playerRanking = await PlayerDocument.find().sort({ successRate: -1 });
+    const playerRanking = await mongoPlayerDocument
+      .find()
+      .sort({ successRate: -1 });
     if (!playerRanking) {
-      throw new Error("PlayerNotFound");
+      throw new Error("no players found");
     }
     const players = playerRanking.map((players) => {
       return new Player(
@@ -192,6 +199,7 @@ export class RankingMongoDbManager implements RankingInterface {
         players.id
       );
     });
+
     return players;
   }
 
@@ -207,7 +215,7 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getWinner(): Promise<Ranking> {
     try {
-      const groupedPlayers = await PlayerDocument.aggregate([
+      const groupedPlayers = await mongoPlayerDocument.aggregate([
         {
           $group: {
             _id: "$successRate",
@@ -216,6 +224,8 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: -1 } },
       ]);
+
+      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const winnersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const winners = winnersDoc.map((players: PlayerType) => {
@@ -237,7 +247,7 @@ export class RankingMongoDbManager implements RankingInterface {
   }
   async getLoser(): Promise<Ranking> {
     try {
-      const groupedPlayers = await PlayerDocument.aggregate([
+      const groupedPlayers = await mongoPlayerDocument.aggregate([
         {
           $group: {
             _id: "$successRate",
@@ -246,6 +256,8 @@ export class RankingMongoDbManager implements RankingInterface {
         },
         { $sort: { _id: 1 } },
       ]);
+
+      //added validation if groupedPlayers is not empty, e.g. when we dont have any player
       const losersDoc =
         groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
       const losers = losersDoc.map((players: PlayerType) => {
@@ -257,6 +269,7 @@ export class RankingMongoDbManager implements RankingInterface {
           players._id.toString()
         );
       });
+
       this.ranking.losers = losers;
       return this.ranking;
     } catch (error) {
