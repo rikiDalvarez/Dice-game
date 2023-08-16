@@ -9,7 +9,7 @@ import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
 import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import { sequelize } from "../../src/application/dependencias";
 import {PlayerType } from "../../src/domain/Player";
 
 const api = supertest(app);

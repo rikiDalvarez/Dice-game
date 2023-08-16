@@ -1,22 +1,15 @@
 import { Sequelize } from "sequelize";
-import "dotenv/config";
 import { createConnection } from "mysql2/promise";
-import config from "../../config/config";
 
-// const connectionString = process.env.SQL_URL ?? "";
-// const database = process.env.SQL_DATABASE;
-/*
-export const sequelize = new Sequelize(connectionString, {
-  dialect: 'mysql',
-  database: database,
-});
-*/
-export const createDatabase = async () => {
-  const connection = await createConnection({
-    host: config.HOST,
-    user: config.MYSQL_USER,
-    password: config.MYSQL_PASSWORD,
-  });
+type connectionConfig ={
+  host: string
+    user: string
+    password: string
+
+}
+
+export const createSQLDatabase = async (connectionConfig:connectionConfig) => {
+  const connection = await createConnection(connectionConfig);
   try {
     await connection.query("CREATE DATABASE IF NOT EXISTS `dice-game`");
     console.log('Database "dice-game" created successfully.');
@@ -28,18 +21,25 @@ export const createDatabase = async () => {
   }
 };
 
-//Crea instancia de DB
-export const sequelize = new Sequelize(
-  config.DATABASE,
-  config.MYSQL_USER,
-  config.MYSQL_PASSWORD,
-  {
-    host: config.HOST,
-    dialect: "mysql",
+export const createSQLConnection = (database:string,user:string, password:string, host:string) => {
+  try {
+    const connection = new Sequelize(
+      database,
+      user,
+password,      {
+        host: host,
+        dialect: "mysql",
+      }
+    );
+    console.log("Connected to SQL DB");
+    return connection;
+  } catch (err) {
+    console.log("DB conection error");
+    throw err;
   }
-);
-// Connect to database
-export const connectMySQLDatabase = async () => {
+};
+
+export const testSQLConnection = async (sequelize: Sequelize) => {
   try {
     await sequelize.authenticate();
     console.log(

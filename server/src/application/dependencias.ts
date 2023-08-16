@@ -1,47 +1,64 @@
-import { Ranking } from "../../domain/Ranking";
-import { PlayerService } from ".././PlayerService";
+import { Ranking } from "../domain/Ranking";
+import config from "../../config/config";
 import {
   PlayerMongoDbManager,
   RankingMongoDbManager,
 } from "../infrastructure/mongoDbManager";
-import { RankingService } from "../application/RankingService";
-import config from "../../config/config";
+import {
+  PlayerMySQLManager,
+  RankingMySQLManager,
+} from "../infrastructure/mySQLManager";
+import { PlayerService } from "./PlayerService";
+import { RankingService } from "./RankingService";
+import { Connection} from "mongoose";
+import { Sequelize } from "sequelize";
+import { PlayerType } from "../domain/Player";
+import { playerSchema } from "../infrastructure/models/mongoDbModel";
 import { connectDatabase } from "../infrastructure/mongoDbConnection";
-import { connectMySQLDatabase } from "../infrastructure/mySQLConnection";
+import {
+    createSQLConnection,
+  createSQLDatabase,
+  testSQLConnection,
+} from "../infrastructure/mySQLConnection";
+import { initializationGameTable } from "../infrastructure/models/mySQLModels/GameMySQLModel";
+import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
+import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
 
-export let dataBaseConnection;
-const isMongo = config.NODE_ENV === "mongo";
+//const isMongo = config.NODE_ENV === "mongo";
+const isMongo = false
+const ranking = new Ranking();
+
+let playerManager: PlayerMongoDbManager | PlayerMySQLManager;
+let rankingManager: RankingMongoDbManager | RankingMySQLManager;
+
+export let connection: Connection 
+export let sequelize: Sequelize;
 
 if (isMongo) {
-  dataBaseConnection = connectDatabase(config.MONGO_URI, config.DATABASE);
+  connection = connectDatabase(config.MONGO_URI, config.DATABASE);
+  const playerDocument = connection.model<PlayerType>("Player", playerSchema);
+  playerManager = new PlayerMongoDbManager(playerDocument);
+  rankingManager = new RankingMongoDbManager(playerDocument,ranking);
 } else {
-  dataBaseConnection = connectMySQLDatabase();
+  createSQLDatabase({
+    host: config.HOST,
+    user: config.MYSQL_USER,
+    password: config.MYSQL_PASSWORD,
+  })
+  sequelize = createSQLConnection( config.DATABASE,
+    config.MYSQL_USER,
+    config.MYSQL_PASSWORD,
+     config.HOST,
+    );
+  testSQLConnection(sequelize)
+  initializationGameTable(sequelize)
+  initializationPlayerTable(sequelize)
+  createSQLTableRelations(sequelize)
+  
+  playerManager = new PlayerMySQLManager();
+  rankingManager = new RankingMySQLManager(ranking);
 }
 
-/*
-const mongoDBConnection = 'finction para hacer connection'
-mongoPlayerDocument = mongoDbConnection.model<PlayerType>(
-    "Player",
-    playerSchema
-  );
+export const playerService = new PlayerService(playerManager);
+export const rankingService = new RankingService(rankingManager);
 
-*/
-
-const ranking = new Ranking();
-function runMongo() {
-  const playerMongoManager = new PlayerMongoDbManager();
-  const playerService = new PlayerService(playerMongoManager);
-  const rankingMongoDbManager = new RankingMongoDbManager(ranking);
-  const rankingService = new RankingService(rankingMongoDbManager);
-  return {
-    playerMongoManager,
-    playerService,
-    rankingService,
-  };
-}
-
-if (config.NODE_ENV === "mongo") {
-  runMongo();
-} else {
-  sqlDependencies;
-}

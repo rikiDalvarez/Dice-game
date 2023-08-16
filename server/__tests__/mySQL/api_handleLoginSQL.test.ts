@@ -5,7 +5,7 @@ import { describe, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { sequelize } from "../../src/infrastructure/mySQLConnection";
+import { sequelize } from "../../src/application/dependencias";
 
 const api = supertest(app);
 
