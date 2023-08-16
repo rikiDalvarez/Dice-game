@@ -23,19 +23,29 @@ import {
 import { initializationGameTable } from "../infrastructure/models/mySQLModels/GameMySQLModel";
 import { initializationPlayerTable } from "../infrastructure/models/mySQLModels/PlayerMySQLModel";
 import { createSQLTableRelations } from "../infrastructure/models/mySQLModels/tableRelations";
+import { PlayerInterface } from "./PlayerInterface";
+import { RankingInterface } from "./RankingInterface";
 
-const isMongo = config.NODE_ENV === "mongo";
-//const isMongo = false
+
+let dataBaseName: string;
+if (config.NODE_ENV === "production"|| config.NODE_ENV === "dev"){
+  dataBaseName = config.DATABASE
+}else  {
+  dataBaseName = config.TEST_DATABASE
+}
+
+//const isMongo = config.DATABASE_ENV === "mongo";
+const isMongo = true
 const ranking = new Ranking();
 
-let playerManager: PlayerMongoDbManager | PlayerMySQLManager;
-let rankingManager: RankingMongoDbManager | RankingMySQLManager;
+let playerManager: PlayerInterface
+let rankingManager: RankingInterface
 
 export let connection: Connection 
 export let sequelize: Sequelize;
 
 if (isMongo) {
-  connection = connectDatabase(config.MONGO_URI, config.DATABASE);
+  connection = connectDatabase(config.MONGO_URI, dataBaseName);
   const playerDocument = connection.model<PlayerType>("Player", playerSchema);
   playerManager = new PlayerMongoDbManager(playerDocument);
   rankingManager = new RankingMongoDbManager(playerDocument,ranking);
@@ -45,7 +55,7 @@ if (isMongo) {
     user: config.MYSQL_USER,
     password: config.MYSQL_PASSWORD,
   })
-  sequelize = createSQLConnection( config.DATABASE,
+  sequelize = createSQLConnection( dataBaseName,
     config.MYSQL_USER,
     config.MYSQL_PASSWORD,
      config.HOST,

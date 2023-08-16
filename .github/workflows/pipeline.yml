@@ -25,8 +25,7 @@ jobs:
     - name: Create .env file
       env: 
           MONGO_URI: '${{secrets.MONGO_URI}}'
-          MONGO_URI_TEST: '${{secrets.MONGO_URI_TEST}}'
-          DATABASE: '${{secrets.DATABASE}}'
+          TEST_DATABASE: '${{secrets.TEST_DATABASE}}'
           SQL_URI: '${{secrets.SQL_URI}}'
           PORT: '${{secrets.PORT}}'
           JWT_SECRET: '${{secrets.JWT_SECRET}}'
@@ -39,8 +38,8 @@ jobs:
       run: |
           cd server
           echo "MONGO_URI=${MONGO_URI}" >> .env
-          echo "MONGO_URI_TEST=${MONGO_URI_TEST}" >> .env
           echo "DATABASE=${DATABASE}" >> .env
+          echo "TEST_DATABASE"="test" >> .env
           echo "PORT=${PORT}" >> .env
           echo "SQL_URI=${SQL_URI}" >> .env
           echo "JWT_SECRET=${JWT_SECRET}" >> .env
