@@ -5,7 +5,7 @@ interface Player {
 	registrationDate: string
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC = ({ setIsAuthenticated }) => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 	useEffect(() => {
