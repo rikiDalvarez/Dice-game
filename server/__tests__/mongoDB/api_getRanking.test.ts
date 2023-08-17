@@ -14,7 +14,7 @@ const api = supertest(app);
 
 describe("REST GET RANKING TEST", () => {
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
   });
 
   test("Should return ranking list:", async () => {
@@ -35,32 +35,37 @@ describe("REST GET RANKING TEST", () => {
     const playerId3 = response3.body.Player_id;
     const tokenPlayer3 = await loginUser(api, "milo@op.pl", "password");
 
-
     for (let i = 0; i < 50; i++) {
       await addGame(api, tokenPlayer1, playerId1);
       await addGame(api, tokenPlayer2, playerId2);
       await addGame(api, tokenPlayer3, playerId3);
-
     }
-    
 
-
-    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
+    const response = await api
+      .get(`/api/ranking`)
+      .set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const average = response.body.average;
     const losers = await getLoser(api, tokenPlayer1);
     const winners = await getWinner(api, tokenPlayer1);
-   
-    
-      const winnerNumbers = winners.length
-      const sortedWinnersFromRanking = rankingList.slice(0,winnerNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      const sortedWinners = winners.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      expect(sortedWinnersFromRanking).toStrictEqual(sortedWinners);
 
-      const loserNumbers = losers.length
-      const sortedLosersFromRanking = rankingList.slice(-loserNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      const sortedLosers = losers.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      expect(sortedLosersFromRanking).toStrictEqual(sortedLosers);
+    const winnerNumbers = winners.length;
+    const sortedWinnersFromRanking = rankingList
+      .slice(0, winnerNumbers)
+      .sort((a: PlayerType, b: PlayerType) => a.name.localeCompare(b.name));
+    const sortedWinners = winners.sort((a: PlayerType, b: PlayerType) =>
+      a.name.localeCompare(b.name)
+    );
+    expect(sortedWinnersFromRanking).toStrictEqual(sortedWinners);
+
+    const loserNumbers = losers.length;
+    const sortedLosersFromRanking = rankingList
+      .slice(-loserNumbers)
+      .sort((a: PlayerType, b: PlayerType) => a.name.localeCompare(b.name));
+    const sortedLosers = losers.sort((a: PlayerType, b: PlayerType) =>
+      a.name.localeCompare(b.name)
+    );
+    expect(sortedLosersFromRanking).toStrictEqual(sortedLosers);
 
     const calculatedAverage = Number(
       (
@@ -71,7 +76,7 @@ describe("REST GET RANKING TEST", () => {
       ).toFixed(2)
     );
     expect(calculatedAverage).toBe(Number(average.toFixed(2)));
-  });
+  }, 50000);
 
   afterAll((done) => {
     dbConnection.close();

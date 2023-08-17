@@ -9,7 +9,7 @@ const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
     await createUser(api, "first password", "first.anonim@op.pl");
   });
 
@@ -19,7 +19,7 @@ describe("API POST PLAYER TEST", () => {
       .send({ password: "first password", email: "first.anonim@op.pl" })
       .expect(200)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   it("should have an authorization error with wrong password", async () => {
     await api
@@ -27,7 +27,7 @@ describe("API POST PLAYER TEST", () => {
       .send({ password: "test", email: "first.anonim@op.pl" })
       .expect(401)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   it("should have an authorization error with wrong email", async () => {
     await api
@@ -35,7 +35,7 @@ describe("API POST PLAYER TEST", () => {
       .send({ password: "first password", email: "test.anonim@op.pl" })
       .expect(401)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

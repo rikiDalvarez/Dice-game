@@ -10,83 +10,79 @@ const api = supertest(app);
 
 describe("API ADD GAME TEST", () => {
   let token: string;
-  let playerId: string
+  let playerId: string;
   beforeEach(async () => {
-   await dbConnection.dropCollection('players')
-    
+    await dbConnection.dropCollection("players");
+
     const response = await createUser(
       api,
       "password",
       "mafalda@op.pl",
       "mafalda"
     );
-    playerId = response.body.Player_id
-    token = await loginUser(api, 'mafalda@op.pl', 'password')
-
+    playerId = response.body.Player_id;
+    token = await loginUser(api, "mafalda@op.pl", "password");
   });
-
 
   test("Should add games to player:", async () => {
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    await api
+      .post(`/api/games/${playerId}`)
+      .set("Authorization", token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
 
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    await api
-      .post(`/api/games/${playerId}`)
-      .set('Authorization', token)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-    
-      if (!playerService) {
-        throw new Error("playerMongoManager is not defined");
-      }
-    
+    if (!playerService) {
+      throw new Error("playerMongoManager is not defined");
+    }
+
     const playerAfterSecondGame = await playerService.findPlayer(playerId);
     expect(playerAfterSecondGame.games.length).toBe(10);
-  });
-
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

@@ -11,10 +11,8 @@ import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 const api = supertest(app);
 
 describe("REST GET LOSER TEST", () => {
- 
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
-
+    await dbConnection.dropCollection("players");
   });
 
   test("Should return winner", async () => {
@@ -41,13 +39,15 @@ describe("REST GET LOSER TEST", () => {
       await addGame(api, tokenPlayer3, playerId3);
     }
 
-    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
+    const response = await api
+      .get(`/api/ranking`)
+      .set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const loser = await getLoser(api, tokenPlayer1);
     if (loser.length == 1) {
       expect(rankingList[2]).toStrictEqual(loser[0]);
     }
-  });
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

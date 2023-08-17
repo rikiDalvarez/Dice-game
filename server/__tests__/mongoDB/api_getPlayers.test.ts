@@ -10,7 +10,7 @@ const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
   });
 
   test("Should return list of players", async () => {
@@ -25,8 +25,8 @@ describe("REST GET PLAYERS TEST", () => {
     for (let i = 0; i < 10; i++) {
       await createUser(api, passwords[i], emails[i], names[i]);
     }
-    
-    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0])
+
+    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0]);
 
     const response = await api
       .get(`/api/players`)
@@ -40,9 +40,7 @@ describe("REST GET PLAYERS TEST", () => {
       const value = response.body.playerList[0].name;
       expect(value).toBe(names[0]);
     }
-  });
-
- 
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

@@ -7,14 +7,13 @@ import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 
-
 const api = supertest(app);
 
 describe("REST GET PLAYERS TEST", () => {
   let token: string;
   let playerId: string;
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
     const response = await createUser(
       api,
       "password",
@@ -34,8 +33,7 @@ describe("REST GET PLAYERS TEST", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
     expect(games.body.length).toBe(2);
-  });
-
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

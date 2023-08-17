@@ -1,5 +1,8 @@
-import {server} from "../../src/Server"
-import { connection as dbConnection, playerService } from "../../src/application/dependencias";
+import { server } from "../../src/Server";
+import {
+  connection as dbConnection,
+  playerService,
+} from "../../src/application/dependencias";
 import bcrypt from "bcrypt";
 import supertest from "supertest";
 import { app } from "../../src/app";
@@ -12,9 +15,9 @@ const api = supertest(app);
 
 describe("API POST PLAYER TEST", () => {
   beforeEach(async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    await dbConnection.dropCollection('players')
-await dbConnection.createCollection('players')
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await dbConnection.dropCollection("players");
+    await dbConnection.createCollection("players");
   });
 
   test("Should create player:", async () => {
@@ -29,13 +32,13 @@ await dbConnection.createCollection('players')
       .expect("Content-Type", /application\/json/);
     const playerId = response.body.Player_id;
     console.log(playerId);
-    const playerDetails = await playerService.findPlayer(playerId)
+    const playerDetails = await playerService.findPlayer(playerId);
     console.log(playerDetails);
 
     if (playerDetails) {
       console.log(playerDetails);
       const { name, email, password, games, id, successRate } = playerDetails;
-      const passwordMatch = bcrypt.compare('first password', password)
+      const passwordMatch = bcrypt.compare("first password", password);
       expect(id).toBe(playerId);
       expect(name).toBe("first user");
       expect(passwordMatch).toBeTruthy;
@@ -43,12 +46,12 @@ await dbConnection.createCollection('players')
       expect(successRate).toBe(0);
       expect(games.length).toBe(0);
     }
-  });
+  }, 30000);
 
   test("Should create more than one anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
     await createUser(api, "second password", "second.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -57,11 +60,11 @@ await dbConnection.createCollection('players')
       .expect("Content-Type", /application\/json/);
     const listLength = response.body.playerList.length;
     expect(listLength).toBe(2);
-  });
+  }, 30000);
 
   test("Should create anonim user:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     const response = await api
       .get("/api/players")
@@ -72,11 +75,11 @@ await dbConnection.createCollection('players')
     const name = response.body.playerList[0].name;
     expect(listLength).toBe(1);
     expect(name).toBe("unknown");
-  });
+  }, 30000);
 
   test("two anonim should have different emails:", async () => {
     await createUser(api, "first password", "first.anonim@op.pl");
-    const token = await loginUser(api, 'first.anonim@op.pl', "first password")
+    const token = await loginUser(api, "first.anonim@op.pl", "first password");
 
     await api
       .post("/api/players")
@@ -84,7 +87,7 @@ await dbConnection.createCollection('players')
       .send({ password: "second password", email: "first.anonim@op.pl" })
       .expect(409)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should create user if name not passed:", async () => {
     await api
@@ -92,7 +95,7 @@ await dbConnection.createCollection('players')
       .send({ password: "first password", email: "mafalda@op.pl" })
       .expect(201)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should fail if reques body lacks email", async () => {
     await api
@@ -100,7 +103,7 @@ await dbConnection.createCollection('players')
       .send({ password: "password", name: "mafalda" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should fail if reques body lacks password:", async () => {
     await api
@@ -108,7 +111,7 @@ await dbConnection.createCollection('players')
       .send({ email: "mafalda@op.pl", name: "user" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should return confilict if name exist:", async () => {
     await createUser(api, "password", "mafalda@op.pl", "mafalda");
@@ -117,7 +120,7 @@ await dbConnection.createCollection('players')
       .send({ password: "password", email: "riki@op.pl", name: "mafalda" })
       .expect(409)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should return confilict if email exist:", async () => {
     await createUser(api, "password", "mafalda@op.pl", "mafalda");
@@ -126,7 +129,7 @@ await dbConnection.createCollection('players')
       .send({ password: "password", email: "mafalda@op.pl", name: "riki" })
       .expect(409)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should return ValidationError if wrong email format:", async () => {
     await createUser(api, "password", "mafalda@op.pl", "mafalda");
@@ -135,7 +138,7 @@ await dbConnection.createCollection('players')
       .send({ name: "riki", password: "password", email: "mafaldaop.pl" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

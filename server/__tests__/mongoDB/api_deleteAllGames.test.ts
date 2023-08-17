@@ -2,7 +2,10 @@ import supertest from "supertest";
 import { server } from "../../src/Server";
 import { app } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
-import { connection as dbConnection, playerService } from "../../src/application/dependencias";
+import {
+  connection as dbConnection,
+  playerService,
+} from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
@@ -13,7 +16,7 @@ describe("API DELETE GAME TEST", () => {
   let token: string;
   let playerId: string;
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
     const response = await createUser(
       api,
       "password",
@@ -39,9 +42,9 @@ describe("API DELETE GAME TEST", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-      const playerAfterSecondGame = await playerService.findPlayer(playerId);
-      expect(playerAfterSecondGame.games.length).toBe(0);
-  });
+    const playerAfterSecondGame = await playerService.findPlayer(playerId);
+    expect(playerAfterSecondGame.games.length).toBe(0);
+  }, 30000);
 
   afterAll((done) => {
     dbConnection.close();

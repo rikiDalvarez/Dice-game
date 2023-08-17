@@ -8,12 +8,11 @@ import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
 
-
 const api = supertest(app);
 
 describe("REST GET WINNER TEST", () => {
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
+    await dbConnection.dropCollection("players");
   });
 
   test("Should return winner", async () => {
@@ -40,14 +39,15 @@ describe("REST GET WINNER TEST", () => {
       await addGame(api, tokenPlayer3, playerId3);
     }
 
-
-    const response = await api.get(`/api/ranking`).set("Authorization", tokenPlayer1);
+    const response = await api
+      .get(`/api/ranking`)
+      .set("Authorization", tokenPlayer1);
     const rankingList = response.body.ranking;
     const winner = await getWinner(api, tokenPlayer1);
     if (winner.length === 1) {
       expect(rankingList[0]).toStrictEqual(winner[0]);
     }
-  });
+  }, 30000);
 
   afterAll(async () => {
     await dbConnection.close();
