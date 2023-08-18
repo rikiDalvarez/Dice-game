@@ -2,6 +2,13 @@ import request from "supertest";
 // import { server } from "../../src/Server";
 import { Application, start } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
+<<<<<<< HEAD:server/__tests__/apiTests/api_changeName.test.ts
+=======
+import {
+  connection as dbConnection,
+  playerService,
+} from "../../src/application/dependencias";
+>>>>>>> refs/remotes/origin/development:server/__tests__/mongoDB/api_changeName.test.ts
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
@@ -10,6 +17,7 @@ import config from "../../config/config";
 
 const requestUri = `http://localhost:${config.PORT}`
 
+<<<<<<< HEAD:server/__tests__/apiTests/api_changeName.test.ts
 
 describe("API ADD GAME TEST", () => {
   let app: Application
@@ -24,12 +32,20 @@ describe("API ADD GAME TEST", () => {
 
 
 
+=======
+describe("REST CHANGE NAME TEST", () => {
+  let token: string;
+  let playerId: string;
+  beforeEach(async () => {
+    await dbConnection.dropCollection("players");
+>>>>>>> refs/remotes/origin/development:server/__tests__/mongoDB/api_changeName.test.ts
     const response = await createUser(
       requestUri,
       "password",
       "mafalda@op.pl",
       "mafalda"
     );
+<<<<<<< HEAD:server/__tests__/apiTests/api_changeName.test.ts
 playerId = response.body.Player_id
     token = await loginUser(requestUri, 'mafalda@op.pl', 'password' )
 
@@ -38,10 +54,17 @@ playerId = response.body.Player_id
 
   test("Should change name:", async () => {
    
+=======
+    playerId = response.body.Player_id;
+    token = await loginUser(api, "mafalda@op.pl", "password");
+  });
+
+  test("Should change name:", async () => {
+>>>>>>> refs/remotes/origin/development:server/__tests__/mongoDB/api_changeName.test.ts
     const newName = "riki";
     const responseAfterChange = await request(requestUri)
       .put(`/api//players/${playerId}`)
-      .set('Authorization', token)
+      .set("Authorization", token)
       .send({ name: newName })
       .expect(200)
       .expect("Content-Type", /application\/json/);
@@ -50,19 +73,25 @@ playerId = response.body.Player_id
     if (user) {
       expect(user.name).toBe(newName);
     }
-  });
+  }, 30000);
 
   test("Should return confict if new name is used by other player:", async () => {
 
     await createUser(requestUri, "password", "riki@op.pl", "riki");
     const newName = "riki";
+<<<<<<< HEAD:server/__tests__/apiTests/api_changeName.test.ts
     await request(requestUri)
       .put(`/api//players/${playerId}`)
       .set('Authorization', token)
+=======
+    await api
+      .put(`/api//players/${userId}`)
+      .set("Authorization", token)
+>>>>>>> refs/remotes/origin/development:server/__tests__/mongoDB/api_changeName.test.ts
       .send({ name: newName })
       .expect(409)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   test("Should return NotFoundError if wrong id:", async () => {
     await createUser(requestUri, "password", "riki@op.pl", "riki");
@@ -70,11 +99,11 @@ playerId = response.body.Player_id
     const newName = "Jose";
     await request(requestUri)
       .put(`/api/players/${nonExistingUserId}`)
-      .set('Authorization', token)
+      .set("Authorization", token)
       .send({ name: newName })
       .expect(404)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   afterAll(async () => {
     app.stop()
