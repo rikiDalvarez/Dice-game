@@ -1,4 +1,4 @@
-import { Connection } from "mongoose";
+import { Connection, MongooseError} from "mongoose";
 import { Sequelize } from "sequelize";
 import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
 import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
@@ -14,6 +14,11 @@ export async function cleanupDatabase(connection: Sequelize | Connection) {
       });
     }
     else {
-      await connection.dropCollection('players')
+      try{
+        await connection.dropCollection('players')
+      }
+      catch (error) {
+        console.log("Erro COLLECTION", error)
+      }
     }
   }

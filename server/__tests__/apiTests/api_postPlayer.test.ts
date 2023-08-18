@@ -19,7 +19,6 @@ describe("API ADD GAME TEST", () => {
   );
   beforeEach(async () => {
     await cleanupDatabase(app.connection)
-
   })
   test("Should create player:", async () => {    
     await createUser(requestUri, "second password", "second.anonim@op.pl");
@@ -35,7 +34,6 @@ describe("API ADD GAME TEST", () => {
     const playerId = response.body.Player_id;
     const token  = await loginUser(requestUri, 'mafalda@op.pl', 'first password')
     const playerDetails = await getPlayer(requestUri, token, playerId)
-    console.log('DETT',playerDetails)
 
     
 //TODO: thinh about better test

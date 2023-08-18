@@ -14,7 +14,6 @@ export async function getPlayers(requestUri:string, token:string){
 
 export async function getPlayer(requestUri: string, token: string, playerId: string) {
   const response = await getPlayers(requestUri, token) 
-  console.log("Response getPlayer--->", response)
   const players = response as PlayerDetailsType[];
   const playesWithId = players.filter((p) => p.id === playerId)
   if (playesWithId.length > 1) {
