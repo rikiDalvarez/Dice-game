@@ -19,10 +19,8 @@ describe("API ADD GAME TEST", () => {
   );
   beforeEach(async () => {
     await cleanupDatabase(app.connection)
-
   })
   test("Should create player:", async () => {    
-    await createUser(requestUri, "second password", "second.anonim@op.pl");
     const response = await request(requestUri)
       .post("/api/players")
       .send({
@@ -35,7 +33,7 @@ describe("API ADD GAME TEST", () => {
     const playerId = response.body.Player_id;
     const token  = await loginUser(requestUri, 'mafalda@op.pl', 'first password')
     const playerDetails = await getPlayer(requestUri, token, playerId)
-    console.log('DETT',playerDetails)
+
     
 //TODO: thinh about better test
     if (playerDetails) {
@@ -90,7 +88,6 @@ describe("API ADD GAME TEST", () => {
   }, 30000);
 
   test("Should create user if name not passed:", async () => {
-    await createUser(requestUri, "first password", "first.anonim@op.pl");
 
     await request(requestUri)
       .post("/api/players")
@@ -100,7 +97,6 @@ describe("API ADD GAME TEST", () => {
   }, 30000);
 
   test("Should fail if reques body lacks email", async () => {
-    await createUser(requestUri, "first password", "first.anonim@op.pl");
 
     await request(requestUri)
       .post("/api/players/")
@@ -110,7 +106,6 @@ describe("API ADD GAME TEST", () => {
   }, 30000);
 
   test("Should fail if reques body lacks password:", async () => {
-    await createUser(requestUri, "first password", "first.anonim@op.pl");
 
     await request(requestUri)
       .post("/api/players/")
@@ -120,8 +115,6 @@ describe("API ADD GAME TEST", () => {
   }, 30000);
 
   test("Should return confilict if name exist:", async () => {
-    await createUser(requestUri, "first password", "first.anonim@op.pl");
-
     await createUser(requestUri, "password", "mafalda@op.pl", "mafalda");
     await request(requestUri)
       .post("/api/players")
@@ -140,7 +133,6 @@ describe("API ADD GAME TEST", () => {
   }, 30000);
 
   test("Should return ValidationError if wrong email format:", async () => {
-    await createUser(requestUri, "password", "mafalda@op.pl", "mafalda");
     await request(requestUri)
       .post("/api/players")
       .send({ name: "riki", password: "password", email: "mafaldaop.pl" })
