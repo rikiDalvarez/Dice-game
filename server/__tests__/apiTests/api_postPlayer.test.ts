@@ -21,7 +21,8 @@ describe("API ADD GAME TEST", () => {
     await cleanupDatabase(app.connection)
 
   })
-  test("Should create player:", async () => {
+  test("Should create player:", async () => {    
+    await createUser(requestUri, "second password", "second.anonim@op.pl");
     const response = await request(requestUri)
       .post("/api/players")
       .send({
