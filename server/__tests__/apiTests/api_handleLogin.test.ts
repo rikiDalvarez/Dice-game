@@ -15,14 +15,9 @@ describe("API ADD GAME TEST", () => {
   }
   );
   beforeEach(async () => {
-<<<<<<< HEAD:server/__tests__/apiTests/api_handleLogin.test.ts
     await cleanupDatabase(app.connection)
 
     await createUser(requestUri, "first password", "first.anonim@op.pl");
-=======
-    await dbConnection.dropCollection("players");
-    await createUser(api, "first password", "first.anonim@op.pl");
->>>>>>> refs/remotes/origin/development:server/__tests__/mongoDB/api_handleLogin.test.ts
   });
 
   it("Should login player", async () => {
