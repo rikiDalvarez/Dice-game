@@ -5,8 +5,9 @@ import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { Application, start } from "../../src/app";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 import { getGames, getPlayer } from "../auxilaryFunctionsForTests/getPlayers";
+import config from "../../config/config";
 
-const requestUri = "http://localhost:8012"
+const requestUri = `http://localhost:${config.PORT}`
 
 
 describe("API ADD GAME TEST", () => {

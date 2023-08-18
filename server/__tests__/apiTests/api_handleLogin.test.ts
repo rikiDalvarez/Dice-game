@@ -3,8 +3,10 @@ import { Application, start } from "../../src/app";
 import { describe, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
+import config from "../../config/config";
 
-const requestUri = "http://localhost:8012"
+const requestUri = `http://localhost:${config.PORT}`
+
 describe("API ADD GAME TEST", () => {
   let app: Application
 

@@ -8,8 +8,10 @@ import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
 import {PlayerType } from "../../src/domain/Player";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
+import config from "../../config/config";
 
-const requestUri = "http://localhost:8012"
+const requestUri = `http://localhost:${config.PORT}`
+
 describe("API ADD GAME TEST", () => {
   let app: Application
 
