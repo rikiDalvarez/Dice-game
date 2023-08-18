@@ -1,35 +1,37 @@
-import supertest from "supertest";
+import request from "supertest";
 // import { server } from "../../src/Server";
-import { app } from "../../src/app";
+import { Application, start } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { initDatabase, sequelize } from "../../src/application/dependencias";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
+import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
+import { getPlayer } from "../auxilaryFunctionsForTests/getPlayers";
 
-const api = supertest(app);
-let token:string;
-let playerId:string
-describe("REST CHANGE NAME TEST", () => {
-  beforeAll(async () => await initDatabase())
+
+const requestUri = "http://localhost:8012"
+
+
+describe("API ADD GAME TEST", () => {
+  let app: Application
+  let token: string;
+  let playerId: string;
+  beforeAll(async() =>{
+    app = await start()   
+  }
+  );
   beforeEach(async () => {
-    await PlayerSQL.destroy({
-      where: {}
-    })
-    await GameSQL.destroy({
-      where: {}
-    })
+    await cleanupDatabase(app.connection)
+
 
 
     const response = await createUser(
-      api,
+      requestUri,
       "password",
       "mafalda@op.pl",
       "mafalda"
     );
 playerId = response.body.Player_id
-    token = await loginUser(api, 'mafalda@op.pl', 'password' )
+    token = await loginUser(requestUri, 'mafalda@op.pl', 'password' )
 
  ;
   });
@@ -37,14 +39,14 @@ playerId = response.body.Player_id
   test("Should change name:", async () => {
    
     const newName = "riki";
-    const responseAfterChange = await api
+    const responseAfterChange = await request(requestUri)
       .put(`/api//players/${playerId}`)
       .set('Authorization', token)
       .send({ name: newName })
       .expect(200)
       .expect("Content-Type", /application\/json/);
     expect(responseAfterChange).toBeTruthy;
-    const user = await PlayerSQL.findByPk(playerId);
+    const user = await getPlayer(requestUri, token, playerId)
     if (user) {
       expect(user.name).toBe(newName);
     }
@@ -52,9 +54,9 @@ playerId = response.body.Player_id
 
   test("Should return confict if new name is used by other player:", async () => {
 
-    await createUser(api, "password", "riki@op.pl", "riki");
+    await createUser(requestUri, "password", "riki@op.pl", "riki");
     const newName = "riki";
-    await api
+    await request(requestUri)
       .put(`/api//players/${playerId}`)
       .set('Authorization', token)
       .send({ name: newName })
@@ -63,10 +65,10 @@ playerId = response.body.Player_id
   });
 
   test("Should return NotFoundError if wrong id:", async () => {
-    await createUser(api, "password", "riki@op.pl", "riki");
+    await createUser(requestUri, "password", "riki@op.pl", "riki");
     const nonExistingUserId = "00d203afb61233613317249a";
     const newName = "Jose";
-    await api
+    await request(requestUri)
       .put(`/api/players/${nonExistingUserId}`)
       .set('Authorization', token)
       .send({ name: newName })
@@ -75,8 +77,7 @@ playerId = response.body.Player_id
   });
 
   afterAll(async () => {
-    await sequelize.close();
-    // server.close();
+    app.stop()
    
   });
 });

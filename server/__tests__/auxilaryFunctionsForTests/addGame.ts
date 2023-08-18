@@ -1,5 +1,5 @@
-import supertest from "supertest";
+import request from "supertest";
 
-export async function addGame(application: supertest.SuperTest<supertest.Test>, token:string, playerId: string) {
-  await application.post(`/api/games/${playerId}`).set('Authorization', token);
+export async function addGame(requestUri:string, token:string, playerId: string) {
+  await request(requestUri).post(`/api/games/${playerId}`).set('Authorization', token);
   }

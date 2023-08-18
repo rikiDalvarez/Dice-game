@@ -1,24 +1,22 @@
-import supertest from "supertest";
-import { app } from "../../src/app";
+import request from "supertest";
+import { Application, start } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
-import { PlayerSQL } from "../../src/infrastructure/models/mySQLModels/PlayerMySQLModel";
-import { GameSQL } from "../../src/infrastructure/models/mySQLModels/GameMySQLModel";
-import { initDatabase, sequelize } from "../../src/application/dependencias";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
+import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 
-const api = supertest(app);
+const requestUri = "http://localhost:8012"
+describe("API ADD GAME TEST", () => {
+  let app: Application
 
-describe("REST GET PLAYERS TEST", () => {
-  beforeAll(async () => await initDatabase())
+  beforeAll(async() =>{
+    app = await start()   
+  }
+  );
 
   beforeEach(async () => {
-    await PlayerSQL.destroy({
-      where: {},
-    });
-    await GameSQL.destroy({
-      where: {},
-    });
+    await cleanupDatabase(app.connection)
+
   });
 
   test("Should return list of players", async () => {
@@ -31,11 +29,11 @@ describe("REST GET PLAYERS TEST", () => {
       "hello@gmail.com",
     ];
     for (let i = 0; i < names.length; i++) {
-      await createUser(api, passwords[i], emails[i], names[i]);
+      await createUser(requestUri, passwords[i], emails[i], names[i]);
     }
 
-    const tokenPlayer1 = await loginUser(api, emails[0], passwords[0]);
-    const response = await api
+    const tokenPlayer1 = await loginUser(requestUri, emails[0], passwords[0]);
+    const response = await request(requestUri)
       .get(`/api/players`)
       .set("Authorization", tokenPlayer1)
       .expect(200)
@@ -51,7 +49,7 @@ describe("REST GET PLAYERS TEST", () => {
   });
 
   afterAll(async () => {
-    await sequelize.close();
+    app.stop()
    
   });
 });

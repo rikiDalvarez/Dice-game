@@ -1,6 +1,7 @@
 import { Player } from "./Player";
 
 export type PlayerDetailsType = {
+  id: string;
   name: string;
   rating: number;
   registrationDate: Date;
@@ -17,6 +18,7 @@ export class PlayerList {
   ): Array<PlayerDetailsType> {
     return players.map((player) => {
       return {
+        id: player.id,
         name: player.name,
         rating: player.successRate,
         registrationDate: player.registrationDate,

@@ -6,11 +6,15 @@ import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op, QueryTypes} from "sequelize";
-import { sequelize } from "../application/dependencias";
+import { Op, QueryTypes, Sequelize} from "sequelize";
 
 
 export class PlayerMySQLManager implements PlayerInterface {
+  sequelize:Sequelize
+  constructor(sequelize:Sequelize){
+    this.sequelize = sequelize
+    // playerDocument.base.connection
+  }
   createPlayerDoc(player: Player) {
     return {
       id: player.id,
@@ -87,9 +91,11 @@ export class PlayerMySQLManager implements PlayerInterface {
   }
   // maybe we don't need it with SQL
   async findPlayer(playerID: string): Promise<Player> {
+    console.log("FIND_PLAYER__________start");
     const playerDetails = await PlayerSQL.findByPk(playerID, {
       include: [PlayerSQL.associations.games],
     });
+    console.log("FIND_PLAYER__________:", playerDetails);
 
     if (playerDetails) {
       const { name, email, password, id } = playerDetails;
@@ -144,7 +150,7 @@ export class PlayerMySQLManager implements PlayerInterface {
   }
 
   async addGame(player: Player): Promise<boolean> {
-    const transaction = await sequelize.transaction();
+    const transaction = await this.sequelize.transaction();
 
     try {
       const id = player.id;
@@ -204,7 +210,7 @@ export class PlayerMySQLManager implements PlayerInterface {
     });
 
     if (playerDetails === null) {
-      throw new Error("Player doesn't exist");
+      throw new Error("PlayerNotFound");
     }
 
     const games = playerDetails.games;
@@ -219,12 +225,16 @@ type SuccesRateObject = {
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
 
-  constructor(ranking: Ranking) {
-    this.ranking = ranking;
+  sequelize:Sequelize
+  constructor(sequelize:Sequelize, ranking: Ranking){
+    this.sequelize = sequelize,
+    this.ranking = ranking
+    // playerDocument.base.connection
   }
+  
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
-    const response: SuccesRateObject = await sequelize.query(
+    const response: SuccesRateObject = await this.sequelize.query(
       // TODO: stop hardcoding database name in code!
       "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
       { type: QueryTypes.SELECT }
