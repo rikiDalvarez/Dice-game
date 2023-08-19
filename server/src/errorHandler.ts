@@ -38,29 +38,24 @@ export const errorHandler = (
       return response
         .status(401)
         .send({ Error: "Email doesn't exist" });
-    case "jwt expired":
-      return response.status(401).json({ Error: "Authentication required" });
-    // en MongoDbManager no está NotFoundError
-    case "NotFoundError":
-      return response.status(404).send({ Error: "Resource not exists" });
     case "AddingGameError":
-      return response.status(409).send({ Error: "Name already exists" });
-    case "NoToken":
       return response
         .status(409)
-        .send({ Error: "Error playing one game" });
+        .send({ Error: "Error playing game" });
     case "DeletingError":
       return response
         .status(409)
         .send({ Error: "Error during deletion" });
-    case "GettingSuccessRateAvgError":
+    case "GettingMeanValueError":
       return response
         .status(409)
         .send({ Error: "Error getting success rate average" });
-    case "NameEmailConflictError":
-      return response
-        .status(409)
-        .send({ Error: "Name or email already exists" });
+    case "jwt expired":
+      return response.status(401).json({ Error: "Authentication required" });
+    // en MongoDbManager no está NotFoundError
+    // case "NotFoundError":
+    //   return response.status(404).send({ Error: "Resource not exists" });
+    // case "NoToken":
     default:
       return response
         .status(500)

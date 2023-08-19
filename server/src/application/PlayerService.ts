@@ -44,7 +44,7 @@ export class PlayerService {
     return this.playerInterface.getGames(playerId);
   }
 
-  getPlayerList(): Promise<PlayerList | []> {
+  getPlayerList(): Promise<PlayerList> {
     return this.playerInterface.getPlayerList();
   }
 }
