@@ -20,7 +20,7 @@ export class PlayerSQL extends Model<IPlayerSQL> {
  
 }
 
-export function initializationPlayerTable(sequelize:Sequelize) {
+export function initializePlayerTable(sequelize:Sequelize) {
 
 PlayerSQL.init({
   // MAYBE IS BETTER TO NAME IT _id THEN IT IS LIKE IN MONGODB

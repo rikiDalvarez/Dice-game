@@ -14,6 +14,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
   private playerDocument: Model<PlayerType>
   constructor(playerDocument: Model<PlayerType>) {
     this.playerDocument = playerDocument
+    // playerDocument.base.connection
   }
   createPlayerDoc(player: Player) {
     return {
@@ -61,7 +62,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async findPlayer(playerID: string): Promise<Player> {
+    console.log("MONGO FIND PLAYER DETAILS------")
     const playerDetails = await this.playerDocument.findById(playerID);
+    
+    console.log("PLAYER DETAILS------", playerDetails)
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
@@ -140,6 +144,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     );
+
     if (response.modifiedCount === 1) {
       const lastGameResult = player.games[player.games.length - 1].gameWin;
       return lastGameResult;

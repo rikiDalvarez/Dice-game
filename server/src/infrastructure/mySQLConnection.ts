@@ -1,40 +1,45 @@
 import { Sequelize } from "sequelize";
 import { createConnection } from "mysql2/promise";
 
-type connectionConfig ={
-  host: string
-    user: string
-    password: string
+type connectionConfig = {
+  host: string;
+  user: string;
+  password: string;
+};
 
-}
-
-export const createSQLDatabase = async (dataBaseName:string, connectionConfig:connectionConfig) => {
-  const connection = await createConnection(connectionConfig);
+export async function createSQLDatabase(
+  dataBaseName: string,
+  connectionConfig: connectionConfig
+) {
+  let connection
   try {
-    await connection.query(`CREATE DATABASE IF NOT EXISTS ${dataBaseName}`);
-    console.log(`Database ${dataBaseName} created successfully.`);
+    connection = await createConnection(connectionConfig);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS ${dataBaseName}`)
+    await connection.end()
   } catch (error) {
     console.error("Unable to create database:", error);
     throw error;
   } finally {
-    connection.end();
+    connection?.end();
   }
-};
+ 
+}
 
-export const createSQLConnection = (database:string,user:string, password:string, host:string) => {
+export const createSequelizer = (
+  database: string,
+  user: string,
+  password: string,
+  host: string
+) => {
   try {
-    const connection = new Sequelize(
-      database,
-      user,
-password,      {
-        host: host,
-        dialect: "mysql",
-      }
-    );
+    const connection = new Sequelize(database, user, password, {
+      host: host,
+      dialect: "mysql",
+    });
     console.log("Connected to SQL DB");
     return connection;
   } catch (err) {
-    console.log("DB conection error");
+    console.log("DB conection error", err);
     throw err;
   }
 };

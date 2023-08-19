@@ -1,45 +1,50 @@
-import supertest from "supertest";
-import { server } from "../../src/Server";
-import { app } from "../../src/app";
+import request from "supertest";
+import { Application, start } from "../../src/app";
 import { describe, afterAll, beforeEach } from "@jest/globals";
-import { connection as dbConnection } from "../../src/application/dependencias";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
+import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
+import config from "../../config/config";
 
-const api = supertest(app);
+const requestUri = `http://localhost:${config.PORT}`
 
-describe("API POST PLAYER TEST", () => {
+describe("API ADD GAME TEST", () => {
+  let app: Application
+
+  beforeAll(async() =>{
+    app = await start()   
+  }
+  );
   beforeEach(async () => {
-    await dbConnection.dropCollection('players')
-    await createUser(api, "first password", "first.anonim@op.pl");
+    await cleanupDatabase(app.connection)
+
+    await createUser(requestUri, "first password", "first.anonim@op.pl");
   });
 
   it("Should login player", async () => {
-    await api
+    await request(requestUri)
       .post("/api/login")
       .send({ password: "first password", email: "first.anonim@op.pl" })
       .expect(200)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   it("should have an authorization error with wrong password", async () => {
-    await api
+    await request(requestUri)
       .post("/api/login")
       .send({ password: "test", email: "first.anonim@op.pl" })
       .expect(401)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
   it("should have an authorization error with wrong email", async () => {
-    await api
+    await request(requestUri)
       .post("/api/login")
       .send({ password: "first password", email: "test.anonim@op.pl" })
       .expect(401)
       .expect("Content-Type", /application\/json/);
-  });
+  }, 30000);
 
-  afterAll((done) => {
-    dbConnection.close();
-    server.close();
-    done();
+  afterAll(async () => {
+    app.stop()
   });
 });

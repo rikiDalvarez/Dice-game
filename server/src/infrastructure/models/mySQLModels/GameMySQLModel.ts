@@ -11,7 +11,7 @@ export class GameSQL extends Model<IGameSQL>{
   declare player_id:string
 }
 
-export function initializationGameTable(sequelize:Sequelize) {
+export function initializeGameTable(sequelize:Sequelize) {
 
 
 GameSQL.init(

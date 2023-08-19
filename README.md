@@ -1,27 +1,41 @@
-To start the app create a .env file with the following variables:
+# Dice-game
 
-```
-PORT=8000
-MONGO_URI=<yourMongoDBURI>
+Application built with hexagonal architecture and TDD.
+
+To start the server side navigate to the server folder and create a .env file with the following content:
+
+```env
+MONGO_URI="yourMongodbUri"
+MONGO_URI_TEST="mongodbUriForTest"
+NODE_ENV="development"
+DATABASE_ENV='mongo'
+TEST_DATABASE='test'
+DATABASE="dicegame"
+PORT="8012"
+
+SQL_URI='mysql://127.0.0.1'
+MYSQL_USER='root'
+MYSQL_PASSWORD='password'
+HOST='127.0.0.1'
+
+JWT_SECRET='yoursecret'
 ```
 
 Then run the following commands:
 
-```
+```bash
 npm install
-npm run dev
 ```
 
+if you want to run the app with a mongodb database run:
 
+```bash
+npm run devmongo
+```
 
-devs:
+if you wish to run the app with a mysql database run:
 
-+ Ricardo Dutra Alvarez
-+ Galis
-+ Konrad
-
-Classes:
-
-+ Player:
-+ Game:
+```bash
+npm run devmysql
+```
 
