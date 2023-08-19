@@ -18,6 +18,22 @@ export const errorHandler = (
   }
 
   switch (error.message) {
+    case "NameConflictError":
+      return response
+        .status(409)
+        .send({ Error: "Name already exists" });
+    case "EmailConflictError":
+      return response
+        .status(409)
+        .send({ Error: "Email already exists" });
+    case "CreatingPlayerError":
+      return response
+        .status(409)
+        .send({ Error: "Couldn't create the player" });
+    case "PlayerNotFound":
+      return response
+        .status(404)
+        .send({ Error: "Player(s) not found" });
     case "EmailNotExists":
       return response
         .status(401)
@@ -25,24 +41,11 @@ export const errorHandler = (
     case "jwt expired":
       return response.status(401).json({ Error: "Authentication required" });
     // en MongoDbManager no está NotFoundError
-      case "NotFoundError":
+    case "NotFoundError":
       return response.status(404).send({ Error: "Resource not exists" });
-    case "PlayerNotFound":
-      return response
-        .status(404)
-        .send({ Error: "Player(s) not found" });
-    case "NameEmailConflictError":
-      return response
-        .status(409)
-        .send({ Error: "Name or email already exists" });
-    case "NameConflictError":
+    case "AddingGameError":
       return response.status(409).send({ Error: "Name already exists" });
     case "NoToken":
-    case "CreatingPlayerError":
-      return response
-        .status(409)
-        .send({ Error: "Couldn't create the player" });
-    case "AddingGameError":
       return response
         .status(409)
         .send({ Error: "Error playing one game" });

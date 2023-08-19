@@ -12,7 +12,7 @@ import { Model } from "mongoose";
 
 export class PlayerMongoDbManager implements PlayerInterface {
   private playerDocument: Model<PlayerType>
-  constructor(playerDocument:Model<PlayerType>){
+  constructor(playerDocument: Model<PlayerType>) {
     this.playerDocument = playerDocument
   }
   createPlayerDoc(player: Player) {
@@ -27,7 +27,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
   async createPlayer(player: User): Promise<string> {
-    const nameAlreadyInUse = await this.playerDocument.findOne({
+    const existingPlayer = await this.playerDocument.findOne({
       $or: [
         { email: player.email },
         {
@@ -37,8 +37,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
         },
       ],
     });
-    if (nameAlreadyInUse) {
-      throw new Error("NameEmailConflictError");
+    if (existingPlayer) {
+      if (existingPlayer.name === player.name) {
+        throw new Error("NameConflictError");
+      }
+      if (existingPlayer.email === player.email) {
+        throw new Error("EmailConflictError");
+      }
     }
     const newPlayer = {
       email: player.email,
@@ -57,11 +62,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async findPlayer(playerID: string): Promise<Player> {
     const playerDetails = await this.playerDocument.findById(playerID);
-    if (playerDetails) {
-      const { name, email, password, games, id } = playerDetails;
-      return new Player(email, password, games, name, id);
+    if (!playerDetails) {
+      throw new Error("PlayerNotFound");
     }
-    throw new Error("PlayerNotFound");
+    const { name, email, password, games, id } = playerDetails;
+    return new Player(email, password, games, name, id);
   }
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await this.playerDocument.findOne({ email: playerEmail });
@@ -72,10 +77,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return new Player(email, password, games, name, id);
   }
 
-  async getPlayerList(): Promise<PlayerList> {
+  async getPlayerList(): Promise<PlayerList | []> {
     const playersFromDB = await this.playerDocument.find({});
     if (!playersFromDB) {
-      throw new Error("PlayerNotFound")
+      return []
     }
     const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
@@ -93,7 +98,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    //check if name is in use
     const nameAlreadyInUse = await this.playerDocument.findOne({ name: newName });
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
@@ -107,7 +111,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
   }
-  // I HAVE CHANGED IT
+  
+  // I HAVE CHANGED IT:
 
   /* async addGame(player: Player): Promise<boolean> {
     const id = player.id;
@@ -167,7 +172,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 export class RankingMongoDbManager implements RankingInterface {
   ranking: Ranking;
   private playerDocument: Model<PlayerType>
-  constructor(playerDocument:Model<PlayerType>, ranking:Ranking){
+  constructor(playerDocument: Model<PlayerType>, ranking: Ranking) {
     this.playerDocument = playerDocument
     this.ranking = ranking
   }
