@@ -57,6 +57,10 @@ export const errorHandler = (
       return response
         .status(409)
         .send({ Error: "Error getting success rate average" });
+    case "NameEmailConflictError":
+      return response
+        .status(409)
+        .send({ Error: "Name or email already exists" });
     default:
       return response
         .status(500)
