@@ -12,7 +12,6 @@ import { Connection, Model } from "mongoose";
 
 
 export type InitDataBase = {
-    databaseType: string;
     connection: Connection | Sequelize;
     document?: Model<PlayerType>;
   };
@@ -26,7 +25,6 @@ export async function initDataBase(
       const playerDocument = connection.model<PlayerType>("Player", playerSchema);
   
       return Promise.resolve({
-        databaseType: databaseType,
         connection: connection,
         document: playerDocument,
       });
@@ -45,6 +43,6 @@ export async function initDataBase(
       initializeGameTable(sequelize);
       initializePlayerTable(sequelize);
       await createSQLTableRelations(sequelize);
-      return Promise.resolve({databaseType, connection: sequelize });
+      return Promise.resolve({connection: sequelize });
     }
   }

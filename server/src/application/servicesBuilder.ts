@@ -21,13 +21,13 @@ export type Dependencias ={
 }
 
 
-export function setUpDependencias(dataBaseConectionDetails: InitDataBase) {
+export function buildServices(databaseType:string, dataBaseConectionDetails: InitDataBase) {
   const ranking = new Ranking();
 
   let playerManager: PlayerInterface;
   let rankingManager: RankingInterface;
 
-  if (dataBaseConectionDetails.databaseType === "mongo") {
+  if (databaseType === "mongo") {
     const playerDocument = dataBaseConectionDetails.document;
     if (!playerDocument) {
       throw new Error("document must exist for mongo");
