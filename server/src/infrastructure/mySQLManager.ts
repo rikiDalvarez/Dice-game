@@ -160,7 +160,11 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { player_id: id },
         transaction,
       });
-      
+
+      if (player.games.length > 3) {
+        throw new Error("failing to bulkCreate restores previous games")
+      }
+
       await GameSQL.bulkCreate(gameDoc, { transaction }).catch(() => {
         throw new Error("couldn't create games for the player");
       });
