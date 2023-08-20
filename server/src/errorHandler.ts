@@ -18,42 +18,44 @@ export const errorHandler = (
   }
 
   switch (error.message) {
-    case "EmailNotExists":
-      return response
-        .status(401)
-        .send({ Error: "Email doesn't exist" });
-    case "jwt expired":
-      return response.status(401).json({ Error: "Authentication required" });
-    // en MongoDbManager no está NotFoundError
-      case "NotFoundError":
-      return response.status(404).send({ Error: "Resource not exists" });
-    case "PlayerNotFound":
-      return response
-        .status(404)
-        .send({ Error: "Player(s) not found" });
-    case "NameEmailConflictError":
+    case "NameConflictError":
       return response
         .status(409)
-        .send({ Error: "Name or email already exists" });
-    case "NameConflictError":
-      return response.status(409).send({ Error: "Name already exists" });
-    case "NoToken":
+        .send({ Error: "Name already exists" });
+    case "EmailConflictError":
+      return response
+        .status(409)
+        .send({ Error: "Email already exists" });
     case "CreatingPlayerError":
       return response
         .status(409)
         .send({ Error: "Couldn't create the player" });
+    case "PlayerNotFound":
+      return response
+        .status(404)
+        .send({ Error: "Player(s) not found" });
+    case "EmailNotExists":
+      return response
+        .status(401)
+        .send({ Error: "Email doesn't exist" });
     case "AddingGameError":
       return response
         .status(409)
-        .send({ Error: "Error playing one game" });
+        .send({ Error: "Error playing game" });
     case "DeletingError":
       return response
         .status(409)
         .send({ Error: "Error during deletion" });
-    case "GettingSuccessRateAvgError":
+    case "GettingMeanValueError":
       return response
         .status(409)
         .send({ Error: "Error getting success rate average" });
+    case "jwt expired":
+      return response.status(401).json({ Error: "Authentication required" });
+    // en MongoDbManager no está NotFoundError
+    // case "NotFoundError":
+    //   return response.status(404).send({ Error: "Resource not exists" });
+    // case "NoToken":
     default:
       return response
         .status(500)
