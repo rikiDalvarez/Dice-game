@@ -51,11 +51,16 @@ export const errorHandler = (
         .status(409)
         .send({ Error: "Error getting success rate average" });
     case "jwt expired":
-      return response.status(401).json({ Error: "Authentication required" });
+      return response
+        .status(401)
+        .send({ Error: "Authentication required" });
     // en MongoDbManager no está NotFoundError
     // case "NotFoundError":
     //   return response.status(404).send({ Error: "Resource not exists" });
-    // case "NoToken":
+    case "NoToken":
+      return response
+        .status(401)
+        .send({ Error: "No token" });
     default:
       return response
         .status(500)
