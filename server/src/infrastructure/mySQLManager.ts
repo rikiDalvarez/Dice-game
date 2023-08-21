@@ -8,24 +8,13 @@ import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
 import { Op, QueryTypes, Sequelize } from "sequelize";
 
-
 export class PlayerMySQLManager implements PlayerInterface {
-  sequelize: Sequelize
+  sequelize: Sequelize;
   constructor(sequelize: Sequelize) {
-    this.sequelize = sequelize
+    this.sequelize = sequelize;
     // playerDocument.base.connection
   }
-  createPlayerDoc(player: Player) {
-    return {
-      id: player.id,
-      email: player.email,
-      password: player.password,
-      registrationDate: player.registrationDate,
-      games: player.games,
-      name: player.name,
-      successRate: player.successRate,
-    };
-  }
+
   createGameDoc(games: Array<GameType>, id: string) {
     return games.map((game) => {
       return {
@@ -49,7 +38,7 @@ export class PlayerMySQLManager implements PlayerInterface {
     }
   }
 
-  async createPlayer(player: User): Promise<string> {
+  async nameAndEmailCheck(player: User): Promise<boolean> {
     const existingPlayer = await PlayerSQL.findOne({
       where: {
         [Op.or]: [
@@ -57,14 +46,16 @@ export class PlayerMySQLManager implements PlayerInterface {
           {
             [Op.and]: [
               {
-                name: { [Op.not]: "unknown", }
+                name: { [Op.not]: "unknown" },
               },
               {
-                name: player.name
-              }]
-          }]
-      }
-    })
+                name: player.name,
+              },
+            ],
+          },
+        ],
+      },
+    });
 
     if (existingPlayer) {
       if (existingPlayer.name === player.name) {
@@ -74,6 +65,11 @@ export class PlayerMySQLManager implements PlayerInterface {
         throw new Error("EmailConflictError");
       }
     }
+    return false
+  }
+
+  async createPlayer(player: User): Promise<string> {
+    await this.nameAndEmailCheck(player);
 
     const newPlayer = {
       email: player.email,
@@ -82,14 +78,15 @@ export class PlayerMySQLManager implements PlayerInterface {
       successRate: 0,
       games: [],
       registrationDate: player.registrationDate,
-    }
+    };
 
     const playerFromDB = await PlayerSQL.create(newPlayer);
     if (!playerFromDB) {
-      throw new Error("CreatingPlayerError")
+      throw new Error("CreatingPlayerError");
     }
     return playerFromDB.id;
   }
+
   async findPlayer(playerID: string): Promise<Player> {
     console.log("FIND_PLAYER__________start");
     const playerDetails = await PlayerSQL.findByPk(playerID, {
@@ -109,8 +106,10 @@ export class PlayerMySQLManager implements PlayerInterface {
       include: [PlayerSQL.associations.games],
     });
     if (!playersFromDB) {
-      throw new Error("PlayerNotFound")
+      //------?
+      throw new Error("PlayerNotFound");
     }
+
     const players = playersFromDB.map((players) => {
       return new Player(
         players.email,
@@ -140,17 +139,19 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { id: playerId },
       }
     );
+
+    ///------> What does do this part> Do we need it?
     const updatedPlayer = await PlayerSQL.findByPk(playerId);
     if (!updatedPlayer) {
       throw new Error("PlayerNotFound");
     }
+    ////-------<
     const returnPlayer = { id: updatedPlayer.id, name: newName };
     return returnPlayer;
   }
 
   async addGame(player: Player): Promise<boolean> {
     const transaction = await this.sequelize.transaction();
-
     try {
       const id = player.id;
       const gameDoc = this.createGameDoc(player.games, id);
@@ -223,22 +224,20 @@ type SuccesRateObject = {
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
 
-  sequelize: Sequelize
+  sequelize: Sequelize;
   constructor(sequelize: Sequelize, ranking: Ranking) {
-    this.sequelize = sequelize,
-      this.ranking = ranking
+    (this.sequelize = sequelize), (this.ranking = ranking);
     // playerDocument.base.connection
   }
 
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const response: SuccesRateObject = await this.sequelize.query(
-      // TODO: stop hardcoding database name in code!
       "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
       { type: QueryTypes.SELECT }
     );
     if (!response) {
-      throw new Error("GettingMeanValueError")
+      throw new Error("GettingMeanValueError");
     }
     const successRate = Number(response[0].successRate);
     return successRate;
@@ -279,16 +278,13 @@ export class RankingMySQLManager implements RankingInterface {
     try {
       let winners;
       const rankingList = await this.getPlayersRanking();
-      console.log("RANKING LIST:", rankingList)
       if (rankingList.length != 0) {
         const winningSuccessRate = rankingList[0].successRate;
         winners = rankingList.filter((player) => {
           return player.successRate === winningSuccessRate;
         });
       }
-      console.log("WINNERS:", winners)
-
-      this.ranking.winners = winners || []
+      this.ranking.winners = winners || [];
       return this.ranking;
     } catch (err) {
       throw new Error(`Error getting winner: ${err}`);
