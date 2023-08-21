@@ -27,7 +27,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: player.successRate,
     };
   }
-  async createPlayer(player: User): Promise<string> {
+
+
+  async nameAndEmailCheck(player: User): Promise<boolean> {
     const existingPlayer = await this.playerDocument.findOne({
       $or: [
         { email: player.email },
@@ -46,6 +48,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
         throw new Error("EmailConflictError");
       }
     }
+    return false
+  }
+  async createPlayer(player: User): Promise<string> {
+    await this.nameAndEmailCheck(player)
+    
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -62,16 +69,14 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async findPlayer(playerID: string): Promise<Player> {
-    console.log("MONGO FIND PLAYER DETAILS------")
     const playerDetails = await this.playerDocument.findById(playerID);
-
-    console.log("PLAYER DETAILS------", playerDetails)
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
     const { name, email, password, games, id } = playerDetails;
     return new Player(email, password, games, name, id);
   }
+
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await this.playerDocument.findOne({ email: playerEmail });
     if (!playerDetails) {
