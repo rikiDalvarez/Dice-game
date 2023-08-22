@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react';
 import Dashboard from './Dashboard';
 import { UserContext } from './context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
 
+
+	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
 
 	console.log(userContext)
@@ -45,6 +48,7 @@ const Login: React.FC = () => {
 
 				console.log("login successful")
 				setIsLoggedIn(true)
+				navigate("/dashboard")
 
 			} else {
 				console.error("login failed")
@@ -58,7 +62,7 @@ const Login: React.FC = () => {
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
 				{isLoggedIn ? (<>
-					<h1 className="px-2 text-white bg-blue-600 rounded dark:bg-blue-500"> welcome back {userContext.user.email}</h1>
+
 					<Dashboard />
 				</>)
 					: (<>

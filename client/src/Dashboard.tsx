@@ -10,7 +10,6 @@ const Dashboard: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 	const userContext = useContext(UserContext)
-	console.log(userContext)
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {
@@ -45,6 +44,7 @@ const Dashboard: React.FC = () => {
 	}, []);
 
 	return (
+
 		<div className="m-5  border-t-2 border-green-700">
 			<h2 className="mt-4">Players</h2>
 			{/* add loading skeleton shadcn */}
