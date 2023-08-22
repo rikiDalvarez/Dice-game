@@ -58,7 +58,7 @@ const Login: React.FC = () => {
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
 				{isLoggedIn ? (<>
-					<h1> welcome back {userContext.user.email}</h1>
+					<h1 className="px-2 text-white bg-blue-600 rounded dark:bg-blue-500"> welcome back {userContext.user.email}</h1>
 					<Dashboard />
 				</>)
 					: (<>
