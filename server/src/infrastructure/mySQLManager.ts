@@ -65,7 +65,7 @@ export class PlayerMySQLManager implements PlayerInterface {
         throw new Error("EmailConflictError");
       }
     }
-    return false
+    return false;
   }
 
   async createPlayer(player: User): Promise<string> {
@@ -81,18 +81,20 @@ export class PlayerMySQLManager implements PlayerInterface {
     };
 
     const playerFromDB = await PlayerSQL.create(newPlayer);
+    //----> if below will be never used. Create methoad in this case returns always Model. 
+    //playerFromDB never will be null or undefined
+    //To translate error from database to custom try-catch block should be used.
     if (!playerFromDB) {
       throw new Error("CreatingPlayerError");
     }
+    //------<
     return playerFromDB.id;
   }
 
   async findPlayer(playerID: string): Promise<Player> {
-    console.log("FIND_PLAYER__________start");
     const playerDetails = await PlayerSQL.findByPk(playerID, {
       include: [PlayerSQL.associations.games],
     });
-    console.log("FIND_PLAYER__________:", playerDetails);
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
@@ -105,11 +107,13 @@ export class PlayerMySQLManager implements PlayerInterface {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
+    //----> if below will be never used. FindAll returns Model[] it can be empty or not.
+    //Thus, playerFromDB never will be null or undefined.
+    //To translate error from database to custom try-catch block should be used.
     if (!playersFromDB) {
-      //------?
       throw new Error("PlayerNotFound");
     }
-
+    //------<
     const players = playersFromDB.map((players) => {
       return new Player(
         players.email,
@@ -133,6 +137,7 @@ export class PlayerMySQLManager implements PlayerInterface {
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
     }
+
     await PlayerSQL.update(
       { name: newName },
       {
@@ -140,12 +145,14 @@ export class PlayerMySQLManager implements PlayerInterface {
       }
     );
 
-    ///------> What does do this part> Do we need it?
+    ///------> What does do this part? Do we need it?
+    // Why we dont check what returns update method to validate if update was successfull or not?
     const updatedPlayer = await PlayerSQL.findByPk(playerId);
     if (!updatedPlayer) {
       throw new Error("PlayerNotFound");
     }
     ////-------<
+
     const returnPlayer = { id: updatedPlayer.id, name: newName };
     return returnPlayer;
   }
@@ -196,9 +203,15 @@ export class PlayerMySQLManager implements PlayerInterface {
     });
     //----> en este caso podemos pensar si se debe hacer throw Error
     //---->porque cuando 'no deletion' vamos a revolver false, otross errores va a coger nuestro errerHandler
+
+    //----> if below will be never used. Destroy never returns null or undefined.
+    //To translate database error could be used try-catch block. But it can be also propagated
+    //and catched somwhere down without translation to custom error.
     if (!response) {
       throw new Error("DeletionError");
     }
+    //-------<
+
     const isDeleted = response > 0;
     return isDeleted;
   }
@@ -218,8 +231,8 @@ export class PlayerMySQLManager implements PlayerInterface {
 }
 
 type SuccesRateObject = {
-  successRate: number;
-}[];
+  successRate: string | null;
+};
 
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
@@ -232,14 +245,16 @@ export class RankingMySQLManager implements RankingInterface {
 
   // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
-    const response: SuccesRateObject = await this.sequelize.query(
+    const response: SuccesRateObject | null = await this.sequelize.query(
       "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
-      { type: QueryTypes.SELECT }
+      { type: QueryTypes.SELECT, plain: true }
     );
+
     if (!response) {
       throw new Error("GettingMeanValueError");
     }
-    const successRate = Number(response[0].successRate);
+
+    const successRate = Number(response.successRate);
     return successRate;
   }
 
@@ -248,9 +263,21 @@ export class RankingMySQLManager implements RankingInterface {
       include: [PlayerSQL.associations.games],
       order: [["successRate", "DESC"]],
     });
+    await PlayerSQL.destroy({
+      where: {},
+    });
+    await GameSQL.destroy({
+      where: {},
+    });
+
+    //----> if below will be never used. Find all alwayr return [], it can be empty or not.
+    //To translate database error could be used try-catch block.
+
     if (!playerRanking) {
       throw new Error("PlayerNotFound");
     }
+
+    //-----<
     const players = playerRanking.map((players) => {
       return new Player(
         players.email,

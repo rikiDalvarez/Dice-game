@@ -4,10 +4,8 @@ import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
-import config from "../../config/config";
 
-const requestUri = `http://localhost:${config.PORT}`
-
+const requestUri = "http://localhost:8012"
 describe("API ADD GAME TEST", () => {
   let app: Application
 
@@ -20,8 +18,6 @@ describe("API ADD GAME TEST", () => {
     await cleanupDatabase(app.connection)
 
   });
-
-
 
   test("Should return list of players", async () => {
     const names = ["mafalda", "ricky", "belinda", "kitten"];
