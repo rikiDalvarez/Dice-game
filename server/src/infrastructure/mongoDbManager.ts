@@ -7,11 +7,11 @@ import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-import { Model} from "mongoose";
+import { Model } from "mongoose";
 export class PlayerMongoDbManager implements PlayerInterface {
-  private playerDocument: Model<PlayerType>
+  private playerDocument: Model<PlayerType>;
   constructor(playerDocument: Model<PlayerType>) {
-    this.playerDocument = playerDocument
+    this.playerDocument = playerDocument;
     // playerDocument.base.connection
   }
   createPlayerDoc(player: Player) {
@@ -26,31 +26,32 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
 
-
   async nameAndEmailCheck(player: User): Promise<boolean> {
     const existingPlayer = await this.playerDocument.findOne({
       $or: [
         { email: player.email },
         {
-          $and: [
-            { name: { $ne: "unknown" } },
-            { name: player.name }],
+          $and: [{ name: { $ne: "unknown" } }, { name: player.name }],
         },
       ],
     });
     if (existingPlayer) {
-      if (existingPlayer.name === player.name) {
-        throw new Error("NameConflictError");
-      }
       if (existingPlayer.email === player.email) {
         throw new Error("EmailConflictError");
       }
+      if (
+        existingPlayer.name === player.name &&
+        existingPlayer.name != "unknown"
+      ) {
+        throw new Error("NameConflictError");
+      }
     }
-    return false
+    return false;
   }
+
   async createPlayer(player: User): Promise<string> {
-    await this.nameAndEmailCheck(player)
-    
+    await this.nameAndEmailCheck(player);
+
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -61,12 +62,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
     const playerFromDB = await this.playerDocument.create(newPlayer);
 
-    //playerFromDB never will be null or undefined
-    //To translate error from database to custom try-catch block should be used
-    //or error can be passed down without translation
-    if (!playerFromDB) {
-      throw new Error("CreatingPlayerError")
-    }
     return playerFromDB.id;
   }
 
@@ -80,7 +75,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
   }
 
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
-    const playerDetails = await this.playerDocument.findOne({ email: playerEmail });
+    const playerDetails = await this.playerDocument.findOne({
+      email: playerEmail,
+    });
     if (!playerDetails) {
       throw new Error("EmailNotExists");
     }
@@ -90,14 +87,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await this.playerDocument.find({});
-    
-   
-   //----> if below will be never used. FindAll returns [] it can be empty or not.
-    //Thus, playerFromDB never will be null or undefined.
-    //To translate error from database to custom try-catch block should be used.
-    if (!playersFromDB) {
-      throw new Error("PlayerNotFound")
-    }
+
     const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
         players.email,
@@ -114,7 +104,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    const nameAlreadyInUse = await this.playerDocument.findOne({ name: newName });
+    const nameAlreadyInUse = await this.playerDocument.findOne({
+      name: newName,
+    });
     if (nameAlreadyInUse) {
       throw new Error("NameConflictError");
     }
@@ -129,28 +121,6 @@ export class PlayerMongoDbManager implements PlayerInterface {
     return returnPlayer;
   }
 
-  // I HAVE CHANGED IT:
-
-  /* async addGame(player: Player): Promise<boolean> {
-    const id = player.id;
-    return this.playerDocument.replaceOne(
-      { _id: { $eq: id } },
-      this.createPlayerDoc(player)
-    )
-      .then((response: UpdateResult) => {
-        if (response.modifiedCount === 1) {
-          const lastGameResult = player.games[player.games.length - 1].gameWin
-          return lastGameResult
-        }
-        throw new Error("Erorr during deletion")
-      })
-      .catch((err) => {
-        throw err;
-        //---> not sure but is it enough just throw err to pass it down???
-        //throw new Error(`error: ${err} `);
-      });
-  } */
-  // OS GUSTA ASÍ addGame ?
   async addGame(player: Player): Promise<boolean> {
     const id = player.id;
     const response = await this.playerDocument.replaceOne(
@@ -171,30 +141,30 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
-    )
-    
+    );
+
     if (!response) {
       throw new Error("DeletionError");
     }
-    const isDeleted = response.modifiedCount === 1
+    const isDeleted = response.modifiedCount === 1;
     return isDeleted;
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await this.playerDocument.findById(playerId);
     if (!player) {
-      throw new Error("PlayerNotFound")
+      throw new Error("PlayerNotFound");
     }
     return player ? player.games : [];
   }
 }
-// SHOULD WE SEPARATE RANKING IN ANOTHER FILE ?
+
 export class RankingMongoDbManager implements RankingInterface {
   ranking: Ranking;
-  private playerDocument: Model<PlayerType>
+  private playerDocument: Model<PlayerType>;
   constructor(playerDocument: Model<PlayerType>, ranking: Ranking) {
-    this.playerDocument = playerDocument
-    this.ranking = ranking
+    this.playerDocument = playerDocument;
+    this.ranking = ranking;
   }
 
   async getMeanSuccesRate(): Promise<number> {
@@ -206,22 +176,15 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
-     //-----> Apriopriate test could have shown that this if is never called. 
-     //mean value is always [] empty or not.
-    if (!meanValue) {
-      throw new Error("GettingMeanValueError")
-    }
+
     return meanValue.length > 0 ? meanValue[0].meanValue : 0;
   }
 
   async getPlayersRanking(): Promise<Player[]> {
-    const playerRanking = await this.playerDocument.find().sort({ successRate: -1 });
-    
-    //Thus, playerFromDB never will be null or undefined. It is alvays [] empty or not but array 
-    //To translate error from database to custom try-catch block should be used.
-    if (!playerRanking) {
-      throw new Error("PlayerNotFound");
-    }
+    const playerRanking = await this.playerDocument
+      .find()
+      .sort({ successRate: -1 });
+
     const players = playerRanking.map((players) => {
       return new Player(
         players.email,
@@ -234,60 +197,16 @@ export class RankingMongoDbManager implements RankingInterface {
     return players;
   }
 
-  //--> I HAVE CHANGED IT:
-  // async getRankingWithAverage(): Promise<Ranking> {
-  //   this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
-  //     throw new Error(`error: ${err} `);
-  //   });
-  //   this.ranking.average = await this.getMeanSuccesRate().catch((err) => {
-  //     throw new Error(`error: ${err} `);
-  //   });
-  //   return this.ranking;
-  // }
-
-  // OS GUSTA ASÍ ???
   async getRankingWithAverage(): Promise<Ranking> {
     try {
       this.ranking.rankingList = await this.getPlayersRanking();
       this.ranking.average = await this.getMeanSuccesRate();
       return this.ranking;
     } catch (err) {
-      throw new Error(`Error getRankingWithAverage: ${err}`);
+      throw new Error("GetRankingWithAverageError");
     }
   }
 
-  // async getWinner(): Promise<Ranking> {
-  //   try {
-  //     const groupedPlayers = await this.playerDocument.aggregate([
-  //       {
-  //         $group: {
-  //           _id: "$successRate",
-  //           wholeDocument: { $push: "$$ROOT" },
-  //         },
-  //       },
-  //       { $sort: { _id: -1 } },
-  //     ]);
-  //     const winnersDoc =
-  //       groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
-  //     const winners = winnersDoc.map((players: PlayerType) => {
-  //       return new Player(
-  //         players.email,
-  //         players.password,
-  //         players.games,
-  //         players.name,
-  //         players._id.toString()
-  //       );
-  //     });
-
-  //     this.ranking.winners = winners;
-  //     return this.ranking;
-  //   } catch (error) {
-  //     console.error("Error getting winners:", error);
-  //     throw error;
-  //   }
-  // }
-
-  // I think this way is better:
   async getWinner(): Promise<Ranking> {
     try {
       const groupedPlayers = await this.playerDocument.aggregate([
@@ -300,7 +219,7 @@ export class RankingMongoDbManager implements RankingInterface {
         { $sort: { _id: -1 } },
       ]);
       if (groupedPlayers.length > 0) {
-        const winnersDoc = groupedPlayers[0].wholeDocument
+        const winnersDoc = groupedPlayers[0].wholeDocument;
         const winners = winnersDoc.map((players: PlayerType) => {
           return new Player(
             players.email,
@@ -309,45 +228,15 @@ export class RankingMongoDbManager implements RankingInterface {
             players.name,
             players._id.toString()
           );
-        })
+        });
         this.ranking.winners = winners;
       }
-      return this.ranking; // i think this will return [] if groupedPlayers.length == 0
+      return this.ranking;
     } catch (err) {
-      throw new Error(`Error getting winner: ${err}`);
+      throw new Error(`GettingWinnerError`);
     }
   }
-  // async getLoser(): Promise<Ranking> {
-  //   try {
-  //     const groupedPlayers = await this.playerDocument.aggregate([
-  //       {
-  //         $group: {
-  //           _id: "$successRate",
-  //           wholeDocument: { $push: "$$ROOT" },
-  //         },
-  //       },
-  //       { $sort: { _id: 1 } },
-  //     ]);
-  //     const losersDoc =
-  //       groupedPlayers.length > 0 ? groupedPlayers[0].wholeDocument : [];
-  //     const losers = losersDoc.map((players: PlayerType) => {
-  //       return new Player(
-  //         players.email,
-  //         players.password,
-  //         players.games,
-  //         players.name,
-  //         players._id.toString()
-  //       );
-  //     });
-  //     this.ranking.losers = losers;
-  //     return this.ranking;
-  //   } catch (error) {
-  //     console.error("Error getting losers:", error);
-  //     throw error;
-  //   }
-  // }
 
-  // SAME HERE:
   async getLoser(): Promise<Ranking> {
     try {
       const groupedPlayers = await this.playerDocument.aggregate([
@@ -360,7 +249,7 @@ export class RankingMongoDbManager implements RankingInterface {
         { $sort: { _id: 1 } },
       ]);
       if (groupedPlayers.length > 0) {
-        const losersDoc = groupedPlayers[0].wholeDocument
+        const losersDoc = groupedPlayers[0].wholeDocument;
         const losers = losersDoc.map((players: PlayerType) => {
           return new Player(
             players.email,
@@ -369,12 +258,12 @@ export class RankingMongoDbManager implements RankingInterface {
             players.name,
             players._id.toString()
           );
-        })
+        });
         this.ranking.losers = losers;
       }
       return this.ranking;
     } catch (err) {
-      throw new Error(`Error getting loser: ${err}`);
+      throw new Error(`GettingLoserError`);
     }
   }
 }

@@ -15,9 +15,6 @@ import { Server } from "http";
 import { Sequelize } from "sequelize";
 import { Connection } from "mongoose";
 
-
-
-
 export type PlayerRootControllers = {
   handleLogin: (
     req: Request,
@@ -86,9 +83,12 @@ export async function start() {
   return startServer(config.DATABASE_ENV, databaseName);
 }
 
-async function startServer(databaseType:string, databaseName:string) {
+async function startServer(databaseType: string, databaseName: string) {
   const dataBaseDetails = await initDataBase(databaseType, databaseName);
-  const { playerService, rankingService } = buildServices(databaseType, dataBaseDetails);
+  const { playerService, rankingService } = buildServices(
+    databaseType,
+    dataBaseDetails
+  );
   const playerRootControllers = playerControllers(playerService);
   const rankingRootControllers = rankingControllers(rankingService);
   const app = express();
