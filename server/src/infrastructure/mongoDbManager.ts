@@ -7,9 +7,7 @@ import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-import { Model } from "mongoose";
-
-
+import { Model} from "mongoose";
 export class PlayerMongoDbManager implements PlayerInterface {
   private playerDocument: Model<PlayerType>
   constructor(playerDocument: Model<PlayerType>) {
@@ -62,6 +60,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
       registrationDate: player.registrationDate,
     };
     const playerFromDB = await this.playerDocument.create(newPlayer);
+
+    //playerFromDB never will be null or undefined
+    //To translate error from database to custom try-catch block should be used
+    //or error can be passed down without translation
     if (!playerFromDB) {
       throw new Error("CreatingPlayerError")
     }
@@ -88,6 +90,11 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await this.playerDocument.find({});
+    
+   
+   //----> if below will be never used. FindAll returns [] it can be empty or not.
+    //Thus, playerFromDB never will be null or undefined.
+    //To translate error from database to custom try-catch block should be used.
     if (!playersFromDB) {
       throw new Error("PlayerNotFound")
     }
@@ -114,6 +121,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const player = await this.playerDocument.findByIdAndUpdate(playerId, {
       name: newName,
     });
+
     if (!player) {
       throw new Error("PlayerNotFound");
     }
@@ -154,6 +162,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       const lastGameResult = player.games[player.games.length - 1].gameWin;
       return lastGameResult;
     }
+
     throw new Error("AddingGameError");
   }
 
@@ -163,6 +172,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     )
+    
     if (!response) {
       throw new Error("DeletionError");
     }
@@ -196,6 +206,8 @@ export class RankingMongoDbManager implements RankingInterface {
         },
       },
     ]);
+     //-----> Apriopriate test could have shown that this if is never called. 
+     //mean value is always [] empty or not.
     if (!meanValue) {
       throw new Error("GettingMeanValueError")
     }
@@ -204,6 +216,9 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getPlayersRanking(): Promise<Player[]> {
     const playerRanking = await this.playerDocument.find().sort({ successRate: -1 });
+    
+    //Thus, playerFromDB never will be null or undefined. It is alvays [] empty or not but array 
+    //To translate error from database to custom try-catch block should be used.
     if (!playerRanking) {
       throw new Error("PlayerNotFound");
     }
