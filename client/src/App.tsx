@@ -6,6 +6,8 @@ import Dashboard from './Dashboard';
 
 
 import './App.css';
+// add context and react-router-dom // context provider
+// useEffect
 
 function App() {
 	const initialState = auth.isAuthenticated();

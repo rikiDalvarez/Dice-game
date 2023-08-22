@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { UserContext } from './context/UserContext';
 interface Player {
 	name: string,
 	rating: number,
@@ -7,6 +8,9 @@ interface Player {
 
 const Dashboard: React.FC = ({ setIsAuthenticated }) => {
 	const [data, setData] = useState<Array<Player> | null>(null);
+
+	const userContext = useContext(UserContext)
+	console.log(userContext)
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import './index.css'
 import Login from './Login.tsx';
+import { UserContextProvider } from './context/UserContext.tsx';
 
 const router = createBrowserRouter([{
   path: "/",
@@ -18,11 +19,12 @@ const router = createBrowserRouter([{
   path: "/api/login",
   element: <Login />,
 },
-
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserContextProvider>
+      <RouterProvider router={router} />
+    </UserContextProvider>
   </React.StrictMode>,
 )

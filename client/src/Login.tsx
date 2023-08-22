@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Dashboard from './Dashboard';
+import { UserContext } from './context/UserContext';
 
 const Login: React.FC = () => {
+
+	const userContext = useContext(UserContext);
+
+	console.log(userContext)
+
 	const [formData, setFormData] = useState({
 		email: "",
 		password: ""
@@ -18,7 +24,6 @@ const Login: React.FC = () => {
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
-
 		try {
 			const response = await fetch("http://localhost:5000/api/login", {
 				method: 'POST',
@@ -27,12 +32,17 @@ const Login: React.FC = () => {
 				},
 				body: JSON.stringify(formData)
 			})
+			console.log(response)
 
 			if (response.ok) {
 				const data = await response.json();
 				const token = data.token;
-
 				localStorage.setItem("token", token)
+				userContext.setUser({
+					email: formData.email,
+					token: localStorage.getItem("token")
+				})
+
 				console.log("login successful")
 				setIsLoggedIn(true)
 
@@ -44,12 +54,13 @@ const Login: React.FC = () => {
 		}
 	}
 
-
-
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-				{isLoggedIn ? (<Dashboard />)
+				{isLoggedIn ? (<>
+					<h1> welcome back {userContext.user.email}</h1>
+					<Dashboard />
+				</>)
 					: (<>
 						<h2 className="text-2xl font-semibold mb-4">Login</h2>
 						<form onSubmit={handleSubmit}>
