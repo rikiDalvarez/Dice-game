@@ -12,6 +12,18 @@ import config from "../../config/config";
 
 const requestUri = `http://localhost:${config.PORT}`
 
+function comparer (a:PlayerType,b:PlayerType) {
+    
+  {if (a.name === null && b.name === null) {
+    return 0;
+  } else if (a.name === null) {
+    return -1;
+  } else if (b.name === null) {
+    return 1;
+  } else {
+    return a.name.localeCompare(b.name);
+  }}}
+
 describe("API ADD GAME TEST", () => {
   let app: Application
 
@@ -67,13 +79,13 @@ describe("API ADD GAME TEST", () => {
    
     
       const winnerNumbers = winners.length
-      const sortedWinnersFromRanking = rankingList.slice(0,winnerNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      const sortedWinners = winners.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      const sortedWinnersFromRanking = rankingList.slice(0,winnerNumbers).sort(comparer)
+      const sortedWinners = winners.sort(comparer)
       expect(sortedWinnersFromRanking).toStrictEqual(sortedWinners);
 
       const loserNumbers = losers.length
-      const sortedLosersFromRanking = rankingList.slice(-loserNumbers).sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
-      const sortedLosers = losers.sort((a:PlayerType,b:PlayerType) => a.name.localeCompare(b.name))
+      const sortedLosersFromRanking = rankingList.slice(-loserNumbers).sort(comparer)
+      const sortedLosers = losers.sort(comparer)
       expect(sortedLosersFromRanking).toStrictEqual(sortedLosers);
 
 
