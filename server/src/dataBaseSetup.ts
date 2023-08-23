@@ -17,31 +17,32 @@ export type InitDataBase = {
 };
 
 export async function initDataBase(
-  databaseType: string,
-  databaseName: string
-): Promise<InitDataBase> {
-  if (databaseType === "mongo") {
-    const connection = connectDatabase(config.MONGO_URI, databaseName);
-    const playerDocument = connection.model<PlayerType>("Player", playerSchema);
-    return Promise.resolve({
-      connection: connection,
-      document: playerDocument,
-    });
-  } else {
-    await createSQLDatabase(databaseName, {
-      host: config.HOST,
-      user: config.MYSQL_USER,
-      password: config.MYSQL_PASSWORD,
-    });
-    const sequelize = createSequelizer(
-      databaseName,
-      config.MYSQL_USER,
-      config.MYSQL_PASSWORD,
-      config.HOST
-    );
-    initializeGameTable(sequelize);
-    initializePlayerTable(sequelize);
-    await createSQLTableRelations(sequelize);
-    return Promise.resolve({ connection: sequelize });
+    databaseType: string,
+    databaseName: string
+  ): Promise<InitDataBase> {
+    if (databaseType === "mongo") {
+      const connection = connectDatabase(config.MONGO_URI, databaseName);
+      const playerDocument = connection.model<PlayerType>("Player", playerSchema);
+      
+      return Promise.resolve({
+        connection: connection,
+        document: playerDocument,
+      });
+    } else {
+      await createSQLDatabase(databaseName, {
+        host: config.HOST,
+        user: config.MYSQL_USER,
+        password: config.MYSQL_PASSWORD,
+      });
+      const sequelize = createSequelizer(
+        databaseName,
+        config.MYSQL_USER,
+        config.MYSQL_PASSWORD,
+        config.HOST
+      );
+      initializeGameTable(sequelize);
+      initializePlayerTable(sequelize);
+      await createSQLTableRelations(sequelize);
+      return Promise.resolve({connection: sequelize });
+    }
   }
-}

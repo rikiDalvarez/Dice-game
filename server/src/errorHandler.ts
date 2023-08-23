@@ -42,8 +42,9 @@ export const errorHandler = (
       return response.status(401).send({ Error: "Email doesn't exist" });
     case "AddingGameError":
       return response.status(409).send({ Error: "Error playing game" });
-    case "DeletingError":
-      return response.status(409).send({ Error: "Error during deletion" });
+    case "DeletionError":
+      console.log('ddddddd')
+      return response.status(500).send({ Error: "Error during deletion" });
     case "GettingMeanValueError":
       return response
         .status(409)
@@ -56,6 +57,7 @@ export const errorHandler = (
     case "NoToken":
       return response.status(401).send({ Error: "No token" });
     default:
+      console.log('5000000000')
       return response.status(500).json({ error: error.message });
   }
 };

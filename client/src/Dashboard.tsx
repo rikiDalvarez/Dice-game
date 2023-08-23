@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { UserContext } from './context/UserContext';
 interface Player {
 	name: string,
 	rating: number,
 	registrationDate: string
 }
 
-const Dashboard: React.FC = ({ setIsAuthenticated }) => {
+const Dashboard: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
+
+	const userContext = useContext(UserContext)
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {
@@ -41,12 +44,13 @@ const Dashboard: React.FC = ({ setIsAuthenticated }) => {
 	}, []);
 
 	return (
-		<div>
-			<h2>Dashboard</h2>
+
+		<div className="m-5  border-t-2 border-green-700">
+			<h2 className="mt-4">Players</h2>
 			{/* add loading skeleton shadcn */}
 			{data ? (
 				data.map((player) => (
-					<div key={player.name}>
+					<div className="m-2  p-2 border-2" key={player.name}>
 						<h3>{player.name}</h3>
 						<p>Rating: {player.rating}</p>
 						<p>Registration Date: {player.registrationDate}</p>

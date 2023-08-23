@@ -2,7 +2,7 @@ import { Player } from "./Player";
 
 export type PlayerDetailsType = {
   id: string;
-  name: string;
+  name: string|null;
   rating: number;
   registrationDate: Date;
 };

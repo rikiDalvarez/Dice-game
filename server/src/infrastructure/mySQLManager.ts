@@ -6,7 +6,7 @@ import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op, QueryTypes, Sequelize } from "sequelize";
+import { QueryTypes, Sequelize, ValidationError } from "sequelize";
 
 export class PlayerMySQLManager implements PlayerInterface {
   sequelize: Sequelize;
@@ -38,39 +38,17 @@ export class PlayerMySQLManager implements PlayerInterface {
     }
   }
 
-  async nameAndEmailCheck(player: User): Promise<boolean> {
-    const existingPlayer = await PlayerSQL.findOne({
-      where: {
-        [Op.or]: [
-          { email: player.email },
-          {
-            [Op.and]: [
-              {
-                name: { [Op.not]: "unknown" },
-              },
-              {
-                name: player.name,
-              },
-            ],
-          },
-        ],
-      },
-    });
-
-    if (existingPlayer) {
-      if (existingPlayer.name === player.name) {
-        throw new Error("NameConflictError");
-      }
-      if (existingPlayer.email === player.email) {
-        throw new Error("EmailConflictError");
-      }
+  validationErrorHandler(err: ValidationError) {
+    if (err.errors[0].path === "email") {
+      throw new Error("EmailConflictError");
     }
-    return false;
+    if (err.errors[0].path === "name") {
+      throw new Error("NameConflictError");
+    }
+    throw err;
   }
 
   async createPlayer(player: User): Promise<string> {
-    await this.nameAndEmailCheck(player);
-
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -79,16 +57,15 @@ export class PlayerMySQLManager implements PlayerInterface {
       games: [],
       registrationDate: player.registrationDate,
     };
-
-    const playerFromDB = await PlayerSQL.create(newPlayer);
-    //----> if below will be never used. Create methoad in this case returns always Model. 
-    //playerFromDB never will be null or undefined
-    //To translate error from database to custom try-catch block should be used.
-    if (!playerFromDB) {
-      throw new Error("CreatingPlayerError");
+    try {
+      const playerFromDB = await PlayerSQL.create(newPlayer);
+      return playerFromDB.id;
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        this.validationErrorHandler(err);
+      }
+      throw err;
     }
-    //------<
-    return playerFromDB.id;
   }
 
   async findPlayer(playerID: string): Promise<Player> {
@@ -131,29 +108,21 @@ export class PlayerMySQLManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    const nameAlreadyInUse = await PlayerSQL.findOne({
-      where: { name: newName },
-    });
-    if (nameAlreadyInUse) {
-      throw new Error("NameConflictError");
-    }
-
-    await PlayerSQL.update(
-      { name: newName },
-      {
-        where: { id: playerId },
+    try {
+      await PlayerSQL.update(
+        { name: newName },
+        {
+          where: { id: playerId },
+        }
+      );
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        this.validationErrorHandler(err);
       }
-    );
-
-    ///------> What does do this part? Do we need it?
-    // Why we dont check what returns update method to validate if update was successfull or not?
-    const updatedPlayer = await PlayerSQL.findByPk(playerId);
-    if (!updatedPlayer) {
-      throw new Error("PlayerNotFound");
+      throw err;
     }
-    ////-------<
 
-    const returnPlayer = { id: updatedPlayer.id, name: newName };
+    const returnPlayer = { id: playerId, name: newName };
     return returnPlayer;
   }
 

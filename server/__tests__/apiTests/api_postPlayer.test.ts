@@ -72,7 +72,7 @@ describe("API ADD GAME TEST", () => {
     const listLength = response.body.playerList.length;
     const name = response.body.playerList[0].name;
     expect(listLength).toBe(1);
-    expect(name).toBe("unknown");
+    expect(name).toBe(null);
   }, 30000);
 
   test("two anonim should have different emails:", async () => {
