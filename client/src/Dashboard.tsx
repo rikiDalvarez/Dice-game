@@ -10,6 +10,7 @@ const Dashboard: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 	const userContext = useContext(UserContext)
+	console.log(userContext)
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {
