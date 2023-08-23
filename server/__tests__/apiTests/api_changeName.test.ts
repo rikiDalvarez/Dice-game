@@ -69,7 +69,7 @@ describe("API ADD GAME TEST", () => {
       .put(`/api/players/${nonExistingUserId}`)
       .set("Authorization", token)
       .send({ name: newName })
-      .expect(404)
+      .expect(500)
       .expect("Content-Type", /application\/json/);
   }, 30000);
 

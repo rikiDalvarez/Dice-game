@@ -17,6 +17,7 @@ export const errorHandler = (
     return response.status(400).send({ Error: error.message });
   }
 
+  console.log('Error Handler: error.message:', error.message)
   switch (error.message) {
     case "GettingWinnerError":
       return response
@@ -34,6 +35,8 @@ export const errorHandler = (
       return response.status(409).send({ Error: "Name already exists" });
     case "EmailConflictError":
       return response.status(409).send({ Error: "Email already exists" });
+    case "EmailInvalidError":
+      return response.status(400).send({ Error: "Email is invalid" });
     case "CreatingPlayerError":
       return response.status(409).send({ Error: "Couldn't create the player" });
     case "PlayerNotFound":
@@ -43,8 +46,9 @@ export const errorHandler = (
     case "AddingGameError":
       return response.status(409).send({ Error: "Error playing game" });
     case "DeletionError":
-      console.log('ddddddd')
       return response.status(500).send({ Error: "Error during deletion" });
+      case "changeNameError":
+        return response.status(500).send({ Error: "Error during change name" });
     case "GettingMeanValueError":
       return response
         .status(409)

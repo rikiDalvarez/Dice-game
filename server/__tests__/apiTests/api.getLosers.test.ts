@@ -52,7 +52,6 @@ describe("API ADD GAME TEST", () => {
     const responseListBody = responseList.body.ranking;
 
     const loser = await getLoser(requestUri, tokenPlayer1);
-
     expect(loser[0].successRate).toStrictEqual(
       responseListBody[responseListBody.length - 1].successRate
     );

@@ -39,13 +39,19 @@ export class PlayerMySQLManager implements PlayerInterface {
   }
 
   validationErrorHandler(err: ValidationError) {
-    if (err.errors[0].path === "email") {
+  
+    if (err.errors[0].path === "email" && err.errors[0].type ==='unique violation') {
       throw new Error("EmailConflictError");
     }
-    if (err.errors[0].path === "name") {
+   // if (err.errors[0].path === "email" && err.errors[0].type ==='validation error') {
+    //  console.log('AAAAAAAAAA')
+      //throw new Error("EmailInvalidError");
+  // }
+    
+    if (err.errors[0].path === "name" && err.errors[0].type ==='unique violation') {
       throw new Error("NameConflictError");
     }
-    throw err;
+    throw (err);
   }
 
   async createPlayer(player: User): Promise<string> {
@@ -61,6 +67,7 @@ export class PlayerMySQLManager implements PlayerInterface {
       const playerFromDB = await PlayerSQL.create(newPlayer);
       return playerFromDB.id;
     } catch (err) {
+     console.log('ERROR',err)
       if (err instanceof ValidationError) {
         this.validationErrorHandler(err);
       }
@@ -109,13 +116,17 @@ export class PlayerMySQLManager implements PlayerInterface {
     newName: string
   ): Promise<Partial<Player>> {
     try {
-      await PlayerSQL.update(
+      const response = await PlayerSQL.update(
         { name: newName },
         {
           where: { id: playerId },
         }
       );
+      if (response[0] === 0){
+        throw new Error("changeNameError")
+      }
     } catch (err) {
+      console.log('NAME', err)
       if (err instanceof ValidationError) {
         this.validationErrorHandler(err);
       }
@@ -232,12 +243,7 @@ export class RankingMySQLManager implements RankingInterface {
       include: [PlayerSQL.associations.games],
       order: [["successRate", "DESC"]],
     });
-    await PlayerSQL.destroy({
-      where: {},
-    });
-    await GameSQL.destroy({
-      where: {},
-    });
+    
 
     //----> if below will be never used. Find all alwayr return [], it can be empty or not.
     //To translate database error could be used try-catch block.
@@ -287,6 +293,8 @@ export class RankingMySQLManager implements RankingInterface {
     }
   }
 
+
+  
   async getLoser(): Promise<Ranking> {
     try {
       let losers = [];
@@ -308,3 +316,4 @@ export class RankingMySQLManager implements RankingInterface {
     }
   }
 }
+
