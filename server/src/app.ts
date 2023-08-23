@@ -59,8 +59,16 @@ export type RankingRootControllers = {
     res: Response,
     next: NextFunction
   ) => Promise<void>;
-  getLoser: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-  getWinner: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+  getLoser: (
+    req: Request,
+    res: Response,
+    next: NextFunction)
+    => Promise<void>;
+  getWinner: (
+    req: Request,
+    res: Response,
+    next: NextFunction)
+    => Promise<void>;
 };
 
 export class Application {

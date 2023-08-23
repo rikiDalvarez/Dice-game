@@ -1,23 +1,15 @@
-import { DataTypes, Model, Sequelize} from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
 
-// import { PlayerType } from "../../../domain/Player";
-
-
-//type PlayerSQLCreationAttributes = Optional<IPlayerSQL, 'id'>;
-
 export class PlayerSQL extends Model<IPlayerSQL> {
-
   declare id: string
  declare name: string |null
   declare email: string
   declare password: string
   declare registrationDate: Date
   declare successRate: number
-  //declare getGames: HasManyGetAssociationsMixin<GameSQL>
   declare games: GameSQL[]
- 
 }
 
 export function initializePlayerTable(sequelize:Sequelize) {

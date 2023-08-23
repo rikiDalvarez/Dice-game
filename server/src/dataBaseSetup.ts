@@ -12,10 +12,10 @@ import { Connection, Model } from "mongoose";
 
 
 export type InitDataBase = {
-    connection: Connection | Sequelize;
-    document?: Model<PlayerType>;
-  };
-  
+  connection: Connection | Sequelize;
+  document?: Model<PlayerType>;
+};
+
 export async function initDataBase(
     databaseType: string,
     databaseName: string

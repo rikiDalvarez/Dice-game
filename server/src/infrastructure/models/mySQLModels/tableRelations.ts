@@ -7,7 +7,7 @@ export async function createSQLTableRelations(sequelize: Sequelize) {
     foreignKey: "player_id",
     as: "games",
     onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onUpdate: "CASCADE"
   });
   await sequelize.sync();
 }
