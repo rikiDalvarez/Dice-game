@@ -22,7 +22,7 @@ export async function createSQLDatabase(
   } finally {
     connection?.end();
   }
- 
+
 }
 
 export const createSequelizer = (
@@ -34,7 +34,7 @@ export const createSequelizer = (
   try {
     const connection = new Sequelize(database, user, password, {
       host: host,
-      dialect: "mysql",
+      dialect: "mysql"
     });
     console.log("Connected to SQL DB");
     return connection;
@@ -47,9 +47,7 @@ export const createSequelizer = (
 export const testSQLConnection = async (sequelize: Sequelize) => {
   try {
     await sequelize.authenticate();
-    console.log(
-      "Connection to MySQL database has been established successfully."
-    );
+    console.log("Connection to MySQL database has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to MySQL database:", error);
     throw error;

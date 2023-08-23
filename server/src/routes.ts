@@ -2,10 +2,7 @@ import { Router } from "express";
 import { PlayerRootControllers, RankingRootControllers } from "./app";
 import auth from "./infrastructure/middleware/auth";
 
-
-
-
-export async function initRoutes(router: Router, playerRootControllers:PlayerRootControllers, rankingRootControllers:RankingRootControllers) {
+export async function initRoutes(router: Router, playerRootControllers: PlayerRootControllers, rankingRootControllers: RankingRootControllers) {
   // const router = express.Router();
 
   // router.get("/protected", auth, getPlayers);
