@@ -1,11 +1,10 @@
-//import bcrypt from "bcrypt";
 import request from "supertest";
 import { Application, start } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
-import { getPlayer, getPlayers } from "../auxilaryFunctionsForTests/getPlayers";
+import { getPlayer} from "../auxilaryFunctionsForTests/getPlayers";
 import config from "../../config/config";
 
 const requestUri = `http://localhost:${config.PORT}`;
@@ -87,7 +86,6 @@ describe("API CREATE PLAYER TEST", () => {
   }, 30000);
 
   test("two anonim should have different emails:", async () => {
-    console.log("TEST_BEGIN_____________________");
     await createUser(requestUri, "first password", "first.anonim@op.pl");
     const token = await loginUser(
       requestUri,
@@ -95,19 +93,12 @@ describe("API CREATE PLAYER TEST", () => {
       "first password"
     );
     
-    console.log("PLAYERS BEFORE:", await getPlayers(requestUri, token))
-    // await delay(2000)
-
-
-
     await request(requestUri)
       .post("/api/players")
       .set("Authorization", token)
       .send({ password: "second password", email: "first.anonim@op.pl" })
       .expect(409)
       .expect("Content-Type", /application\/json/);
-
-      console.log("PLAYERS AFTER:", await getPlayers(requestUri, token))
   });
 
   test("Should create user if name not passed:", async () => {

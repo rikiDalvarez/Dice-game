@@ -7,7 +7,7 @@ export type GameType = {
   dice2Value: number;
 };
 
-export type PlayerType = {
+export type MongoPlayerType = {
   _id: string;
   successRate: number;
   games: Array<GameType>;

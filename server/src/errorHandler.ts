@@ -9,15 +9,7 @@ export const errorHandler = (
     return next(error);
   }
 
-  //email validation
-  if (
-    error.name === "ValidationError" ||
-    error.name === "SequelizeValidationError"
-  ) {
-    return response.status(400).send({ Error: error.message });
-  }
 
-  console.log('Error Handler: error.message:', error.message)
   switch (error.message) {
     case "GettingWinnerError":
       return response
@@ -44,14 +36,14 @@ export const errorHandler = (
     case "EmailNotExists":
       return response.status(401).send({ Error: "Email doesn't exist" });
     case "AddingGameError":
-      return response.status(409).send({ Error: "Error playing game" });
+      return response.status(500).send({ Error: "Error playing game" });
     case "DeletionError":
       return response.status(500).send({ Error: "Error during deletion" });
       case "changeNameError":
         return response.status(500).send({ Error: "Error during change name" });
     case "GettingMeanValueError":
       return response
-        .status(409)
+        .status(500)
         .send({ Error: "Error getting success rate average" });
     case "jwt expired":
       return response.status(401).send({ Error: "Authentication required" });
@@ -61,7 +53,6 @@ export const errorHandler = (
     case "NoToken":
       return response.status(401).send({ Error: "No token" });
     default:
-      console.log('5000000000')
       return response.status(500).json({ error: error.message });
   }
 };

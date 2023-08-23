@@ -6,13 +6,13 @@ import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { getLoser } from "../auxilaryFunctionsForTests/getLoser";
 import { getWinner } from "../auxilaryFunctionsForTests/getWinner";
-import { PlayerType } from "../../src/domain/Player";
+import { MongoPlayerType } from "../../src/domain/Player";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 import config from "../../config/config";
 
 const requestUri = `http://localhost:${config.PORT}`;
 
-function comparer(a: PlayerType, b: PlayerType) {
+function comparer(a: MongoPlayerType, b: MongoPlayerType) {
   {
     if (a.name === null && b.name === null) {
       return 0;

@@ -12,7 +12,6 @@ export class PlayerMySQLManager implements PlayerInterface {
   sequelize: Sequelize;
   constructor(sequelize: Sequelize) {
     this.sequelize = sequelize;
-    // playerDocument.base.connection
   }
 
   createGameDoc(games: Array<GameType>, id: string) {
@@ -39,19 +38,24 @@ export class PlayerMySQLManager implements PlayerInterface {
   }
 
   validationErrorHandler(err: ValidationError) {
-  
-    if (err.errors[0].path === "email" && err.errors[0].type ==='unique violation') {
-      throw new Error("EmailConflictError");
-    }
-   // if (err.errors[0].path === "email" && err.errors[0].type ==='validation error') {
-    //  console.log('AAAAAAAAAA')
-      //throw new Error("EmailInvalidError");
-  // }
-    
-    if (err.errors[0].path === "name" && err.errors[0].type ==='unique violation') {
-      throw new Error("NameConflictError");
-    }
-    throw (err);
+    err.errors.forEach((error) => {
+      if (error.type === "unique violation") {
+        if (error.path === "email") {
+          throw new Error("EmailConflictError");
+        }
+        if (error.path === "name") {
+          throw new Error("NameConflictError");
+        }
+      }
+      //The last stable version of sequelizer has error. Type returns upper case 'Validation error'
+      //but should return lower case 'validation error.'
+      if (error.type?.toLowerCase() === "validation error") {
+        if (error.path === "email") {
+          throw new Error("EmailInvalidError");
+        }
+      }
+    });
+    throw err;
   }
 
   async createPlayer(player: User): Promise<string> {
@@ -67,7 +71,6 @@ export class PlayerMySQLManager implements PlayerInterface {
       const playerFromDB = await PlayerSQL.create(newPlayer);
       return playerFromDB.id;
     } catch (err) {
-     console.log('ERROR',err)
       if (err instanceof ValidationError) {
         this.validationErrorHandler(err);
       }
@@ -91,13 +94,7 @@ export class PlayerMySQLManager implements PlayerInterface {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
-    //----> if below will be never used. FindAll returns Model[] it can be empty or not.
-    //Thus, playerFromDB never will be null or undefined.
-    //To translate error from database to custom try-catch block should be used.
-    if (!playersFromDB) {
-      throw new Error("PlayerNotFound");
-    }
-    //------<
+
     const players = playersFromDB.map((players) => {
       return new Player(
         players.email,
@@ -122,11 +119,10 @@ export class PlayerMySQLManager implements PlayerInterface {
           where: { id: playerId },
         }
       );
-      if (response[0] === 0){
-        throw new Error("changeNameError")
+      if (response[0] === 0) {
+        throw new Error("changeNameError");
       }
     } catch (err) {
-      console.log('NAME', err)
       if (err instanceof ValidationError) {
         this.validationErrorHandler(err);
       }
@@ -166,11 +162,10 @@ export class PlayerMySQLManager implements PlayerInterface {
       const lastGameResult = player.games[player.games.length - 1].gameWin;
       return lastGameResult;
     } catch (error) {
-      console.error("Error in addGame:", error);
       if (transaction) {
         await transaction.rollback();
       }
-      throw new Error("transaction failed");
+      throw new Error("TransacrionFailed");
     }
   }
 
@@ -181,19 +176,11 @@ export class PlayerMySQLManager implements PlayerInterface {
         player_id: id,
       },
     });
-    //----> en este caso podemos pensar si se debe hacer throw Error
-    //---->porque cuando 'no deletion' vamos a revolver false, otross errores va a coger nuestro errerHandler
 
-    //----> if below will be never used. Destroy never returns null or undefined.
-    //To translate database error could be used try-catch block. But it can be also propagated
-    //and catched somwhere down without translation to custom error.
-    if (!response) {
+    if (response === 0) {
       throw new Error("DeletionError");
     }
-    //-------<
-
-    const isDeleted = response > 0;
-    return isDeleted;
+    return true;
   }
 
   async getGames(playerId: string): Promise<GameType[]> {
@@ -220,10 +207,8 @@ export class RankingMySQLManager implements RankingInterface {
   sequelize: Sequelize;
   constructor(sequelize: Sequelize, ranking: Ranking) {
     (this.sequelize = sequelize), (this.ranking = ranking);
-    // playerDocument.base.connection
   }
 
-  // así es más fácil
   async getMeanSuccesRate(): Promise<number> {
     const response: SuccesRateObject | null = await this.sequelize.query(
       "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
@@ -243,16 +228,7 @@ export class RankingMySQLManager implements RankingInterface {
       include: [PlayerSQL.associations.games],
       order: [["successRate", "DESC"]],
     });
-    
 
-    //----> if below will be never used. Find all alwayr return [], it can be empty or not.
-    //To translate database error could be used try-catch block.
-
-    if (!playerRanking) {
-      throw new Error("PlayerNotFound");
-    }
-
-    //-----<
     const players = playerRanking.map((players) => {
       return new Player(
         players.email,
@@ -293,8 +269,6 @@ export class RankingMySQLManager implements RankingInterface {
     }
   }
 
-
-  
   async getLoser(): Promise<Ranking> {
     try {
       let losers = [];
@@ -316,4 +290,3 @@ export class RankingMySQLManager implements RankingInterface {
     }
   }
 }
-
