@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { UserContext } from './context/UserContext';
+import Navbar from './Navbar';
+import Login from './Login';
 interface Player {
 	name: string,
 	rating: number,
@@ -10,6 +12,7 @@ const Dashboard: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 	const userContext = useContext(UserContext)
+	console.log(userContext)
 
 	useEffect(() => {
 		const fetchProtectedData = async () => {
@@ -44,19 +47,20 @@ const Dashboard: React.FC = () => {
 	}, []);
 
 	return (
-
-		<div className="m-5  border-t-2 border-green-700">
-			<h2 className="mt-4">Players</h2>
-			{/* add loading skeleton shadcn */}
-			{data ? (
-				data.map((player) => (
-					<div className="m-2  p-2 border-2" key={player.name}>
-						<h3>{player.name}</h3>
-						<p>Rating: {player.rating}</p>
-						<p>Registration Date: {player.registrationDate}</p>
-					</div>
-				))
-			) : <p>Loading...</p>}
+		<div className="border-4 border-pink-700 flex-col">
+			<Navbar />
+			<div className="m-5  border-t-2 border-green-700">
+				{/* add loading skeleton shadcn */}
+				{data ? (
+					data.map((player) => (
+						<div className="m-2  p-2 border-2" key={player.name}>
+							<h3>{player.name}</h3>
+							<p>Rating: {player.rating}</p>
+							<p>Registration Date: {player.registrationDate}</p>
+						</div>
+					))
+				) : <Login />}
+			</div>
 		</div>
 	);
 };

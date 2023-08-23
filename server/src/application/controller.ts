@@ -34,7 +34,7 @@ export function playerControllers(playerService: PlayerService) {
         { userId: player.id },
         sanitizedConfig.JWT_SECRET,
         {
-          expiresIn: "1h",
+          expiresIn: "10s",
         }
       );
       return res.json({ token });
@@ -105,8 +105,8 @@ export function playerControllers(playerService: PlayerService) {
   ) => {
     const playerId = req.params.id;
     try {
-      console.log("DELETE ALL GAMES CONTROLLER")
-      console.log("player service", playerService)
+      console.log("DELETE ALL GAMES CONTROLLER");
+      console.log("player service", playerService);
       const player = await playerService.findPlayer(playerId);
       player.deleteGames();
       const responseFromDatabase = await playerService.deleteAllGames(player);
@@ -146,7 +146,7 @@ export function playerControllers(playerService: PlayerService) {
     postPlayer,
     changeName,
     getPlayers,
-  addGame,
+    addGame,
     deleteAllGames,
     getGames,
   };

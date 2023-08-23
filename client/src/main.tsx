@@ -8,11 +8,12 @@ import './index.css'
 import Login from './Login.tsx';
 import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
+import App from './App.tsx';
 
 
 const router = createBrowserRouter([{
   path: "/",
-  element: <Login />,
+  element: <App />,
 }, {
   path: "/api",
   element: <Login />,
