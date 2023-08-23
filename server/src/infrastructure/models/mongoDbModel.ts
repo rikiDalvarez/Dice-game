@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 import { GameType } from "../../domain/Player";
 
 export const playerSchema = new mongoose.Schema({
-  name: String,
+  name: {type:String,  index: {
+    unique: true,
+    partialFilterExpression: {name: {$type: "string"}}
+  } },
   email: {
     type: String,
     unique: true,
@@ -29,3 +32,5 @@ export const playerSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+

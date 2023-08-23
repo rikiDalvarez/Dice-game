@@ -10,7 +10,7 @@ import { GameSQL } from "./GameMySQLModel";
 export class PlayerSQL extends Model<IPlayerSQL> {
 
   declare id: string
- declare name: string
+ declare name: string |null
   declare email: string
   declare password: string
   declare registrationDate: Date
@@ -31,7 +31,8 @@ PlayerSQL.init({
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+    unique:true
   },
   email: {
     type: DataTypes.STRING,

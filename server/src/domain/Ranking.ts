@@ -1,7 +1,7 @@
 import { Player } from "./Player";
 
 type RankingType = {
-  name: string;
+  name: string|null;
   successRate: number;
 };
 

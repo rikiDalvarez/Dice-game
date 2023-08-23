@@ -23,7 +23,7 @@ export async function initDataBase(
     if (databaseType === "mongo") {
       const connection = connectDatabase(config.MONGO_URI, databaseName);
       const playerDocument = connection.model<PlayerType>("Player", playerSchema);
-  
+      
       return Promise.resolve({
         connection: connection,
         document: playerDocument,

@@ -7,7 +7,7 @@ import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-import { Model } from "mongoose";
+import mongoose, { Model} from "mongoose";
 export class PlayerMongoDbManager implements PlayerInterface {
   private playerDocument: Model<PlayerType>;
   constructor(playerDocument: Model<PlayerType>) {
@@ -26,32 +26,19 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
 
-  async nameAndEmailCheck(player: User): Promise<boolean> {
-    const existingPlayer = await this.playerDocument.findOne({
-      $or: [
-        { email: player.email },
-        {
-          $and: [{ name: { $ne: "unknown" } }, { name: player.name }],
-        },
-      ],
-    });
-    if (existingPlayer) {
-      if (existingPlayer.email === player.email) {
-        throw new Error("EmailConflictError");
-      }
-      if (
-        existingPlayer.name === player.name &&
-        existingPlayer.name != "unknown"
-      ) {
-        throw new Error("NameConflictError");
-      }
+  validationErrorHandler(err:mongoose.mongo.MongoError){
+    if(err.errmsg.includes('email')){
+      throw new Error("EmailConflictError")
     }
-    return false;
-  }
+    if(err.errmsg.includes('name')){
+      throw new Error("NameConflictError")
+    }
+    throw err;
+}
+
+  
 
   async createPlayer(player: User): Promise<string> {
-    await this.nameAndEmailCheck(player);
-
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -60,9 +47,15 @@ export class PlayerMongoDbManager implements PlayerInterface {
       successRate: 0,
       registrationDate: player.registrationDate,
     };
-    const playerFromDB = await this.playerDocument.create(newPlayer);
-
+    try{
+    const playerFromDB = await this.playerDocument.create(newPlayer)
     return playerFromDB.id;
+  }catch(err){
+    if (err instanceof mongoose.mongo.MongoError){
+      this.validationErrorHandler(err)
+    }
+    throw err
+    }
   }
 
   async findPlayer(playerID: string): Promise<Player> {
@@ -87,7 +80,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await this.playerDocument.find({});
-
+   
     const players = playersFromDB.map((players: PlayerType) => {
       return new Player(
         players.email,
@@ -104,21 +97,25 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    const nameAlreadyInUse = await this.playerDocument.findOne({
-      name: newName,
-    });
-    if (nameAlreadyInUse) {
-      throw new Error("NameConflictError");
-    }
+    try{
     const player = await this.playerDocument.findByIdAndUpdate(playerId, {
       name: newName,
-    });
 
+    })
     if (!player) {
       throw new Error("PlayerNotFound");
     }
     const returnPlayer = { id: player.id, name: newName };
     return returnPlayer;
+  
+  }catch(err){
+    if (err instanceof mongoose.mongo.MongoError){
+      this.validationErrorHandler(err)
+    }
+    throw err
+  }
+
+    
   }
 
   async addGame(player: Player): Promise<boolean> {
@@ -138,16 +135,18 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
+    try{
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
-      this.createPlayerDoc(player)
-    );
-
-    if (!response) {
-      throw new Error("DeletionError");
+      this.createPlayerDoc(player))
+      const isDeleted = response.modifiedCount === 1;
+      return isDeleted;
+    }catch(err){
+      throw new Error(`DeletionError`)
     }
-    const isDeleted = response.modifiedCount === 1;
-    return isDeleted;
+
+    
+    
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
@@ -199,10 +198,12 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getRankingWithAverage(): Promise<Ranking> {
     try {
+      
       this.ranking.rankingList = await this.getPlayersRanking();
       this.ranking.average = await this.getMeanSuccesRate();
       return this.ranking;
     } catch (err) {
+      console.log('ERR', err)
       throw new Error("GetRankingWithAverageError");
     }
   }
