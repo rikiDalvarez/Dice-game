@@ -9,7 +9,6 @@ export const errorHandler = (
     return next(error);
   }
 
-
   switch (error.message) {
     case "GettingWinnerError":
       return response
@@ -39,8 +38,8 @@ export const errorHandler = (
       return response.status(500).send({ Error: "Error playing game" });
     case "DeletionError":
       return response.status(500).send({ Error: "Error during deletion" });
-      case "changeNameError":
-        return response.status(500).send({ Error: "Error during change name" });
+    case "changeNameError":
+      return response.status(500).send({ Error: "Error during change name" });
     case "GettingMeanValueError":
       return response
         .status(500)

@@ -4,6 +4,9 @@ import { UserContext } from './context/UserContext';
 import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
 
+	interface DashboardProps {
+		name: string | null;
+	}
 
 	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
@@ -16,8 +19,8 @@ const Login: React.FC = () => {
 	})
 
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	
-	const navigateRegistration = ( )=>{
+
+	const navigateRegistration = () => {
 		navigate("/api/players")
 
 	}
@@ -45,15 +48,19 @@ const Login: React.FC = () => {
 			if (response.ok) {
 				const data = await response.json();
 				const token = data.token;
-				localStorage.setItem("token", token)
+				const nameUser = data.name;
+				const tokenuser = localStorage.setItem("token", token)
+				console.log(tokenuser)
+				const name = localStorage.setItem("name", nameUser)
+				console.log(name)
 				userContext.setUser({
 					email: formData.email,
 					token: localStorage.getItem("token")
-				})
+				});
 
 				console.log("login successful")
 				setIsLoggedIn(true)
-				navigate("/dashboard")
+				// navigate("/dashboard")
 
 			} else {
 				console.error("login failed")
@@ -63,12 +70,14 @@ const Login: React.FC = () => {
 		}
 	}
 
+	const name = localStorage.getItem("name")
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
 				{isLoggedIn ? (<>
 
-					<Dashboard />
+					<Dashboard name={name} />
 				</>)
 					: (<>
 						<h2 className="text-2xl font-semibold mb-4">Login</h2>
@@ -105,7 +114,8 @@ const Login: React.FC = () => {
 							>
 								Log In
 							</button>
-							<button onClick={() => { navigate("/api/players") }}
+							<button
+								// onClick={() => { navigate("/api/players") }}
 								className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
 								onClick={navigateRegistration}
 							>

@@ -1,7 +1,7 @@
 
-function Navbar() {
+function Navbar(props) {
 	return (
-		<div>Welcome user</div>
+		<div>Welcome {props.name}</div>
 	)
 }
 

@@ -37,7 +37,7 @@ export function playerControllers(playerService: PlayerService) {
           expiresIn: "10s",
         }
       );
-      return res.json({ token });
+      return res.json({ token: token, name: player.name });
     } catch (error) {
       next(error);
     }
