@@ -1,5 +1,5 @@
 import request from "supertest";
-import { Application, start } from "../../src/app";
+import { Application, applicationStart } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
@@ -11,7 +11,7 @@ describe("API ADD GAME TEST", () => {
   let app: Application
 
   beforeAll(async() =>{
-    app = await start()   
+    app = await applicationStart()   
   }
   );
 

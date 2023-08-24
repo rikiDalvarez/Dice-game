@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { UserContext } from './context/UserContext';
-import Navbar from './Navbar';
+import Navbar from './components/Navbar';
 import Login from './Login';
 interface Player {
 	name: string,

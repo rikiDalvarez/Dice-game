@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
-import { Application, start } from "../../src/app";
+import { Application, applicationStart } from "../../src/app";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 import { getGames, getPlayer } from "../auxilaryFunctionsForTests/getPlayers";
 import config from "../../config/config";
@@ -15,7 +15,7 @@ describe("API ADD GAME TEST", () => {
   let token: string;
   let playerId: string;
   beforeAll(async() =>{
-    app = await start()   
+    app = await applicationStart()   
   }
   );
   beforeEach(async () => {
