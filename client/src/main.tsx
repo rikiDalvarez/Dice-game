@@ -10,7 +10,7 @@ import Registration from './RegistrationForm.tsx';
 import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
-import Register from './components/RegisterTest.tsx';
+import Register from './RegistrationForm.tsx';
 
 
 const router = createBrowserRouter([{
