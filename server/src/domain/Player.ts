@@ -14,6 +14,7 @@ export type MongoPlayerType = {
   email: string;
   name: string | null;
   password: string;
+  registrationDate: Date
 };
 
 export interface IPlayerSQL {
