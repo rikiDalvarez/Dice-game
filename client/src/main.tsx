@@ -10,7 +10,7 @@ import Registration from './RegistrationForm.tsx';
 import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
-import Register from './components/RegisterTest.tsx';
+// import RegisterTest from "./components/RegisterTest.tsx"
 
 
 const router = createBrowserRouter([{
@@ -33,10 +33,7 @@ const router = createBrowserRouter([{
   path: "/dashboard",
   element: <Dashboard />
 },
-{
-  path: "/api/players/",
-  element: <Register />
-}
+
 
 ]);
 

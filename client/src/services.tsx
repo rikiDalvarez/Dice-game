@@ -1,6 +1,17 @@
 import { PORT } from "./config/config"
 
-export async function fetchLogin(data: unknown) {
+export interface FormData {
+	email: string;
+	password: string;
+}
+
+export interface RegistrationData {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export async function fetchLogin(data: FormData) {
 	const response = await fetch(`http://localhost:${PORT}/api/login`, {
 		method: 'POST',
 		headers: {
@@ -8,6 +19,16 @@ export async function fetchLogin(data: unknown) {
 		},
 		body: JSON.stringify(data)
 	})
-	console.log(response)
+	return response
+}
+
+export const fetchRegistration = async (data: RegistrationData) => {
+	const response = await fetch(`http://localhost:${PORT}/api/players`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	})
 	return response
 }

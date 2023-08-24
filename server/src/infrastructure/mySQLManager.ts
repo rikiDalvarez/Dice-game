@@ -95,14 +95,16 @@ export class PlayerMySQLManager implements PlayerInterface {
       include: [PlayerSQL.associations.games],
     });
 
-    const players = playersFromDB.map((players) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games,
-        players.name,
-        players.id
+    const players = playersFromDB.map((playerFromDB) => {
+      const player = new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games,
+        playerFromDB.name,
+        playerFromDB.id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
 
     return new PlayerList(players);
@@ -229,14 +231,16 @@ export class RankingMySQLManager implements RankingInterface {
       order: [["successRate", "DESC"]],
     });
 
-    const players = playerRanking.map((players) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games!,
-        players.name,
-        players.id
+    const players = playerRanking.map((playerFromDB) => {
+      const player =  new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games!,
+        playerFromDB.name,
+        playerFromDB.id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
 
     return players;

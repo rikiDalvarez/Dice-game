@@ -9,6 +9,7 @@ interface Player {
 	registrationDate: string
 }
 
+
 function App() {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
@@ -49,10 +50,12 @@ function App() {
 		fetchProtectedData();
 	}, []);
 
+	const name = localStorage.getItem("name")
+
 
 	return (
 		<div className="App">
-			{data ? <Dashboard /> : <Login />}
+			{data ? <Dashboard data={data} name={name} /> : <Login />}
 		</div>
 	);
 }

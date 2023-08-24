@@ -6,9 +6,9 @@ import { fetchLogin } from './services';
 
 const Login: React.FC = () => {
 
-	// const baseUrl = process.env.PORT;
-	// console.log(baseUrl)
-
+	interface DashboardProps {
+		name: string | null;
+	}
 
 	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
@@ -21,8 +21,8 @@ const Login: React.FC = () => {
 	})
 
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	
-	const navigateRegistration = ( )=>{
+
+	const navigateRegistration = () => {
 		navigate("/api/players")
 
 	}
@@ -34,23 +34,27 @@ const Login: React.FC = () => {
 		}))
 
 	}
+	
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		try {
-			const response = await fetchLogin(formData)
-
+			const response = await fetchLogin(formData);
 			if (response.ok) {
 				const data = await response.json();
 				const token = data.token;
-				localStorage.setItem("token", token)
+				const nameUser = data.name;
+				const tokenuser = localStorage.setItem("token", token)
+				console.log(tokenuser)
+				const name = localStorage.setItem("name", nameUser)
+				console.log(name)
 				userContext.setUser({
 					email: formData.email,
 					token: localStorage.getItem("token")
-				})
+				});
 
 				console.log("login successful")
 				setIsLoggedIn(true)
-				navigate("/dashboard")
+				// navigate("/dashboard")
 
 			} else {
 				console.error("login failed")
@@ -60,12 +64,14 @@ const Login: React.FC = () => {
 		}
 	}
 
+	const name = localStorage.getItem("name")
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
 				{isLoggedIn ? (<>
 
-					<Dashboard />
+					<Dashboard name={name} />
 				</>)
 					: (<>
 						<h2 className="text-2xl font-semibold mb-4">Login</h2>

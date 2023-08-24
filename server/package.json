@@ -10,8 +10,8 @@
     "build": "npx tsc",
     "eslint": "npx eslint .",
     "dev": "ts-node ./src/Server.ts",
-    "devmongo": "cross-env NODE_ENV=mongo ts-node ./src/Server.ts",
-    "devsql": "cross-env NODE_ENV=sql ts-node ./src/Server.ts",
+    "devmongo": "cross-env NODE_ENV=dev DATABASE_ENV=mongo ts-node ./src/Server.ts",
+    "devsql": "cross-env NODE_ENV=dev DATABASE_ENV=sql ts-node ./src/Server.ts",
 
     "prod_mongo": "cross-env NODE_ENV=production DATABASE_ENV=mongo node ./dist/src/Server.js",
     "prod_sql": "cross-env NODE_ENV=production DATABASE_ENV=sql node ./dist/src/Server.js",

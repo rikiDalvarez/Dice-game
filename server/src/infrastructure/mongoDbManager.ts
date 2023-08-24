@@ -89,14 +89,16 @@ export class PlayerMongoDbManager implements PlayerInterface {
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await this.playerDocument.find({});
 
-    const players = playersFromDB.map((players: MongoPlayerType) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games,
-        players.name,
-        players._id
+    const players = playersFromDB.map((playerFromDB: MongoPlayerType) => {
+      const player =  new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games,
+        playerFromDB.name,
+        playerFromDB._id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
     return new PlayerList(players);
   }
@@ -188,14 +190,16 @@ export class RankingMongoDbManager implements RankingInterface {
       .find()
       .sort({ successRate: -1 });
 
-    const players = playerRanking.map((players) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games,
-        players.name,
-        players._id
+    const players = playerRanking.map((playerFromDB) => {
+      const player = new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games,
+        playerFromDB.name,
+        playerFromDB._id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
     return players;
   }
