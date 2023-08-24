@@ -85,10 +85,27 @@ export class Application {
   }
 }
 
-export async function start() {
+export async function applicationStart() {
   const databaseName =
     config.NODE_ENV === "test" ? config.TEST_DATABASE : config.DATABASE;
   return startServer(config.DATABASE_ENV, databaseName);
+}
+
+export async function appSetup(app: Express, router: Router) {
+  app.use(cors());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use("/api", router);
+  app.use(
+    (
+      error: Error,
+      _request: Request,
+      response: Response,
+      next: NextFunction
+    ) => {
+      errorHandler(error, response, next);
+    }
+  );
 }
 
 async function startServer(databaseType: string, databaseName: string) {
@@ -111,19 +128,4 @@ async function startServer(databaseType: string, databaseName: string) {
   return new Application(server, dataBaseDetails.connection);
 }
 
-export async function appSetup(app: Express, router: Router) {
-  app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use("/api", router);
-  app.use(
-    (
-      error: Error,
-      _request: Request,
-      response: Response,
-      next: NextFunction
-    ) => {
-      errorHandler(error, response, next);
-    }
-  );
-}
+

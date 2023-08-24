@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize/types/sequelize";
 import config from "../config/config";
-import { PlayerType } from "./domain/Player";
+import { MongoPlayerType } from "./domain/Player";
 import { playerSchema } from "./infrastructure/models/mongoDbModel";
 import { initializeGameTable } from "./infrastructure/models/mySQLModels/GameMySQLModel";
 import { initializePlayerTable } from "./infrastructure/models/mySQLModels/PlayerMySQLModel";
@@ -13,7 +13,7 @@ import { Connection, Model } from "mongoose";
 
 export type InitDataBase = {
   connection: Connection | Sequelize;
-  document?: Model<PlayerType>;
+  document?: Model<MongoPlayerType>;
 };
 
 export async function initDataBase(
@@ -21,8 +21,10 @@ export async function initDataBase(
     databaseName: string
   ): Promise<InitDataBase> {
     if (databaseType === "mongo") {
-      const connection = connectDatabase(config.MONGO_URI, databaseName);
-      const playerDocument = connection.model<PlayerType>("Player", playerSchema);
+      const connection = await connectDatabase(config.MONGO_URI, databaseName).asPromise();
+      const playerDocument = connection.model<MongoPlayerType>("Player", playerSchema);
+      // await playerDocument.init()
+      // await playerDocument.syncIndexes()
       
       return Promise.resolve({
         connection: connection,

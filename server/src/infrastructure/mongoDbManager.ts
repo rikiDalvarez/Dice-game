@@ -1,19 +1,19 @@
-import { Player, PlayerType } from "../domain/Player";
+import { Player, MongoPlayerType } from "../domain/Player";
 import { PlayerInterface } from "../application/PlayerInterface";
-// import { UpdateResult } from "mongodb";
-//import { mongoPlayerDocument as PlayerDocument } from "../application/dependencias"
 import { User } from "../domain/User";
 import { GameType } from "../domain/Player";
 import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
-import mongoose, { Model} from "mongoose";
+import mongoose, { Model } from "mongoose";
+import { mongo } from "mongoose";
+
 export class PlayerMongoDbManager implements PlayerInterface {
-  private playerDocument: Model<PlayerType>;
-  constructor(playerDocument: Model<PlayerType>) {
+  private playerDocument: Model<MongoPlayerType>;
+  constructor(playerDocument: Model<MongoPlayerType>) {
     this.playerDocument = playerDocument;
-    // playerDocument.base.connection
   }
+
   createPlayerDoc(player: Player) {
     return {
       id: player.id,
@@ -26,36 +26,44 @@ export class PlayerMongoDbManager implements PlayerInterface {
     };
   }
 
-  validationErrorHandler(err:mongoose.mongo.MongoError){
-    if(err.errmsg.includes('email')){
-      throw new Error("EmailConflictError")
-    }
-    if(err.errmsg.includes('name')){
-      throw new Error("NameConflictError")
+  validationErrorHandler(err: mongoose.Error.ValidationError) {
+    if (err.errors.email instanceof mongoose.Error.ValidatorError) {
+      throw new Error("EmailInvalidError");
     }
     throw err;
-}
+  }
 
-  
-
-  async createPlayer(player: User): Promise<string> {
+  async createPlayer(user: User): Promise<string> {
     const newPlayer = {
-      email: player.email,
-      password: player.password,
-      name: player.name,
+      email: user.email,
+      password: user.password,
+      name: user.name,
       games: [],
       successRate: 0,
-      registrationDate: player.registrationDate,
+      registrationDate: user.registrationDate,
     };
-    try{
-    const playerFromDB = await this.playerDocument.create(newPlayer)
-    return playerFromDB.id;
-  }catch(err){
-    if (err instanceof mongoose.mongo.MongoError){
-      this.validationErrorHandler(err)
+    try {
+      const playerFromDB = await this.playerDocument.create(newPlayer);
+      return playerFromDB.id;
+    } catch (err) {
+      if (err instanceof mongoose.Error.ValidationError) {
+        this.validationErrorHandler(err);
+      } else if (err instanceof mongo.MongoServerError) {
+        this.uniqueViolationErrorHandler(err);
+      }
+      throw err;
     }
-    throw err
+  }
+
+  uniqueViolationErrorHandler(err: mongo.MongoServerError) {
+    const isUniqueViolation = err.code === 11000;
+    if (isUniqueViolation && err.errmsg.includes("email")) {
+      throw new Error("EmailConflictError");
     }
+    if (isUniqueViolation && err.errmsg.includes("name")) {
+      throw new Error("NameConflictError");
+    }
+    throw err;
   }
 
   async findPlayer(playerID: string): Promise<Player> {
@@ -80,8 +88,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await this.playerDocument.find({});
-   
-    const players = playersFromDB.map((players: PlayerType) => {
+
+    const players = playersFromDB.map((players: MongoPlayerType) => {
       return new Player(
         players.email,
         players.password,
@@ -97,25 +105,21 @@ export class PlayerMongoDbManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    try{
-    const player = await this.playerDocument.findByIdAndUpdate(playerId, {
-      name: newName,
-
-    })
-    if (!player) {
-      throw new Error("PlayerNotFound");
+    try {
+      const player = await this.playerDocument.findByIdAndUpdate(playerId, {
+        name: newName,
+      });
+      if (!player) {
+        throw new Error("changeNameError");
+      }
+      const returnPlayer = { id: player.id, name: newName };
+      return returnPlayer;
+    } catch (err) {
+      if (err instanceof mongo.MongoServerError) {
+        this.uniqueViolationErrorHandler(err);
+      }
+      throw err;
     }
-    const returnPlayer = { id: player.id, name: newName };
-    return returnPlayer;
-  
-  }catch(err){
-    if (err instanceof mongoose.mongo.MongoError){
-      this.validationErrorHandler(err)
-    }
-    throw err
-  }
-
-    
   }
 
   async addGame(player: Player): Promise<boolean> {
@@ -135,18 +139,15 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async deleteAllGames(player: Player): Promise<boolean> {
     const id = player.id;
-    try{
+
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
-      this.createPlayerDoc(player))
-      const isDeleted = response.modifiedCount === 1;
-      return isDeleted;
-    }catch(err){
-      throw new Error(`DeletionError`)
+      this.createPlayerDoc(player)
+    );
+    if (response.modifiedCount === 1) {
+      return true;
     }
-
-    
-    
+    throw new Error(`DeletionError`);
   }
 
   async getGames(playerId: string): Promise<Array<GameType>> {
@@ -160,8 +161,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
 export class RankingMongoDbManager implements RankingInterface {
   ranking: Ranking;
-  private playerDocument: Model<PlayerType>;
-  constructor(playerDocument: Model<PlayerType>, ranking: Ranking) {
+  private playerDocument: Model<MongoPlayerType>;
+  constructor(playerDocument: Model<MongoPlayerType>, ranking: Ranking) {
     this.playerDocument = playerDocument;
     this.ranking = ranking;
   }
@@ -176,7 +177,10 @@ export class RankingMongoDbManager implements RankingInterface {
       },
     ]);
 
-    return meanValue.length > 0 ? meanValue[0].meanValue : 0;
+    if (meanValue.length > 0) {
+      return meanValue[0].meanValue;
+    }
+    throw new Error("GetMeansSuccessRateError");
   }
 
   async getPlayersRanking(): Promise<Player[]> {
@@ -190,7 +194,7 @@ export class RankingMongoDbManager implements RankingInterface {
         players.password,
         players.games,
         players.name,
-        players.id
+        players._id
       );
     });
     return players;
@@ -198,12 +202,10 @@ export class RankingMongoDbManager implements RankingInterface {
 
   async getRankingWithAverage(): Promise<Ranking> {
     try {
-      
       this.ranking.rankingList = await this.getPlayersRanking();
       this.ranking.average = await this.getMeanSuccesRate();
       return this.ranking;
     } catch (err) {
-      console.log('ERR', err)
       throw new Error("GetRankingWithAverageError");
     }
   }
@@ -221,7 +223,7 @@ export class RankingMongoDbManager implements RankingInterface {
       ]);
       if (groupedPlayers.length > 0) {
         const winnersDoc = groupedPlayers[0].wholeDocument;
-        const winners = winnersDoc.map((players: PlayerType) => {
+        const winners = winnersDoc.map((players: MongoPlayerType) => {
           return new Player(
             players.email,
             players.password,
@@ -251,7 +253,7 @@ export class RankingMongoDbManager implements RankingInterface {
       ]);
       if (groupedPlayers.length > 0) {
         const losersDoc = groupedPlayers[0].wholeDocument;
-        const losers = losersDoc.map((players: PlayerType) => {
+        const losers = losersDoc.map((players: MongoPlayerType) => {
           return new Player(
             players.email,
             players.password,

@@ -1,62 +1,41 @@
-import React, { useContext, useState } from 'react';
-import Dashboard from './Dashboard';
-import { UserContext } from './context/UserContext';
+import React, {useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-const Login: React.FC = () => {
 
-
+const Registration: React.FC = () => {
 	const navigate = useNavigate();
-	const userContext = useContext(UserContext);
-
-	console.log(userContext)
-
-	const [formData, setFormData] = useState({
+	const [registrationData, setRegistrationData] = useState({
+		name: "",
 		email: "",
 		password: ""
 	})
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	
-	const navigateRegistration = ( )=>{
-		navigate("/api/players")
-
-	}
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setFormData(prevData => ({
+		setRegistrationData(prevData => ({
 			...prevData, [name]: value
 		}))
-
 	}
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
+		console.log('handleSubmit presssed')
 		try {
-			const response = await fetch("http://localhost:5000/api/login", {
+			const response = await fetch("http://localhost:5000/api/players", {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(formData)
+				body: JSON.stringify(registrationData)
 			})
-			console.log(response)
 
 			if (response.ok) {
 				const data = await response.json();
-				const token = data.token;
-				localStorage.setItem("token", token)
-				userContext.setUser({
-					email: formData.email,
-					token: localStorage.getItem("token")
-				})
-
-				console.log("login successful")
-				setIsLoggedIn(true)
-				navigate("/dashboard")
+				console.log(data)
+				navigate("/api/login")
 
 			} else {
-				console.error("login failed")
+				console.error("registration failed")
 			}
 		} catch (error) {
 			console.error("an error occurred:", error)
@@ -66,13 +45,21 @@ const Login: React.FC = () => {
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-				{isLoggedIn ? (<>
-
-					<Dashboard />
-				</>)
-					: (<>
-						<h2 className="text-2xl font-semibold mb-4">Login</h2>
+						<h2 className="text-2xl font-semibold mb-4">Registration form</h2>
 						<form onSubmit={handleSubmit}>
+						<div className="mb-4">
+								<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+									name
+								</label>
+								<input
+									className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
+									type="text"
+									id="name"
+									name="name"
+									value={registrationData.name}
+									onChange={handleChange}
+								/>
+							</div>
 							<div className="mb-4">
 								<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
 									email
@@ -82,7 +69,7 @@ const Login: React.FC = () => {
 									type="text"
 									id="email"
 									name="email"
-									value={formData.email}
+									value={registrationData.email}
 									onChange={handleChange}
 								/>
 							</div>
@@ -95,29 +82,22 @@ const Login: React.FC = () => {
 									type="password"
 									id="password"
 									name="password"
-									value={formData.password}
+									value={registrationData.password}
 									onChange={handleChange}
 								/>
 							</div>
+							
 							<button
-								className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-								type="submit"
-							>
-								Log In
-							</button>
-							<button onClick={() => { navigate("/api/players") }}
 								className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-								onClick={navigateRegistration}
+								type="submit"
+								onClick={handleSubmit}
 							>
-								Registration
+								Registrate
 							</button>
 						</form>
-					</>
-					)}
-
 			</div>
 		</div>
 	);
 };
 
-export default Login;
+export default Registration;

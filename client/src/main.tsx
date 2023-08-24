@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import './index.css'
 import Login from './Login.tsx';
+import Registration from './RegistrationForm.tsx';
 import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
@@ -22,6 +23,11 @@ const router = createBrowserRouter([{
 {
   path: "/api/login",
   element: <Login />,
+},
+
+{
+  path: "/api/players",
+  element: <Registration />,
 },
 {
   path: "/dashboard",

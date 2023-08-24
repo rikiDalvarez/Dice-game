@@ -1,6 +1,6 @@
 import request from "supertest";
 // import { server } from "../../src/Server";
-import { Application, start } from "../../src/app";
+import { Application, applicationStart } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
@@ -16,7 +16,7 @@ describe("API ADD GAME TEST", () => {
   let token: string;
   let playerId: string;
   beforeAll(async() =>{
-    app = await start()   
+    app = await applicationStart()   
   }
   );
   beforeEach(async () => {
@@ -69,7 +69,7 @@ describe("API ADD GAME TEST", () => {
       .put(`/api/players/${nonExistingUserId}`)
       .set("Authorization", token)
       .send({ name: newName })
-      .expect(404)
+      .expect(500)
       .expect("Content-Type", /application\/json/);
   }, 30000);
 

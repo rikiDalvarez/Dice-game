@@ -5,6 +5,7 @@ export type PlayerDetailsType = {
   name: string|null;
   rating: number;
   registrationDate: Date;
+  email: string;
 };
 
 export class PlayerList {
@@ -22,6 +23,7 @@ export class PlayerList {
         name: player.name,
         rating: player.successRate,
         registrationDate: player.registrationDate,
+        email: player.email
       };
     });
   }
