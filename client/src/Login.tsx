@@ -100,7 +100,7 @@ const Login: React.FC = () => {
 							>
 								Log In
 							</button>
-							<button
+							<button onClick={() => { navigate("/api/players") }}
 								className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
 								type="submit"
 							>
