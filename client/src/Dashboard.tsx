@@ -20,7 +20,7 @@ const Dashboard: React.FC = () => {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:5000/api/players', {
+					const response = await fetch('http://localhost:8000/api/players', {
 						method: "GET",
 						headers: {
 							Authorization: `Bearer ${token}`,

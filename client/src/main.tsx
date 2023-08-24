@@ -18,11 +18,11 @@ const router = createBrowserRouter([{
   element: <App />,
 }, {
   path: "/api",
-  element: <Login />,
+  element: <App />,
 },
 {
   path: "/api/login",
-  element: <Login />,
+  element: <App />,
 },
 
 {

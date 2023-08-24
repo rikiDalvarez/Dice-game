@@ -2,7 +2,12 @@ import React, { useContext, useState } from 'react';
 import Dashboard from './Dashboard';
 import { UserContext } from './context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { fetchLogin } from './services';
+
 const Login: React.FC = () => {
+
+	// const baseUrl = process.env.PORT;
+	// console.log(baseUrl)
 
 
 	const navigate = useNavigate();
@@ -29,18 +34,10 @@ const Login: React.FC = () => {
 		}))
 
 	}
-
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		try {
-			const response = await fetch("http://localhost:5000/api/login", {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData)
-			})
-			console.log(response)
+			const response = await fetchLogin(formData)
 
 			if (response.ok) {
 				const data = await response.json();
@@ -105,7 +102,8 @@ const Login: React.FC = () => {
 							>
 								Log In
 							</button>
-							<button onClick={() => { navigate("/api/players") }}
+							<button
+								// onClick={() => { navigate("/api/players") }}
 								className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
 								onClick={navigateRegistration}
 							>
