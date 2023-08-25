@@ -76,7 +76,6 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 							</div>
 						))} */}
 					</div>
-					<PlayerList props={data} />
 					<GameList id={id} />
 				</>
 			) : (

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Game from './Game'
-
-function GameList() {
+interface GameListProps { // Define the prop here
+	id: string | null;
+}
+const GameList: React.FC<GameListProps> = () => {
 	const [games, setGames] = useState([])
 
 
