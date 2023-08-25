@@ -6,6 +6,7 @@ import UserDataManipulation from './components/UserDataManipulation';
 import PlayerList from './components/PlayerList';
 import GetGameData from './components/GetGameData';
 import GameList from './components/GameList';
+import { useNavigate } from 'react-router-dom';
 interface Player {
 	name: string,
 	rating: number,
@@ -21,8 +22,15 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
+	const navigate = useNavigate();
 
 	const userContext = useContext(UserContext)
+
+	const logout = () => {
+		localStorage.clear()
+		setData(null)
+		navigate("/")
+	}
 
 
 	useEffect(() => {
@@ -77,6 +85,9 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 						))} */}
 					</div>
 					<GameList id={id} />
+					<div>
+						<button onClick={logout} className="bg-amber-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Logout</button>
+					</div>
 				</>
 			) : (
 				<Login />
