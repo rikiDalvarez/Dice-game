@@ -25,7 +25,7 @@ const Registration: React.FC = () => {
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data)
-				navigate("/api/login")
+				navigate("/")
 
 			} else {
 				console.error("registration failed")

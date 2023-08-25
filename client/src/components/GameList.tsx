@@ -48,7 +48,7 @@ const GameList: React.FC<GameListProps> = () => {
 	console.log("games", games)
 
 	return (
-		<div className="bg-amber-200 rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
+		<div className=" rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
 			{games ? games.map((game) => <Game key={game.id} props={game} />) : "test"}
 		</div>
 	)
