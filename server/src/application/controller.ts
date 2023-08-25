@@ -34,10 +34,10 @@ export function playerControllers(playerService: PlayerService) {
         { userId: player.id },
         sanitizedConfig.JWT_SECRET,
         {
-          expiresIn: "10s",
+          expiresIn: "600s",
         }
       );
-      return res.json({ token: token, name: player.name });
+      return res.json({ token: token, name: player.name, id: player.id });
     } catch (error) {
       next(error);
     }
