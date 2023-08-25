@@ -3,6 +3,7 @@ import './App.css';
 import Login from './Login';
 import { UserContextProvider } from './context/UserContext';
 import Dashboard from './Dashboard';
+import { fetchToken } from './services';
 interface Player {
 	name: string,
 	rating: number,
@@ -24,13 +25,7 @@ function App() {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:8000/api/players', {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-
+					const response = await fetchToken(token)
 					if (response.ok) {
 						const responseData = await response.json();
 
