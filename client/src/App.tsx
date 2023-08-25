@@ -55,7 +55,11 @@ function App() {
 
 	return (
 		<div className="App">
-			{data ? <Dashboard data={data} name={name} /> : <Login />}
+			<div className="min-h-screen flex items-center justify-center bg-color-movement ">
+				<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg m-5">
+					{data ? <Dashboard data={data} name={name} /> : <Login />}
+				</div>
+			</div>
 		</div>
 	);
 }
