@@ -6,11 +6,14 @@ import { RankingInterface } from "../application/RankingInterface";
 import { Ranking } from "../domain/Ranking";
 import { PlayerList } from "../domain/PlayerList";
 import { GameSQL } from "./models/mySQLModels/GameMySQLModel";
-import { Op, QueryTypes} from "sequelize";
-import { dataBaseName, sequelize } from "../application/dependencias";
-
+import { QueryTypes, Sequelize, ValidationError } from "sequelize";
 
 export class PlayerMySQLManager implements PlayerInterface {
+  sequelize: Sequelize;
+  constructor(sequelize: Sequelize) {
+    this.sequelize = sequelize;
+  }
+
   createGameDoc(games: Array<GameType>, id: string) {
     return games.map((game) => {
       return {
@@ -34,33 +37,28 @@ export class PlayerMySQLManager implements PlayerInterface {
     }
   }
 
-  async createPlayer(player: User): Promise<string> {
-    const nameAlreadyInUse = await PlayerSQL.findOne({
-      where: {
-        [Op.or]: [
-          {
-            email: player.email,
-          },
-          {
-            [Op.and]: [
-              {
-                name: {
-                  [Op.not]: "unknown",
-                },
-              },
-              {
-                name: player.name,
-              },
-            ],
-          },
-        ],
-      },
+  validationErrorHandler(err: ValidationError) {
+    err.errors.forEach((error) => {
+      if (error.type === "unique violation") {
+        if (error.path === "email") {
+          throw new Error("EmailConflictError");
+        }
+        if (error.path === "name") {
+          throw new Error("NameConflictError");
+        }
+      }
+      //The last stable version of sequelizer has error. Type returns upper case 'Validation error'
+      //but should return lower case 'validation error.'
+      if (error.type?.toLowerCase() === "validation error") {
+        if (error.path === "email") {
+          throw new Error("EmailInvalidError");
+        }
+      }
     });
+    throw err;
+  }
 
-    if (nameAlreadyInUse) {
-      throw new Error("NameEmailConflictError");
-    }
-
+  async createPlayer(player: User): Promise<string> {
     const newPlayer = {
       email: player.email,
       password: player.password,
@@ -69,40 +67,44 @@ export class PlayerMySQLManager implements PlayerInterface {
       games: [],
       registrationDate: player.registrationDate,
     };
-
-    const playerFromDB = await PlayerSQL.create(newPlayer);
-    console.log("email", playerFromDB);
-    return playerFromDB.id;
+    try {
+      const playerFromDB = await PlayerSQL.create(newPlayer);
+      return playerFromDB.id;
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        this.validationErrorHandler(err);
+      }
+      throw err;
+    }
   }
-  // maybe we don't need it with SQL
+
   async findPlayer(playerID: string): Promise<Player> {
     const playerDetails = await PlayerSQL.findByPk(playerID, {
       include: [PlayerSQL.associations.games],
     });
-
-    if (playerDetails) {
-      const { name, email, password, id } = playerDetails;
-      const games = playerDetails.games;
-      return new Player(email, password, games, name, id);
-    } else {
+    if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
+    const { name, email, password, id } = playerDetails;
+    const games = playerDetails.games;
+    return new Player(email, password, games, name, id);
   }
 
-  // I THINK JOIN IS WORKING WELL, althought we really do not need it
   async getPlayerList(): Promise<PlayerList> {
     const playersFromDB = await PlayerSQL.findAll({
       include: [PlayerSQL.associations.games],
     });
 
-    const players = playersFromDB.map((players) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games,
-        players.name,
-        players.id
+    const players = playersFromDB.map((playerFromDB) => {
+      const player = new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games,
+        playerFromDB.name,
+        playerFromDB.id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
 
     return new PlayerList(players);
@@ -112,29 +114,29 @@ export class PlayerMySQLManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    const nameAlreadyInUse = await PlayerSQL.findOne({
-      where: { name: newName },
-    });
-    if (nameAlreadyInUse) {
-      throw new Error("NameConflictError");
-    }
-    await PlayerSQL.update(
-      { name: newName },
-      {
-        where: { id: playerId },
+    try {
+      const response = await PlayerSQL.update(
+        { name: newName },
+        {
+          where: { id: playerId },
+        }
+      );
+      if (response[0] === 0) {
+        throw new Error("changeNameError");
       }
-    );
-    const updatedPlayer = await PlayerSQL.findByPk(playerId);
-    if (!updatedPlayer) {
-      throw new Error("NotFoundError");
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        this.validationErrorHandler(err);
+      }
+      throw err;
     }
-    const returnPlayer = { id: updatedPlayer.id, name: newName };
+
+    const returnPlayer = { id: playerId, name: newName };
     return returnPlayer;
   }
 
   async addGame(player: Player): Promise<boolean> {
-    const transaction = await sequelize.transaction();
-
+    const transaction = await this.sequelize.transaction();
     try {
       const id = player.id;
       const gameDoc = this.createGameDoc(player.games, id);
@@ -143,9 +145,9 @@ export class PlayerMySQLManager implements PlayerInterface {
         where: { player_id: id },
         transaction,
       });
-      
+
       await GameSQL.bulkCreate(gameDoc, { transaction }).catch(() => {
-        throw new Error("couldn't create games for the player");
+        throw new Error("AddingGameError");
       });
 
       await PlayerSQL.update(
@@ -159,16 +161,14 @@ export class PlayerMySQLManager implements PlayerInterface {
       );
 
       await transaction.commit();
+      const lastGameResult = player.games[player.games.length - 1].gameWin;
+      return lastGameResult;
     } catch (error) {
-      console.log("ERRRRRRR", error);
       if (transaction) {
         await transaction.rollback();
       }
-
-      throw new Error("transaction failed");
+      throw new Error("TransacrionFailed");
     }
-    const lastGameResult = player.games[player.games.length - 1].gameWin;
-    return lastGameResult;
   }
 
   async deleteAllGames(player: Player): Promise<boolean> {
@@ -178,13 +178,11 @@ export class PlayerMySQLManager implements PlayerInterface {
         player_id: id,
       },
     });
-    //----> en este caso podemos pensar si se debe hacer throw Error
-    //---->porque cuando 'no deletion' vamos a revolver false, otross errores va a coger nuestro errerHandler
-    //if (response === 0) {
-    //   throw new Error("Error deleting all games")
-    //}
-    const isDeleted = response > 0;
-    return isDeleted;
+
+    if (response === 0) {
+      throw new Error("DeletionError");
+    }
+    return true;
   }
 
   async getGames(playerId: string): Promise<GameType[]> {
@@ -192,8 +190,8 @@ export class PlayerMySQLManager implements PlayerInterface {
       include: [PlayerSQL.associations.games],
     });
 
-    if (playerDetails === null) {
-      throw new Error("Player doesn't exist");
+    if (!playerDetails) {
+      throw new Error("PlayerNotFound");
     }
 
     const games = playerDetails.games;
@@ -202,22 +200,28 @@ export class PlayerMySQLManager implements PlayerInterface {
 }
 
 type SuccesRateObject = {
-  successRate: number;
-}[];
+  successRate: string | null;
+};
 
 export class RankingMySQLManager implements RankingInterface {
   ranking: Ranking;
 
-  constructor(ranking: Ranking) {
-    this.ranking = ranking;
+  sequelize: Sequelize;
+  constructor(sequelize: Sequelize, ranking: Ranking) {
+    (this.sequelize = sequelize), (this.ranking = ranking);
   }
-  // así es más fácil
+
   async getMeanSuccesRate(): Promise<number> {
-    const response: SuccesRateObject = await sequelize.query(
-      `SELECT ROUND(AVG(successRate),2) as successRate FROM ${dataBaseName}.players`,
-      { type: QueryTypes.SELECT }
+    const response: SuccesRateObject | null = await this.sequelize.query(
+      "SELECT ROUND(AVG(successRate),2) as successRate FROM players",
+      { type: QueryTypes.SELECT, plain: true }
     );
-    const successRate = Number(response[0].successRate);
+
+    if (!response) {
+      throw new Error("GettingMeanValueError");
+    }
+
+    const successRate = Number(response.successRate);
     return successRate;
   }
 
@@ -226,72 +230,67 @@ export class RankingMySQLManager implements RankingInterface {
       include: [PlayerSQL.associations.games],
       order: [["successRate", "DESC"]],
     });
-    if (!playerRanking) {
-      throw new Error("no players found");
-    }
-    const players = playerRanking.map((players) => {
-      return new Player(
-        players.email,
-        players.password,
-        players.games!,
-        players.name,
-        players.id
+
+    const players = playerRanking.map((playerFromDB) => {
+      const player =  new Player(
+        playerFromDB.email,
+        playerFromDB.password,
+        playerFromDB.games!,
+        playerFromDB.name,
+        playerFromDB.id
       );
+      player.registrationDate = playerFromDB.registrationDate
+      return player
     });
-    console.log("RANKING", players)
 
     return players;
   }
 
   async getRankingWithAverage(): Promise<Ranking> {
-    this.ranking.rankingList = await this.getPlayersRanking().catch((err) => {
-      throw err;
-    });
-
-    if (!this.ranking.rankingList) {
-      console.log("not getting ranking");
+    try {
+      this.ranking.rankingList = await this.getPlayersRanking();
+      this.ranking.average = await this.getMeanSuccesRate();
+      return this.ranking;
+    } catch (err) {
+      throw new Error(`Error getRankingWithAverage: ${err}`);
     }
-
-    this.ranking.average = await this.getMeanSuccesRate();
- 
-    // .catch((err) => {
-    //     throw new Error(`error: ${err} `);
-    // });
-
-    if (!this.ranking.average) {
-      console.log("not getting average");
-    }
-    return this.ranking;
   }
 
   async getWinner(): Promise<Ranking> {
-    let winners;
-    const rankingList = await this.getPlayersRanking();
-    if (rankingList.length != 0) {
-      const winningSuccessRate = rankingList[0].successRate;
-      winners = rankingList.filter((player) => {
-        return player.successRate === winningSuccessRate;
-      });
+    try {
+      let winners;
+      const rankingList = await this.getPlayersRanking();
+      if (rankingList.length != 0) {
+        const winningSuccessRate = rankingList[0].successRate;
+        winners = rankingList.filter((player) => {
+          return player.successRate === winningSuccessRate;
+        });
+      }
+      this.ranking.winners = winners || [];
+      return this.ranking;
+    } catch (err) {
+      throw new Error(`Error getting winner: ${err}`);
     }
-   
-    this.ranking.winners = winners ||[]
-    return this.ranking;
   }
 
   async getLoser(): Promise<Ranking> {
-    let losers = [];
-    const rankingList = await this.getPlayersRanking();
+    try {
+      let losers = [];
+      const rankingList = await this.getPlayersRanking();
 
-    const minSuccessRate = Math.min(
-      ...rankingList.map((player) => {
-        return player.successRate;
-      })
-    );
+      const minSuccessRate = Math.min(
+        ...rankingList.map((player) => {
+          return player.successRate;
+        })
+      );
 
-    losers = rankingList.filter((player) => {
-      return player.successRate === minSuccessRate;
-    });
-    this.ranking.losers = losers;
-    return this.ranking;
+      losers = rankingList.filter((player) => {
+        return player.successRate === minSuccessRate;
+      });
+      this.ranking.losers = losers;
+      return this.ranking;
+    } catch (err) {
+      throw new Error(`Error getting loser: ${err}`);
+    }
   }
 }

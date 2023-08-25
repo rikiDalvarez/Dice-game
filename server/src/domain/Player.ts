@@ -7,18 +7,19 @@ export type GameType = {
   dice2Value: number;
 };
 
-export type PlayerType = {
+export type MongoPlayerType = {
   _id: string;
   successRate: number;
   games: Array<GameType>;
   email: string;
-  name: string;
+  name: string | null;
   password: string;
+  registrationDate: Date
 };
 
 export interface IPlayerSQL {
   id?: string;
-  name: string;
+  name: string | null;
   email: string;
   password: string;
   registrationDate: Date;
@@ -34,7 +35,7 @@ export class Player extends User {
     email: string,
     password: string,
     games: Array<GameType>,
-    name: string,
+    name: string | null,
     id: string
   ) {
     super(email, password, name);

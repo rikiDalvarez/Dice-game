@@ -38,4 +38,3 @@ if you wish to run the app with a mysql database run:
 ```bash
 npm run devmysql
 ```
-

@@ -1,20 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { UserContext } from './context/UserContext';
+import Navbar from './components/Navbar';
+import Login from './Login';
+import UserDataManipulation from './components/UserDataManipulation';
 interface Player {
 	name: string,
 	rating: number,
 	registrationDate: string
 }
 
+interface DashboardProps {
+	data: Player[];
+}
+
 const Dashboard: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
+
+	const userContext = useContext(UserContext)
+
+
 	useEffect(() => {
+
+
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:5000/api/players', {
+					const response = await fetch('http://localhost:8000/api/players', {
 						method: "GET",
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -42,19 +56,26 @@ const Dashboard: React.FC = () => {
 
 	return (
 		<div>
-			<h2>Dashboard</h2>
-			{/* add loading skeleton shadcn */}
 			{data ? (
-				data.map((player) => (
-					<div key={player.name}>
-						<h3>{player.name}</h3>
-						<p>Rating: {player.rating}</p>
-						<p>Registration Date: {player.registrationDate}</p>
+				<>
+					<Navbar name={localStorage.getItem("name")} />
+					<div className="m-5  border-t-2 border-green-700 flex-row">
+						<UserDataManipulation />
+						{data.map((player) => (
+							<div className="m-2 p-2 border-2" key={player.email}>
+								<h3>{player.name}</h3>
+								<p>Rating: {player.rating}</p>
+								<p>Registration Date: {player.registrationDate}</p>
+							</div>
+						))}
 					</div>
-				))
-			) : <p>Loading...</p>}
+				</>
+			) : (
+				<Login />
+			)}
 		</div>
 	);
+
 };
 
 export default Dashboard;

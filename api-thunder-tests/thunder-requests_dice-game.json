@@ -1,0 +1,214 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "dice-game",
+    "dateExported": "2023-08-21T10:49:56.140Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "5c594c87-5da0-48d5-a50c-534efe73ed39",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "postPlayer",
+            "url": "http://localhost:8000/api/players/",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-08-05T12:40:11.602Z",
+            "modified": "2023-08-21T10:40:39.840Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"jose\",\n  \"email\": \"game@ricky.com\",\n  \"password\": \"1234\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "067c3fd8-161a-4493-81d8-91d09bf0e025",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "changeName",
+            "url": "http://localhost:8000/api/players/64e33ba038d79d48133e5570",
+            "method": "PUT",
+            "sortNum": 30000,
+            "created": "2023-08-05T12:58:37.510Z",
+            "modified": "2023-08-21T10:34:33.264Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"cambio de nombre\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "7662959c-56db-48b4-9ed1-e88ee370a4de",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "getPlayers",
+            "url": "http://localhost:8000/api/players/",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2023-08-05T13:09:27.328Z",
+            "modified": "2023-08-21T10:35:18.042Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "ac87b757-1a57-49b1-975b-e0879dd5a7e5",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "playGame",
+            "url": "http://localhost:8000/api/games/64dcf9f3c26f83bce0d0fdcd",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2023-08-05T13:11:25.302Z",
+            "modified": "2023-08-21T10:42:12.805Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "a5179c06-784b-4097-8a98-aaa6b36346f0",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "deleteAllGames",
+            "url": "http://localhost:8000/api/games/64dcf9f3c26f83bce0d0fdcd",
+            "method": "DELETE",
+            "sortNum": 60000,
+            "created": "2023-08-05T13:18:40.496Z",
+            "modified": "2023-08-21T10:46:42.296Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "ea942176-28d6-4571-b409-6e9fba6fbee4",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "getGames",
+            "url": "http://localhost:8000/api/games/64dcf9f3c26f83bce0d0fdcd",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-08-05T15:05:01.179Z",
+            "modified": "2023-08-21T10:43:09.551Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "8f0e15c1-97be-46f2-9b83-e5da3c9b777c",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "getRankingAndAverage",
+            "url": "http://localhost:8000/api/ranking",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2023-08-05T15:34:21.673Z",
+            "modified": "2023-08-21T10:44:33.535Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "12c9492a-244a-4ed2-8f02-517ebb286c34",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "getLoser",
+            "url": "http://localhost:8000/api/ranking/loser",
+            "method": "GET",
+            "sortNum": 100000,
+            "created": "2023-08-06T11:36:41.941Z",
+            "modified": "2023-08-21T10:45:17.217Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "1df6fd1c-2232-4682-b8fb-f3120a20e3f9",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "getWinner",
+            "url": "http://localhost:8000/api/ranking/winner",
+            "method": "GET",
+            "sortNum": 110000,
+            "created": "2023-08-08T09:27:48.379Z",
+            "modified": "2023-08-21T10:45:54.586Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUzM2JhMDM4ZDc5ZDQ4MTMzZTU1NzAiLCJpYXQiOjE2OTI2MTM2MTEsImV4cCI6MTY5MjYxNzIxMX0.L9_SrSvbg_oCmwaXcLQZFppIE49gVTNFfrerwsWhxIM"
+            },
+            "tests": []
+        },
+        {
+            "_id": "a6ef0c2c-1886-46c9-81cc-203ab7fba34b",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "handleLogin",
+            "url": "http://localhost:8000/api/login",
+            "method": "POST",
+            "sortNum": 130000,
+            "created": "2023-08-11T10:23:52.688Z",
+            "modified": "2023-08-21T10:26:51.718Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n \"email\": \"game@test1.com\",\n  \"password\": \"1234\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "6bf41503-4389-41de-ae6d-18bf0a0148cf",
+            "colId": "5a4cc229-c5f0-4ef5-bf92-0f5b2627a70f",
+            "containerId": "",
+            "name": "test-protected",
+            "url": "http://localhost:8000/api/protected",
+            "method": "GET",
+            "sortNum": 140000,
+            "created": "2023-08-11T10:25:41.723Z",
+            "modified": "2023-08-11T10:26:40.805Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGQ2MGMxMTUxYzcxMzExMDg3ZjViYmQiLCJpYXQiOjE2OTE3NDk1MDIsImV4cCI6MTY5MTc1MzEwMn0.sYTCFj4RZJv491Jn_IeXO45LBdyVPMzP6hkAXchipTw"
+            },
+            "tests": []
+        }
+    ]
+}

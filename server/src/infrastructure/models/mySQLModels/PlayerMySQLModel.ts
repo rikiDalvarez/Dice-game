@@ -1,26 +1,18 @@
-import { DataTypes, Model, Sequelize} from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { IPlayerSQL } from "../../../domain/Player";
 import { GameSQL } from "./GameMySQLModel";
 
-// import { PlayerType } from "../../../domain/Player";
-
-
-//type PlayerSQLCreationAttributes = Optional<IPlayerSQL, 'id'>;
-
 export class PlayerSQL extends Model<IPlayerSQL> {
-
   declare id: string
- declare name: string
+ declare name: string |null
   declare email: string
   declare password: string
   declare registrationDate: Date
   declare successRate: number
-  //declare getGames: HasManyGetAssociationsMixin<GameSQL>
   declare games: GameSQL[]
- 
 }
 
-export function initializationPlayerTable(sequelize:Sequelize) {
+export function initializePlayerTable(sequelize:Sequelize) {
 
 PlayerSQL.init({
   // MAYBE IS BETTER TO NAME IT _id THEN IT IS LIKE IN MONGODB
@@ -31,7 +23,8 @@ PlayerSQL.init({
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+    unique:true
   },
   email: {
     type: DataTypes.STRING,

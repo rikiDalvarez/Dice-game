@@ -1,9 +1,11 @@
 import { Player } from "./Player";
 
 export type PlayerDetailsType = {
-  name: string;
+  id: string;
+  name: string|null;
   rating: number;
   registrationDate: Date;
+  email: string;
 };
 
 export class PlayerList {
@@ -17,9 +19,11 @@ export class PlayerList {
   ): Array<PlayerDetailsType> {
     return players.map((player) => {
       return {
+        id: player.id,
         name: player.name,
         rating: player.successRate,
         registrationDate: player.registrationDate,
+        email: player.email
       };
     });
   }
