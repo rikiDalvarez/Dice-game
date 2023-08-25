@@ -21,7 +21,7 @@ const Registration: React.FC = () => {
 		event.preventDefault();
 		console.log('handleSubmit presssed')
 		try {
-			const response = await fetchRegistration(registrationData); 
+			const response = await fetchRegistration(registrationData);
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data)
