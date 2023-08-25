@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
 						<UserDataManipulation />
 						<PlayerList props={data} />
-						<GetGameData />
+						<GetGameData className="flex-col" />
 						{/* {data.map((player) => (
 							<div className="m-2 p-2 border-2" key={player.email}>
 								<h3>{player.name}</h3>
