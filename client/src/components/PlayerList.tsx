@@ -4,7 +4,7 @@ import Player from './Player'
 function PlayerList({ props }) {
 	console.log(props, "props1")
 	return (
-		<div>
+		<div className='bg-emerald-100 rounded-lg m-4 p-4'>
 			{props ? props.map((player) => (
 				<Player props={player} />
 			)) : "something went wrong"}

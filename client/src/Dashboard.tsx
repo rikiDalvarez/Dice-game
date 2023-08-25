@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Login from './Login';
 import UserDataManipulation from './components/UserDataManipulation';
 import PlayerList from './components/PlayerList';
+import GetGameData from './components/GetGameData';
 interface Player {
 	name: string,
 	rating: number,
@@ -56,13 +57,14 @@ const Dashboard: React.FC = () => {
 	}, []);
 
 	return (
-		<div>
+		<div className='flex-col'>
 			{data ? (
 				<>
 					<Navbar name={localStorage.getItem("name")} />
-					<div className="m-5  border-t-2 border-green-700 flex-row">
+					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
 						<UserDataManipulation />
 						<PlayerList props={data} />
+						<GetGameData />
 						{/* {data.map((player) => (
 							<div className="m-2 p-2 border-2" key={player.email}>
 								<h3>{player.name}</h3>
