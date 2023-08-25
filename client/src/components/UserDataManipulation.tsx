@@ -6,7 +6,7 @@ import DeleteGames from './DeleteGames'
 
 function UserDataManipulation() {
 	return (
-		<div className='userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col'>
+		<div className='userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg'>
 			<h1>userDataManipulation</h1>
 			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 			>Play Game</button>
