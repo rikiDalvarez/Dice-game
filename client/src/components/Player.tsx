@@ -1,6 +1,6 @@
 import React from 'react'
 
-export interface Player {
+export interface IPlayer {
 	id: string;
 	email: string;
 	name: string;
@@ -9,7 +9,7 @@ export interface Player {
 }
 
 interface Props {
-	props: Player
+	props: IPlayer
 }
 
 const Player: React.FC<Props> = ({ props }) => {

@@ -8,20 +8,16 @@ import GetGameData from './components/GetGameData';
 import GameList from './components/GameList';
 import { useNavigate } from 'react-router-dom';
 import { fetchToken } from './services';
-interface Player {
-	name: string,
-	rating: number,
-	registrationDate: string
-}
+import { IPlayer } from './components/Player';
 
 interface DashboardProps {
-	name: string | null; // Define the prop here
-	id: string | null;
+	name?: string | null;
+	id?: string | null;
 }
 
 
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
-	const [data, setData] = useState<Array<Player> | null>(null);
+	const [data, setData] = useState<Array<IPlayer> | null>(null);
 
 	const navigate = useNavigate();
 

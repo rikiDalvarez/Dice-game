@@ -14,9 +14,13 @@
 
 // export default PlayerList
 import React from 'react';
-import Player from './Player';
+import Player, { IPlayer } from './Player';
 
-function PlayerList({ props }) {
+interface Props {
+	props: IPlayer[];
+}
+
+const PlayerList: React.FC<Props> = ({ props }) => {
 	return (
 		<div className='bg-blue-200 rounded-lg m-4 p-4 max-h-80 overflow-y-auto'>
 			{props

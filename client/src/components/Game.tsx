@@ -1,6 +1,16 @@
 import React from 'react'
 
-function Game({ props }) {
+interface Game {
+	gameWin: boolean;
+	dice1Value: number;
+	dice2Value: number;
+}
+
+interface Props {
+	props: Game
+}
+
+const Game: React.FC<Props> = ({ props }) => {
 	console.log(props, "props")
 	return (
 		<div className={`card font-mono ${props.gameWin ? 'bg-green-200' : "bg-amber-200"

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Game from './Game'
+import { fetchGameList } from '../services';
 interface GameListProps { // Define the prop here
-	id: string | null;
+	id?: string | null;
 }
 const GameList: React.FC<GameListProps> = () => {
 	const [games, setGames] = useState([])
@@ -11,18 +12,13 @@ const GameList: React.FC<GameListProps> = () => {
 	// 	getGames(id)
 	// }, [])
 
-	const getGames = async (id) => {
+	const getGames = async (id: string | null) => {
 		try {
 			const token = localStorage.getItem('token');
 
 			if (token) {
 				console.log(id)
-				const response = await fetch(`http://localhost:8000/api/games/${id}`, {
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
+				const response = await fetchGameList(token, id);
 
 				if (response.ok) {
 					const responseData = await response.json();
