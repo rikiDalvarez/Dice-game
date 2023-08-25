@@ -3,6 +3,7 @@ import { UserContext } from './context/UserContext';
 import Navbar from './components/Navbar';
 import Login from './Login';
 import UserDataManipulation from './components/UserDataManipulation';
+import PlayerList from './components/PlayerList';
 interface Player {
 	name: string,
 	rating: number,
@@ -61,13 +62,14 @@ const Dashboard: React.FC = () => {
 					<Navbar name={localStorage.getItem("name")} />
 					<div className="m-5  border-t-2 border-green-700 flex-row">
 						<UserDataManipulation />
-						{data.map((player) => (
+						<PlayerList props={data} />
+						{/* {data.map((player) => (
 							<div className="m-2 p-2 border-2" key={player.email}>
 								<h3>{player.name}</h3>
 								<p>Rating: {player.rating}</p>
 								<p>Registration Date: {player.registrationDate}</p>
 							</div>
-						))}
+						))} */}
 					</div>
 				</>
 			) : (
