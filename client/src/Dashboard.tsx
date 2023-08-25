@@ -6,6 +6,7 @@ import UserDataManipulation from './components/UserDataManipulation';
 import PlayerList from './components/PlayerList';
 import GetGameData from './components/GetGameData';
 import GameList from './components/GameList';
+import { fetchToken } from './services';
 interface Player {
 	name: string,
 	rating: number,
@@ -33,12 +34,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:8000/api/players', {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
+					const response = await fetchToken(token)
 
 					if (response.ok) {
 						const responseData = await response.json();
