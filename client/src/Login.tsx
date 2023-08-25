@@ -13,8 +13,6 @@ const Login: React.FC = () => {
 	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
 
-	console.log(userContext)
-
 	const [formData, setFormData] = useState({
 		email: "",
 		password: ""
@@ -46,10 +44,12 @@ const Login: React.FC = () => {
 				const tokenuser = localStorage.setItem("token", token)
 				console.log(tokenuser)
 				const name = localStorage.setItem("name", nameUser)
+				const id = localStorage.setItem("id", data.id)
 				console.log(name)
 				userContext.setUser({
 					email: formData.email,
-					token: localStorage.getItem("token")
+					token: localStorage.getItem("token"),
+					id: id
 				});
 
 				console.log("login successful")
@@ -65,12 +65,13 @@ const Login: React.FC = () => {
 	}
 
 	const name = localStorage.getItem("name")
+	const id = localStorage.getItem("id")
 
 	return (
 		<>
 			{isLoggedIn ? (<>
 
-				<Dashboard name={name} />
+				<Dashboard name={name} id={id} />
 			</>)
 				: (<>
 					<h2 className="text-2xl font-semibold mb-4">Login</h2>

@@ -25,7 +25,6 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 		if (!token) {
 			return
 		}
-		console.log(token)
 		setUser({
 			email: "test",
 			token: token

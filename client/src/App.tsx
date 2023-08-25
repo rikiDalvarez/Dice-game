@@ -50,9 +50,10 @@ function App() {
 
 	return (
 		<div className="App">
-			<div className="min-h-screen flex items-center justify-center bg-color-movement ">
+			<div className="min-h-screen flex flex-col items-center justify-center bg-color-movement ">
+				<img src="dices.png" className="w-20 h-30 mt-4" alt="dices" />
 				<div className="  p-6 bg-white rounded-lg shadow-lg m-8">
-					{data ? <Dashboard data={data} name={name} /> : <Login />}
+					{data ? <Dashboard name={name} /> : <Login />}
 				</div>
 			</div>
 		</div>

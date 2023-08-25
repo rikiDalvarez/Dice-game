@@ -36,8 +36,6 @@ function Register() {
 
 	useEffect(() => {
 		const result = EMAIL_REGEX.test(email);
-		console.log("resukt:", result)
-		console.log(email)
 		setValidName(result)
 
 	}, [email]);

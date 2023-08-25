@@ -5,21 +5,20 @@ import Login from './Login';
 import UserDataManipulation from './components/UserDataManipulation';
 import PlayerList from './components/PlayerList';
 import GetGameData from './components/GetGameData';
+import GameList from './components/GameList';
 interface Player {
 	name: string,
 	rating: number,
 	registrationDate: string
 }
 
-// interface DashboardProps {
-// 	data: Player[];
-// }
 interface DashboardProps {
-  name: string | null; // Define the prop here
+	name: string | null; // Define the prop here
+	id: string | null;
 }
 
 
-const Dashboard: React.FC<DashboardProps>  = ({name}) => {
+const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 
@@ -77,6 +76,8 @@ const Dashboard: React.FC<DashboardProps>  = ({name}) => {
 							</div>
 						))} */}
 					</div>
+					<PlayerList props={data} />
+					<GameList id={id} />
 				</>
 			) : (
 				<Login />
