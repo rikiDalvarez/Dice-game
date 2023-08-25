@@ -1,9 +1,10 @@
 import React from 'react'
 
-function ChangeName() {
+
+const ChangeName: React.FC = () => {
 	return (
 		<div>ChangeName</div>
 	)
-}
+} 
 
 export default ChangeName
