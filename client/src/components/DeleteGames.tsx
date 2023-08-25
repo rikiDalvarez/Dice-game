@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DeleteGames() {
+const DeleteGames: React.FC = () => {
 	return (
 		<div>DeleteGames</div>
 	)

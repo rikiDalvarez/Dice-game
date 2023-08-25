@@ -11,11 +11,15 @@ interface Player {
 	registrationDate: string
 }
 
+// interface DashboardProps {
+// 	data: Player[];
+// }
 interface DashboardProps {
-	data: Player[];
+  name: string | null; // Define the prop here
 }
 
-const Dashboard: React.FC = () => {
+
+const Dashboard: React.FC<DashboardProps>  = ({name}) => {
 	const [data, setData] = useState<Array<Player> | null>(null);
 
 
@@ -60,11 +64,11 @@ const Dashboard: React.FC = () => {
 		<div className='flex-col'>
 			{data ? (
 				<>
-					<Navbar name={localStorage.getItem("name")} />
+					<Navbar name={name} />
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
 						<UserDataManipulation />
 						<PlayerList props={data} />
-						<GetGameData className="flex-col" />
+						<GetGameData />
 						{/* {data.map((player) => (
 							<div className="m-2 p-2 border-2" key={player.email}>
 								<h3>{player.name}</h3>

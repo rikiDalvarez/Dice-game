@@ -4,7 +4,7 @@ import PlayGame from './PlayGame'
 import ChangeName from './ChangeName'
 import DeleteGames from './DeleteGames'
 
-function UserDataManipulation() {
+const UserDataManipulation: React.FC = () => {
 	return (
 		<div className='userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg'>
 			<h1>userDataManipulation</h1>
