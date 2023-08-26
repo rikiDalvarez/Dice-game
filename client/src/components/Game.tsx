@@ -11,7 +11,6 @@ interface Props {
 }
 
 const Game: React.FC<Props> = ({ props }) => {
-	console.log(props, "props")
 	return (
 		<div className={`card font-mono ${props.gameWin ? 'bg-green-200' : "bg-amber-200"
 			} `}

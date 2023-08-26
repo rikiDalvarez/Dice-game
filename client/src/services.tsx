@@ -44,7 +44,7 @@ export const fetchToken = async (token: string | null) => {
 }
 
 export const fetchGameList = async (token: string | null, id: string | null) => {
-	const response = await fetch(`http://localhost:${PORT}/games/${id}`, {
+	const response = await fetch(`http://localhost:${PORT}/api/games/${id}`, {
 		method: "GET",
 		headers: {
 			Authorization: `Bearer ${token}`,
