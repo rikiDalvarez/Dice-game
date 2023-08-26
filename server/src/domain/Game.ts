@@ -2,7 +2,6 @@ import { Dice } from "./Dice";
 import { v4 } from 'uuid';
 
 
-
 export class Game {
   readonly id:string;
   readonly gameWin: boolean;
@@ -20,7 +19,7 @@ export class Game {
     return this.dice1Value + this.dice2Value === 7;
   }
 
-  generateId(){
+  generateId():{
     return v4()
   }
 
