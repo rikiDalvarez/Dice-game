@@ -44,11 +44,28 @@ export const fetchToken = async (token: string | null) => {
 }
 
 export const fetchGameList = async (token: string | null, id: string | null) => {
-	const response = await fetch(`http://localhost:${PORT}/games/${id}`, {
+	const response = await fetch(`http://localhost:${PORT}/api/games/${id}`, {
 		method: "GET",
 		headers: {
 			Authorization: `Bearer ${token}`,
+			
 		}
+	})
+	return response
+}
+
+
+export const changeName = async (token: string | null, id: string | null|undefined, newName:string) => {
+	
+	const data = {name:newName}
+	console.log(JSON.stringify(data))
+	const response = await fetch(`http://localhost:${PORT}/api/players/${id}`, {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
 	})
 	return response
 }

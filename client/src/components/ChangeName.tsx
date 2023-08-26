@@ -1,52 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { IPlayer } from './Player';
+import React, {useState } from "react";
+import { changeName } from "../services";
 
 //   router.put("/players/:id", auth, playerRootControllers.changeName);
 
-interface Props {
-    player: IPlayer;
-    players: IPlayer[];
-    setData: React.Dispatch<React.SetStateAction<IPlayer[] | null>>;
-}
+export type ChangeNameProps = {
+  stateChanger: (param:boolean) => void
+};
 
-const ChangeName: React.FC<Props> = ({player, players, setData}) => {
-	
-	const [edit, setEdit] = useState(false)
-    const [editChageName, setEditChangeName] = useState(player.name)
-	const handleEdit = (e: React.FormEvent, id: string) => {
-        e.preventDefault();
-        setData(
-            players.map((player) => (
-                player.id === id ? { ...player, name: editChageName } : player)
-            ))
-        setEdit(false);
-    }
-	const inputRef = useRef<HTMLInputElement>(null)
-    useEffect(() => {
-        inputRef.current?.focus();
-    }, [edit])
-	return (
-		<form className='' onSubmit={(e) => handleEdit(e, player.id)}>
-            {edit ? (
-                <input
-                    ref={inputRef}
-                    value={editChageName}
-                    onChange={(e) => setEditChangeName(e.target.value)}
-                    className='' />
-            ) : player.name}
+export const ChangeName: React.FC<ChangeNameProps> = (props) => {
+  const [inputField, setInputValue] = useState("");
+  const token = localStorage.getItem("token");
+  const player_id = localStorage.getItem("id");
 
-            <div>
-                <span className="icon" onClick={() => {
-                    if (!edit) {
-                        setEdit(!edit)
-                    }
-                }}
-                >
-					
-                </span>
-            </div>
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+		try {
+			const response = await changeName(token,player_id, inputField);
+			if (response.ok) {
+				const data = await response.json();
+				if (data.name === inputField){
+                    console.log('Name changed succesfully')
+                }else{
+                console.error("Error ocurred during changing name")}
+			} else {
+				console.error(response)
+			}
+		} catch (error) {
+			console.error("an error occurred:", error)
+		}
+        props.stateChanger(false)
+  };
+
+  return (
+    <section className="min-h-screen flex items-center justify-center bg-color-movement">
+      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
+        <form className="form" onSubmit={handleSubmit}>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="email"
+          >
+            Introduce new name
+          </label>
+          <input
+            className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
+            type="text"
+            id="newName"
+            onChange={(e) => handleInputChange(e)}
+            required
+          />
+
+          <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300" 
+          type="submit">Submit</button>
         </form>
-	)
-} 
+      </div>
+    </section>
+  );
+};
 
-export default ChangeName
+export default ChangeName;

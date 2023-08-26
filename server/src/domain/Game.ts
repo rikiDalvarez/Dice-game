@@ -19,7 +19,7 @@ export class Game {
     return this.dice1Value + this.dice2Value === 7;
   }
 
-  generateId(): string{
+  generateId(): string {
     return v4()
   }
 

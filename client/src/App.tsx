@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import './App.css';
 import Login from './Login';
-import { UserContextProvider } from './context/UserContext';
 import Dashboard from './Dashboard';
 import { fetchToken } from './services';
 interface Player {
@@ -46,7 +45,6 @@ function App() {
 	}, []);
 
 	const name = localStorage.getItem("name")
-
 
 	return (
 		<div className="App">
