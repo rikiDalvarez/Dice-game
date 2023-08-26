@@ -21,9 +21,7 @@ export class Game {
   }
 
   generateId(){
-    const nr = v4()
-    console.log(nr)
-    return nr
+    return v4()
   }
 
 }
