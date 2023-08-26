@@ -8,21 +8,15 @@ const GameList: React.FC<GameListProps> = () => {
 	const [games, setGames] = useState([])
 
 
-	// useEffect(() => {
-	// 	getGames(id)
-	// }, [])
-
 	const getGames = async (id: string | null) => {
 		try {
 			const token = localStorage.getItem('token');
 
 			if (token) {
-				console.log(id)
 				const response = await fetchGameList(token, id);
 
 				if (response.ok) {
 					const responseData = await response.json();
-					console.log(responseData)
 
 					setGames(responseData);
 
@@ -37,15 +31,12 @@ const GameList: React.FC<GameListProps> = () => {
 		}
 	}
 	const id = localStorage.getItem("id")
-	console.log(id)
 	useEffect(() => { getGames(id) }, [])
 
 
-	console.log("games", games)
-
 	return (
 		<div className=" rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
-			{games ? games.map((game) => <Game key={game.id} props={game} />) : "test"}
+			{games ? games.map((game) => <Game props={game} />) : "test"}
 		</div>
 	)
 }
