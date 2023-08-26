@@ -17,6 +17,7 @@ export class PlayerMySQLManager implements PlayerInterface {
   createGameDoc(games: Array<GameType>, id: string) {
     return games.map((game) => {
       return {
+        id: game.id,
         gameWin: game.gameWin,
         dice1Value: game.dice1Value,
         dice2Value: game.dice2Value,
@@ -135,7 +136,7 @@ export class PlayerMySQLManager implements PlayerInterface {
     return returnPlayer;
   }
 
-  async addGame(player: Player): Promise<boolean> {
+  async addGame(player: Player): Promise<GameType> {
     const transaction = await this.sequelize.transaction();
     try {
       const id = player.id;
@@ -161,8 +162,8 @@ export class PlayerMySQLManager implements PlayerInterface {
       );
 
       await transaction.commit();
-      const lastGameResult = player.games[player.games.length - 1].gameWin;
-      return lastGameResult;
+      const lastGame = player.games[player.games.length - 1];
+      return lastGame;
     } catch (error) {
       if (transaction) {
         await transaction.rollback();

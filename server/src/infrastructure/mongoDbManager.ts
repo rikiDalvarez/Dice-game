@@ -124,7 +124,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     }
   }
 
-  async addGame(player: Player): Promise<boolean> {
+  async addGame(player: Player): Promise<GameType> {
     const id = player.id;
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
@@ -132,8 +132,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     );
 
     if (response.modifiedCount === 1) {
-      const lastGameResult = player.games[player.games.length - 1].gameWin;
-      return lastGameResult;
+      const lastGame = player.games[player.games.length - 1];
+      return lastGame;
     }
 
     throw new Error("AddingGameError");

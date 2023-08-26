@@ -1,12 +1,12 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { IGameSQL } from "../../../domain/Game";
+import { GameType } from "../../../domain/Player";
 
-export class GameSQL extends Model<IGameSQL>{
-  declare id?: string
+export class GameSQL extends Model<GameType>{
+  declare id: string
   declare gameWin: boolean
   declare dice1Value: number
   declare dice2Value: number
-  declare player_id: string
+  declare player_id?: string
 }
 
 export function initializeGameTable(sequelize: Sequelize) {
@@ -14,7 +14,6 @@ export function initializeGameTable(sequelize: Sequelize) {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
       gameWin: {

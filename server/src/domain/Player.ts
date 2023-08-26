@@ -2,9 +2,11 @@ import { Game } from "./Game";
 import { User } from "./User";
 
 export type GameType = {
+  id:string;
   gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
+  player_id?: string
 };
 
 export type MongoPlayerType = {
