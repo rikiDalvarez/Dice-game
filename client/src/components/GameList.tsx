@@ -19,10 +19,10 @@ const GameList: React.FC<GameListProps> = () => {
 			if (token) {
 				console.log(id)
 				const response = await fetchGameList(token, id);
-
+				console.log("response", response)
 				if (response.ok) {
 					const responseData = await response.json();
-					console.log(responseData)
+					console.log("Games", responseData)
 
 					setGames(responseData);
 
@@ -45,7 +45,7 @@ const GameList: React.FC<GameListProps> = () => {
 
 	return (
 		<div className=" rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
-			{games ? games.map((game) => <Game key={game.id} props={game} />) : "test"}
+			{games ? games.map((game) => <Game props={game} />) : "test"}
 		</div>
 	)
 }
