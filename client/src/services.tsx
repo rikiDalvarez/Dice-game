@@ -70,6 +70,18 @@ export const changeName = async (token: string | null, id: string | null|undefin
 	return response
 }
 
+export const fetchPlayGame = async (token: string | null, id: string | null|undefined) => {
+	const response = await fetch(`http://localhost:${PORT}/api/games/${id}`, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json'
+		},
+	
+	})
+	return response
+}
+
 export const fetchDeleteGames = async (token: string | null, player_id: string | null|undefined) => {
 		const response = await fetch(`http://localhost:${PORT}/api/games/${player_id}`, {
 		method: "DELETE",
