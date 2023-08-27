@@ -5,6 +5,7 @@ import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
   dashboardStateChanger: (state: string) => void;
+  handleRefreshGames: () => void;
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
@@ -49,7 +50,8 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
       <DeleteGames
         onGamesDeleted={() => {
           setGamesDeleted(true);
-        }}
+          props.handleRefreshGames();
+        }} 
       />
       {gamesDeleted && (
         <div className="bg-green-300 text-green-900 p-2 mt-2">

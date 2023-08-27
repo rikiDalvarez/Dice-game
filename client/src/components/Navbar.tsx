@@ -1,5 +1,8 @@
+interface Props {
+	name: string | null | undefined
+}
 
-function Navbar(props) {
+const Navbar = (props: Props) => {
 	return (
 		<div>Welcome {props.name}</div>
 	)

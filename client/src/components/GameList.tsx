@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Game from './Game'
 import { fetchGameList } from '../services';
-interface GameListProps { // Define the prop here
+interface GameListProps {
 	id?: string | null;
+	refreshGames: boolean;
 }
-const GameList: React.FC<GameListProps> = () => {
+const GameList: React.FC<GameListProps> = (refreshGames) => {
 	const [games, setGames] = useState([])
 
 
@@ -31,7 +32,7 @@ const GameList: React.FC<GameListProps> = () => {
 		}
 	}
 	const id = localStorage.getItem("id")
-	useEffect(() => { getGames(id) }, [])
+	useEffect(() => { getGames(id) }, [refreshGames])
 
 
 	return (

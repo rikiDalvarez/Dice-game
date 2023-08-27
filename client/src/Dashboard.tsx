@@ -19,6 +19,11 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
 	const [dashboardState, setDashboardState] = useState('default')
+	const [refreshGameList, setRefreshGameList] = useState(false);
+
+	const handleRefreshGames = () => {
+		setRefreshGameList((prevRefresh) => !prevRefresh);
+	};
 
 	const navigate = useNavigate();
 
@@ -32,7 +37,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-		
+
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -60,7 +65,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 		setDashboardState('default')
 	}, [dashboardState]);
 
-	
+
 
 	return (
 		<div className='flex-col'>
@@ -68,7 +73,10 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 				<>
 					<Navbar name={name} />
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-						<UserDataManipulation dashboardStateChanger={setDashboardState} />
+						<UserDataManipulation
+							dashboardStateChanger={setDashboardState}
+							handleRefreshGames={handleRefreshGames}
+						/>
 						<PlayerList props={data} />
 						<GetGameData />
 						{/* {data.map((player) => (
@@ -79,7 +87,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 							</div>
 						))} */}
 					</div>
-					<GameList id={id} />
+					<GameList id={id} refreshGames={refreshGameList} />
 					<div>
 						<button onClick={logout} className="bg-amber-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Logout</button>
 					</div>

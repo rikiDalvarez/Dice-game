@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { changeName } from "../services";
 
-//   router.put("/players/:id", auth, playerRootControllers.changeName);
-
 export type ChangeNameProps = {
   stateChanger: (param: boolean) => void
 };
