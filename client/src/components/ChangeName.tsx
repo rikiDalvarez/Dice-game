@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { changeName } from "../services";
 
 export type ChangeNameProps = {
-  stateChanger: (param: boolean) => void;
+  setChangeNameInProgress: (param: boolean) => void;
+  refreshDashboard: ()=> void
 };
 
 export const ChangeName: React.FC<ChangeNameProps> = (props) => {
@@ -31,7 +32,8 @@ export const ChangeName: React.FC<ChangeNameProps> = (props) => {
     } catch (error) {
       console.error("an error occurred:", error)
     }
-    props.stateChanger(false)
+    props.setChangeNameInProgress(false)
+    props.refreshDashboard()
   };
 
   return (

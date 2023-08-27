@@ -4,7 +4,9 @@ import { Game } from "./Game";
 
 type PlayGame = {
   newGame: boolean;
-  playGameChanger: (state: boolean) => void;
+  setGameInProgress: (state: boolean) => void;
+  refreshDashboard: ()=> void
+
 };
 
 const PlayGame: React.FC<PlayGame> = (props) => {
@@ -19,7 +21,6 @@ const PlayGame: React.FC<PlayGame> = (props) => {
       
       if (response.ok) {
         const responseData = await response.json();
-        setGameState("played");
         setGameResult(() => ({
           id: responseData.id,
           gameWin: responseData.gameWin,
@@ -32,11 +33,13 @@ const PlayGame: React.FC<PlayGame> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-    props.playGameChanger(false);
+    setGameState("played");
+    props.refreshDashboard()
   }, [props]);
 
   useEffect(() => {
     if (props.newGame) {
+      props.setGameInProgress(false);
       setGameState("playing");
       playGame();
     }

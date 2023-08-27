@@ -1,45 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ChangeName from "./ChangeName";
 import PlayGame from "./PlayGame";
 import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
-  dashboardStateChanger: (state: string) => void;
   handleRefreshGames: () => void;
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
-  const [userDataManipulationState, setUserDataManipulationState] =
-    useState("default");
-  const [isChangeNameInProgress, setChangeName] = useState(false);
+  const [isChangeNameInProgress, setChangeNameInProgress] = useState(false);
   const [isGameInProgress, setGameInProgress] = useState(false);
   const [gamesDeleted, setGamesDeleted] = useState(false);
 
-  useEffect(() => {
-    if (isGameInProgress) {
-      setUserDataManipulationState("gameProcessing");
-    }
-    if (isChangeNameInProgress) {
-      setUserDataManipulationState("nameProcessing");
-    }
-    if (!isGameInProgress && userDataManipulationState === "gameProcessing") {
-      props.dashboardStateChanger("fetchData");
-
-      setUserDataManipulationState("default");
-    }
-    if (
-      !isChangeNameInProgress &&
-      userDataManipulationState === "nameProcessing"
-    ) {
-      props.dashboardStateChanger("fetchData");
-      setUserDataManipulationState("default");
-    }
-  }, [
-    userDataManipulationState,
-    isChangeNameInProgress,
-    isGameInProgress,
-    props,
-  ]);
 
   return (
     <div className="userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
@@ -55,20 +27,21 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
-          setChangeName(true);
+          setChangeNameInProgress(true);
           //setGamesDeleted(false); state is false we dont need set again to false
         }}
       >
         Change Name
       </button>
       {isChangeNameInProgress ? (
-        <ChangeName stateChanger={setChangeName} />
+        <ChangeName setChangeNameInProgress={setChangeNameInProgress} refreshDashboard={props.handleRefreshGames}/>
       ) : (
         ""
       )}
       <PlayGame
         newGame={isGameInProgress}
-        playGameChanger={setGameInProgress}
+        refreshDashboard={props.handleRefreshGames}
+        setGameInProgress={setGameInProgress}
       />
       <DeleteGames
         onGamesDeleted={() => {

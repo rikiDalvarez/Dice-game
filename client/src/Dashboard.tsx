@@ -18,11 +18,10 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
-	const [dashboardState, setDashboardState] = useState('default')
 	const [refreshGameList, setRefreshGameList] = useState(false);
 
 	const handleRefreshGames = () => {
-		setRefreshGameList((prevRefresh) => !prevRefresh);
+		setRefreshGameList(true);
 	};
 
 	const navigate = useNavigate();
@@ -37,7 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-		console.log('fetch dashboard')
+		
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -60,10 +59,13 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 				console.error('An error occurred:', error);
 			}
 		};
-
+		if (refreshGameList){
+			fetchProtectedData();
+			setRefreshGameList(false)
+		}
 		fetchProtectedData();
-		setDashboardState('default')
-	}, [dashboardState]);
+
+	}, [refreshGameList, data]);
 
 
 
@@ -74,7 +76,6 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 					<Navbar name={name} />
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
 						<UserDataManipulation
-							dashboardStateChanger={setDashboardState}
 							handleRefreshGames={handleRefreshGames}
 						/>
 						<PlayerList props={data} />
