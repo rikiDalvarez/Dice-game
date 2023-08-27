@@ -1,6 +1,6 @@
 import React from 'react'
 
-interface Game {
+export interface Game {
 	id: string;
 	gameWin: boolean;
 	dice1Value: number;

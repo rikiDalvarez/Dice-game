@@ -18,6 +18,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
+	//const [dashboardState, setDashboardState] = useState('default')
 
 	const navigate = useNavigate();
 
@@ -31,8 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-
-
+		
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -58,6 +58,8 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 		fetchProtectedData();
 	}, []);
+
+	
 
 	return (
 		<div className='flex-col'>

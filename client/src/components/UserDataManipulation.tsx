@@ -1,12 +1,20 @@
-import React, {useState } from "react";
+import React, {useEffect, useState } from "react";
 import ChangeName from "./ChangeName";
+import PlayGame from "./PlayGame";
+
+//type UserDataManipulation = {
+ // dashboardStateChanger: (state: string) => void
+//}
 
 const UserDataManipulation: React.FC = () => {
   const [changeName, setChangeName] = useState(false);
-
+  const [isGameInProgress, setGameInProgress] = useState(false);
+ 
   return (
     <div className="userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+       onClick={()=>{setGameInProgress(true)}}
+      >
         Play Game
       </button>
       <button
@@ -25,7 +33,7 @@ const UserDataManipulation: React.FC = () => {
       ) : (
         ""
       )}
-      {/* <PlayGame /> */}
+      <PlayGame newGame={isGameInProgress} playGameChanger={setGameInProgress}/>
       {/* <ChangeName /> */}
       {/* <DeleteGames /> */}
     </div>
