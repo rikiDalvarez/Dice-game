@@ -123,7 +123,6 @@ export function playerControllers(playerService: PlayerService) {
   ) => {
     const playerId = req.params.id;
     const newName = req.body.name;
-    console.log('name', req.body)
     try {
       const player = await playerService.changeName(playerId, newName);
       return res.status(200).json(player);

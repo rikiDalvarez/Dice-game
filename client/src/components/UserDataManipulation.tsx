@@ -1,5 +1,6 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import ChangeName from "./ChangeName";
+import DeleteGames from "./DeleteGames";
 
 const UserDataManipulation: React.FC = () => {
   const [changeName, setChangeName] = useState(false);
@@ -17,17 +18,14 @@ const UserDataManipulation: React.FC = () => {
       >
         Change Name
       </button>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Delete Games
-      </button>
       {changeName ? (
         <ChangeName stateChanger={setChangeName} />
       ) : (
         ""
       )}
+      {<DeleteGames />}
       {/* <PlayGame /> */}
       {/* <ChangeName /> */}
-      {/* <DeleteGames /> */}
     </div>
   );
 };
