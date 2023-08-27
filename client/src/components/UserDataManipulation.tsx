@@ -9,18 +9,37 @@ type UserDataManipulationProps = {
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
-  const [changeName, setChangeName] = useState(false);
+  const [userDataManipulationState, setUserDataManipulationState] =
+    useState("default");
+  const [isChangeNameInProgress, setChangeName] = useState(false);
   const [isGameInProgress, setGameInProgress] = useState(false);
   const [gamesDeleted, setGamesDeleted] = useState(false);
 
   useEffect(() => {
     if (isGameInProgress) {
-      props.dashboardStateChanger("played");
+      setUserDataManipulationState("gameProcessing");
     }
-    if (changeName) {
-      props.dashboardStateChanger("nameChanged");
+    if (isChangeNameInProgress) {
+      setUserDataManipulationState("nameProcessing");
     }
-  }, [changeName, isGameInProgress, props]);
+    if (!isGameInProgress && userDataManipulationState === "gameProcessing") {
+      props.dashboardStateChanger("fetchData");
+
+      setUserDataManipulationState("default");
+    }
+    if (
+      !isChangeNameInProgress &&
+      userDataManipulationState === "nameProcessing"
+    ) {
+      props.dashboardStateChanger("fetchData");
+      setUserDataManipulationState("default");
+    }
+  }, [
+    userDataManipulationState,
+    isChangeNameInProgress,
+    isGameInProgress,
+    props,
+  ]);
 
   return (
     <div className="userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
@@ -28,7 +47,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
           setGameInProgress(true);
-          setGamesDeleted(false);
+          //setGamesDeleted(false); state is false we dont need set again to false
         }}
       >
         Play Game
@@ -37,12 +56,16 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
           setChangeName(true);
-          setGamesDeleted(false);
+          //setGamesDeleted(false); state is false we dont need set again to false
         }}
       >
         Change Name
       </button>
-      {changeName ? <ChangeName stateChanger={setChangeName} /> : ""}
+      {isChangeNameInProgress ? (
+        <ChangeName stateChanger={setChangeName} />
+      ) : (
+        ""
+      )}
       <PlayGame
         newGame={isGameInProgress}
         playGameChanger={setGameInProgress}
@@ -51,7 +74,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
         onGamesDeleted={() => {
           setGamesDeleted(true);
           props.handleRefreshGames();
-        }} 
+        }}
       />
       {gamesDeleted && (
         <div className="bg-green-300 text-green-900 p-2 mt-2">

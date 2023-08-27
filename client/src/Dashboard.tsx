@@ -37,7 +37,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-
+		console.log('fetch dashboard')
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');

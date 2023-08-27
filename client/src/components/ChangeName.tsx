@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { changeName } from "../services";
 
 export type ChangeNameProps = {
-  stateChanger: (param: boolean) => void
+  stateChanger: (param: boolean) => void;
 };
 
 export const ChangeName: React.FC<ChangeNameProps> = (props) => {
