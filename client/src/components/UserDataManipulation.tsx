@@ -2,13 +2,23 @@ import React, {useEffect, useState } from "react";
 import ChangeName from "./ChangeName";
 import PlayGame from "./PlayGame";
 
-//type UserDataManipulation = {
- // dashboardStateChanger: (state: string) => void
-//}
+type UserDataManipulation = {
+  dashboardStateChanger: (state: string) => void
+}
 
-const UserDataManipulation: React.FC = () => {
+const UserDataManipulation: React.FC <UserDataManipulation> = (props) => {
   const [changeName, setChangeName] = useState(false);
   const [isGameInProgress, setGameInProgress] = useState(false);
+
+  useEffect(()=>{
+    if (isGameInProgress){
+      props.dashboardStateChanger('played')
+    }
+    if (changeName){
+      props.dashboardStateChanger('nameChanged')
+    }
+
+  }, [changeName, isGameInProgress, props])
  
   return (
     <div className="userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">

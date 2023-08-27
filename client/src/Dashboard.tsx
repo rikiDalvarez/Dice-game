@@ -18,7 +18,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
-	//const [dashboardState, setDashboardState] = useState('default')
+	const [dashboardState, setDashboardState] = useState('default')
 
 	const navigate = useNavigate();
 
@@ -57,7 +57,8 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 		};
 
 		fetchProtectedData();
-	}, []);
+		setDashboardState('default')
+	}, [dashboardState]);
 
 	
 
@@ -67,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 				<>
 					<Navbar name={name} />
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-						<UserDataManipulation />
+						<UserDataManipulation dashboardStateChanger={setDashboardState} />
 						<PlayerList props={data} />
 						<GetGameData />
 						{/* {data.map((player) => (
