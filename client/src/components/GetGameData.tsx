@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GetLoser } from "./GetLoser";
 import { GetWinner } from "./GetWinner";
+import { GetRanking } from "./GetRanking";
 
 type GetGameDateProps = {
   handleRefreshGames: () => void;
@@ -36,6 +37,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         GetRanking
       </button>
+      <GetRanking />
 
       {!isGetLoserInProgress ? (<div><GetWinner
         isGetWinnerInProgress={isGetWinnerInProgress}
