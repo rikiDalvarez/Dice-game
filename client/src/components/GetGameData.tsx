@@ -4,11 +4,13 @@ import { GetWinner } from "./GetWinner";
 import { IRanking } from "../Dashboard";
 import { UserContext } from "../context/UserContext";
 
+
 import { GetRanking } from "./GetRanking";
+import { fetchGetRanking } from "../services";
 
 type GetGameDateProps = {
   handleRefreshGames: () => void;
-  handleRankingSetUp: (data: IRanking[]) => void;
+  handleRankingSetUp: (data: IRanking) => void;
   // setGetWinnerInProgress: (param: boolean) => void;
   //setGetLoserInProgress: (param: boolean) => void;
 
@@ -22,11 +24,11 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
   const userContext = useContext(UserContext)
 
   const { user } = userContext;
-  console.log("userContext", user)
+  console.log("userContext getgamedata", user)
 
-  const handleClickGetRanking = () => {
-
-    console.log(user)
+  const handleClickGetRanking = async () => {
+    const response = await (await fetchGetRanking(user.token)).json()
+    props.handleRankingSetUp(response)
   }
 
 

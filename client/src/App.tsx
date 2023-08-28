@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import { fetchToken } from './services';
+import jwtDecode from 'jwt-decode';
 interface Player {
 	name: string,
 	rating: number,
 	registrationDate: string
 }
+
 
 
 function App() {
@@ -44,6 +46,7 @@ function App() {
 	}, []);
 
 	const name = localStorage.getItem("name")
+
 
 	return (
 		<div className="App">

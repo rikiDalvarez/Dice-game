@@ -10,13 +10,19 @@ import { fetchToken } from './services';
 import { IPlayer } from './components/Player';
 import RankingList from "./components/RankingList"
 import { UserContext } from './context/UserContext';
+import jwt_decode from "jwt-decode";
+
 
 //after refreshing the dashboard we lose userContext
 
-
-export interface IRanking {
+export interface playerRanking {
 	name: string | null;
 	successRate: number;
+}
+export interface IRanking {
+	ranking: playerRanking[];
+	average: number;
+
 }
 
 interface DashboardProps {
@@ -29,7 +35,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
 	const [refreshGameList, setRefreshGameList] = useState(false);
-	const [ranking, setRanking] = useState<Array<IRanking>>([])
+	const [ranking, setRanking] = useState<IRanking | null>(null)
 
 	const userContext = useContext(UserContext);
 
@@ -53,10 +59,23 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 		navigate("/")
 	}
 
+	const token = localStorage.getItem("token");
+	if (token) {
+		const decodedToken = jwt_decode(token)
+		console.log("decodedTOKEN", decodedToken)
+		const currentDate = new Date();
+		if (decodedToken.exp * 1000 < currentDate.getTime()) {
+			console.log("Token expired.");
+		} else {
+			console.log("Valid token");
+		}
+	}
+
 
 	useEffect(() => {
 		// flag for component rankingList
 		// setRanking([{ name: "riki", successRate: 0 }])
+		console.log(ranking)
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -100,9 +119,12 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
 						<UserDataManipulation
 							handleRefreshGames={handleRefreshGames}
-						/>{
-							ranking.length > 0 ? <RankingList ranking={ranking} /> : <PlayerList props={data} />
-						}
+						/>{ranking
+							? (
+								<RankingList ranking={ranking} />
+							) : (
+								<PlayerList props={data} />
+							)}
 						<GetGameData handleRankingSetUp={handleRankingSetUp} handleRefreshGames={handleRefreshGames} />
 					</div>
 					<GameList id={id} refreshGames={refreshGameList} />
