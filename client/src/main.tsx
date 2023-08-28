@@ -5,13 +5,10 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import './index.css'
-import Login from './Login.tsx';
 import Registration from './RegistrationForm.tsx';
 import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
-import DeleteGames from './components/DeleteGames.tsx';
-// import RegisterTest from "./components/RegisterTest.tsx"
 
 
 const router = createBrowserRouter([{
@@ -38,11 +35,6 @@ const router = createBrowserRouter([{
   path: "/dashboard",
   element: <Dashboard />
 },
-{
-  path: "/delete",
-  element: <DeleteGames />
-},
-
 
 ]);
 
