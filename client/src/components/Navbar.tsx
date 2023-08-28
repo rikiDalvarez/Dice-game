@@ -4,7 +4,7 @@ interface Props {
 
 const Navbar = (props: Props) => {
 	return (
-		<div>Welcome {props.name}</div>
+		<div className="font-mono">Welcome {props.name}</div>
 	)
 }
 

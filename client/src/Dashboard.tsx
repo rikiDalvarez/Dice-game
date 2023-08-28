@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { UserContext } from './context/UserContext';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Login from './Login';
 import UserDataManipulation from './components/UserDataManipulation';
@@ -25,8 +24,6 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	};
 
 	const navigate = useNavigate();
-
-	const userContext = useContext(UserContext)
 
 	const logout = () => {
 		localStorage.clear()
@@ -59,11 +56,11 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 				console.error('An error occurred:', error);
 			}
 		};
-		if (refreshGameList){
+		if (refreshGameList) {
 			fetchProtectedData();
 			setRefreshGameList(false)
 		}
-		if (!data){
+		if (!data) {
 			fetchProtectedData();
 		}
 
@@ -82,7 +79,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 							handleRefreshGames={handleRefreshGames}
 						/>
 						<PlayerList props={data} />
-						<GetGameData handleRefreshGames={handleRefreshGames}/>
+						<GetGameData handleRefreshGames={handleRefreshGames} />
 						{/* {data.map((player) => (
 							<div className="m-2 p-2 border-2" key={player.email}>
 								<h3>{player.name}</h3>

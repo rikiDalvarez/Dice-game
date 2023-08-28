@@ -3,6 +3,10 @@
 @import 'tailwindcss/utilities';
 
 :root {
+    
+  font-weight: 400;
+  margin: 0 auto;
+  text-align: center;
   --color-primary: #199a48;
   /* Replace with your primary color */
   --color-secondary: #bfb02a;
