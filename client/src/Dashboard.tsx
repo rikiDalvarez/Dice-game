@@ -73,9 +73,6 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-		// flag for component rankingList
-		// setRanking([{ name: "riki", successRate: 0 }])
-		console.log(ranking)
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -125,7 +122,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 							) : (
 								<PlayerList props={data} />
 							)}
-						<GetGameData handleRankingSetUp={handleRankingSetUp} handleRefreshGames={handleRefreshGames} />
+						<GetGameData handleRankingSetUp={handleRankingSetUp} handleRefreshGames={handleRefreshGames} setData={setData} />
 					</div>
 					<GameList id={id} refreshGames={refreshGameList} />
 					<div>
