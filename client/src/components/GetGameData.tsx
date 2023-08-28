@@ -4,8 +4,8 @@ import { GetWinner } from "./GetWinner";
 
 type GetGameDateProps = {
   handleRefreshGames: () => void;
-  setGetWinnerInProgress: (param: boolean) => void;
-  setGetLoserInProgress: (param: boolean) => void;
+ // setGetWinnerInProgress: (param: boolean) => void;
+  //setGetLoserInProgress: (param: boolean) => void;
 };
 
 const GetGameData: React.FC<GetGameDateProps> = (props) => {

@@ -36,7 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 
 	useEffect(() => {
-		
+		console.log("fetch")
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
@@ -63,7 +63,10 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 			fetchProtectedData();
 			setRefreshGameList(false)
 		}
-		fetchProtectedData();
+		if (!data){
+			fetchProtectedData();
+		}
+
 
 	}, [refreshGameList, data]);
 
