@@ -21,11 +21,11 @@ const Registration: React.FC = () => {
 		event.preventDefault();
 		console.log('handleSubmit presssed')
 		try {
-			const response = await fetchRegistration(registrationData); 
+			const response = await fetchRegistration(registrationData);
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data)
-				navigate("/api/login")
+				navigate("/")
 
 			} else {
 				console.error("registration failed")
@@ -36,7 +36,8 @@ const Registration: React.FC = () => {
 	}
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-color-movement ">
+		<div className="min-h-screen  flex items-center justify-center bg-color-movement ">
+
 			<div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
 				<h2 className="text-2xl font-semibold mb-4">Registration form</h2>
 				<form onSubmit={handleSubmit}>

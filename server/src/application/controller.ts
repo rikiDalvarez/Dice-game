@@ -34,10 +34,10 @@ export function playerControllers(playerService: PlayerService) {
         { userId: player.id },
         sanitizedConfig.JWT_SECRET,
         {
-          expiresIn: "10s",
+          expiresIn: "600s",
         }
       );
-      return res.json({ token: token, name: player.name });
+      return res.json({ token: token, name: player.name, id: player.id });
     } catch (error) {
       next(error);
     }
@@ -92,7 +92,7 @@ export function playerControllers(playerService: PlayerService) {
     const playerId = req.params.id;
     try {
       const responseFromDatabase = await playerService.addGame(playerId);
-      return res.status(200).json({ game_won: responseFromDatabase });
+      return res.status(200).json(responseFromDatabase );
     } catch (err) {
       next(err);
     }

@@ -28,7 +28,7 @@ export class PlayerService {
     return this.playerInterface.findPlayerByEmail(playerEmail);
   }
 
-  async addGame(playerId: string): Promise<boolean> {
+  async addGame(playerId: string): Promise<GameType> {
     const dice = new Dice();
     const player = await this.findPlayer(playerId);
     const game = new Game(dice);

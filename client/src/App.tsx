@@ -1,13 +1,14 @@
-import React, { useState, useContext, useEffect } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import Login from './Login';
-import { UserContextProvider } from './context/UserContext';
 import Dashboard from './Dashboard';
+import { fetchToken } from './services';
+import jwtDecode from 'jwt-decode';
 interface Player {
 	name: string,
 	rating: number,
 	registrationDate: string
 }
+
 
 
 function App() {
@@ -24,13 +25,7 @@ function App() {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:8000/api/players', {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-
+					const response = await fetchToken(token)
 					if (response.ok) {
 						const responseData = await response.json();
 
@@ -55,7 +50,12 @@ function App() {
 
 	return (
 		<div className="App">
-			{data ? <Dashboard data={data} name={name} /> : <Login />}
+			<div className="min-h-screen flex flex-col items-center justify-center bg-color-movement ">
+				<img src="dices.png" className="w-20 h-30 mt-4" alt="dices" />
+				<div className="  p-6 bg-white rounded-lg shadow-lg m-8">
+					{data ? <Dashboard name={name} /> : <Login />}
+				</div>
+			</div>
 		</div>
 	);
 }

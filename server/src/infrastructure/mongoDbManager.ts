@@ -90,15 +90,15 @@ export class PlayerMongoDbManager implements PlayerInterface {
     const playersFromDB = await this.playerDocument.find({});
 
     const players = playersFromDB.map((playerFromDB: MongoPlayerType) => {
-      const player =  new Player(
+      const player = new Player(
         playerFromDB.email,
         playerFromDB.password,
         playerFromDB.games,
         playerFromDB.name,
         playerFromDB._id
       );
-      player.registrationDate = playerFromDB.registrationDate
-      return player
+      player.registrationDate = playerFromDB.registrationDate;
+      return player;
     });
     return new PlayerList(players);
   }
@@ -124,7 +124,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     }
   }
 
-  async addGame(player: Player): Promise<boolean> {
+  async addGame(player: Player): Promise<GameType> {
     const id = player.id;
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
@@ -132,8 +132,8 @@ export class PlayerMongoDbManager implements PlayerInterface {
     );
 
     if (response.modifiedCount === 1) {
-      const lastGameResult = player.games[player.games.length - 1].gameWin;
-      return lastGameResult;
+      const lastGame = player.games[player.games.length - 1];
+      return lastGame;
     }
 
     throw new Error("AddingGameError");
@@ -154,9 +154,12 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await this.playerDocument.findById(playerId);
+
+    console.log(player, "player");
     if (!player) {
       throw new Error("PlayerNotFound");
     }
+    console.log(player, "player");
     return player ? player.games : [];
   }
 }
@@ -198,8 +201,8 @@ export class RankingMongoDbManager implements RankingInterface {
         playerFromDB.name,
         playerFromDB._id
       );
-      player.registrationDate = playerFromDB.registrationDate
-      return player
+      player.registrationDate = playerFromDB.registrationDate;
+      return player;
     });
     return players;
   }

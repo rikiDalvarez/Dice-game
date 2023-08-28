@@ -1,44 +1,89 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { UserContext } from './context/UserContext';
 import Navbar from './components/Navbar';
 import Login from './Login';
 import UserDataManipulation from './components/UserDataManipulation';
-interface Player {
-	name: string,
-	rating: number,
-	registrationDate: string
+import PlayerList from './components/PlayerList';
+import GetGameData from './components/GetGameData';
+import GameList from './components/GameList';
+import { useNavigate } from 'react-router-dom';
+import { fetchToken } from './services';
+import { IPlayer } from './components/Player';
+import RankingList from "./components/RankingList"
+import { UserContext } from './context/UserContext';
+import jwt_decode from "jwt-decode";
+
+
+//after refreshing the dashboard we lose userContext
+
+export interface playerRanking {
+	name: string | null;
+	successRate: number;
+}
+export interface IRanking {
+	ranking: playerRanking[];
+	average: number;
+
 }
 
 interface DashboardProps {
-	data: Player[];
+	name?: string | null;
+	id?: string | null;
 }
 
-const Dashboard: React.FC = () => {
-	const [data, setData] = useState<Array<Player> | null>(null);
 
+const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
-	const userContext = useContext(UserContext)
+	const [data, setData] = useState<Array<IPlayer> | null>(null);
+	const [refreshGameList, setRefreshGameList] = useState(false);
+	const [ranking, setRanking] = useState<IRanking | null>(null)
+
+	const userContext = useContext(UserContext);
+
+	//using context instead of localStorage
+	const { user } = userContext;
+	console.log("userContextDashboard", user)
+
+	const handleRankingSetUp = (data: IRanking[]) => {
+		setRanking(data)
+	}
+
+	const handleRefreshGames = () => {
+		setRefreshGameList(true);
+	};
+
+	const navigate = useNavigate();
+
+	const logout = () => {
+		localStorage.clear()
+		setData(null)
+		navigate("/")
+	}
+
+	const token = localStorage.getItem("token");
+	if (token) {
+		const decodedToken = jwt_decode(token)
+		console.log("decodedTOKEN", decodedToken)
+		const currentDate = new Date();
+		if (decodedToken.exp * 1000 < currentDate.getTime()) {
+			console.log("Token expired.");
+		} else {
+			console.log("Valid token");
+		}
+	}
 
 
 	useEffect(() => {
-
-
 		const fetchProtectedData = async () => {
 			try {
 				const token = localStorage.getItem('token');
 
 				if (token) {
-					const response = await fetch('http://localhost:8000/api/players', {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
+					const response = await fetchToken(token)
 
 					if (response.ok) {
 						const responseData = await response.json();
 
-						setData(responseData.playerList);
+						setData(responseData.playerList.reverse());
 
 					} else {
 						console.error('Fetching players');
@@ -50,24 +95,38 @@ const Dashboard: React.FC = () => {
 				console.error('An error occurred:', error);
 			}
 		};
+		if (refreshGameList) {
+			fetchProtectedData();
+			setRefreshGameList(false)
+		}
+		if (!data) {
+			fetchProtectedData();
+		}
 
-		fetchProtectedData();
-	}, []);
+
+	}, [refreshGameList, data]);
+
+
 
 	return (
-		<div>
+		<div className='flex-col'>
 			{data ? (
 				<>
-					<Navbar name={localStorage.getItem("name")} />
-					<div className="m-5  border-t-2 border-green-700 flex-row">
-						<UserDataManipulation />
-						{data.map((player) => (
-							<div className="m-2 p-2 border-2" key={player.email}>
-								<h3>{player.name}</h3>
-								<p>Rating: {player.rating}</p>
-								<p>Registration Date: {player.registrationDate}</p>
-							</div>
-						))}
+					<Navbar name={name} />
+					<div className="m-5  border-t-4 border-double border-emerald-950 flex ">
+						<UserDataManipulation
+							handleRefreshGames={handleRefreshGames}
+						/>{ranking
+							? (
+								<RankingList ranking={ranking} />
+							) : (
+								<PlayerList props={data} />
+							)}
+						<GetGameData handleRankingSetUp={handleRankingSetUp} handleRefreshGames={handleRefreshGames} setData={setData} />
+					</div>
+					<GameList id={id} refreshGames={refreshGameList} />
+					<div>
+						<button onClick={logout} className="bg-amber-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Logout</button>
 					</div>
 				</>
 			) : (

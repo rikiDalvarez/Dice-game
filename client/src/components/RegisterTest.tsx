@@ -31,13 +31,11 @@ function Register() {
 	const [success, setSuccess] = useState(false);
 
 	useEffect(() => {
-		// userRef.current?.focus();
+		userRef.current?.focus();
 	}, [])
 
 	useEffect(() => {
 		const result = EMAIL_REGEX.test(email);
-		console.log("resukt:", result)
-		console.log(email)
 		setValidName(result)
 
 	}, [email]);
@@ -71,7 +69,7 @@ function Register() {
 						className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
 						type="text"
 						id="email"
-						ref={userRef}
+
 					/>
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
 						Email
@@ -110,9 +108,7 @@ function Register() {
 					/>
 					<p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
 						<FontAwesomeIcon icon={faInfoCircle} />
-						8 to 24 characters.<br />
-						Must include uppercase and lowercase letters, a number and a special character.<br />
-						Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
+						please provide a password with more than 3 characters.<br />
 					</p>
 
 
