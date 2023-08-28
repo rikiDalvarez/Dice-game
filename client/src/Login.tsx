@@ -8,6 +8,7 @@ const Login: React.FC = () => {
 
 	interface DashboardProps {
 		name: string | null;
+		id: string | null;
 	}
 
 	const navigate = useNavigate();
@@ -41,15 +42,17 @@ const Login: React.FC = () => {
 				const data = await response.json();
 				const token = data.token;
 				const nameUser = data.name;
-				const tokenuser = localStorage.setItem("token", token)
-				console.log(tokenuser)
-				const name = localStorage.setItem("name", nameUser)
-				const id = localStorage.setItem("id", data.id)
-				console.log(name)
+
+				//using local storage
+				localStorage.setItem("token", token)
+				localStorage.setItem("name", nameUser)
+				localStorage.setItem("id", data.id)
+
+				//using context
 				userContext.setUser({
 					email: formData.email,
 					token: localStorage.getItem("token"),
-					id: id
+					id: localStorage.getItem("id")
 				});
 
 				console.log("login successful")

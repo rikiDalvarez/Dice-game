@@ -4,6 +4,7 @@ import React, { createContext, useState, useEffect } from 'react';
 type AuthUser = {
 	email: string;
 	token?: string;
+	// id?: string;
 }
 
 export type UserContextType = {
@@ -25,10 +26,7 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 		if (!token) {
 			return
 		}
-		setUser({
-			email: "test",
-			token: token
-		})
+
 	}, [])
 
 	return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>

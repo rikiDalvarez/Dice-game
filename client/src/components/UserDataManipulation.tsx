@@ -5,6 +5,7 @@ import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
   handleRefreshGames: () => void;
+  handleRankingSetUp: () => void;
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {

@@ -37,7 +37,7 @@ const GameList: React.FC<GameListProps> = (refreshGames) => {
 
 	return (
 		<div className=" flex flex-col first-letter:items-center rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
-			{games ? games.reverse().map((game) => <Game props={game} />) : "you havent played the game yet"}
+			{games ? games.reverse().map((game) => <Game key={game.id} props={game} />) : "you havent played the game yet"}
 		</div>
 	)
 }
