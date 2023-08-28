@@ -4,6 +4,7 @@ import { GetWinner } from "./GetWinner";
 import { IRanking } from "../Dashboard";
 import { UserContext } from "../context/UserContext";
 
+import { GetRanking } from "./GetRanking";
 
 type GetGameDateProps = {
   handleRefreshGames: () => void;
@@ -55,6 +56,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         GetRanking
       </button>
+      <GetRanking />
 
       {!isGetLoserInProgress ? (<div><GetWinner
         isGetWinnerInProgress={isGetWinnerInProgress}

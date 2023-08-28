@@ -55,7 +55,7 @@ export const fetchGameList = async (token: string | null, id: string | null) => 
 }
 
 export const fetchGetWinner= async (token: string | null) => {
-	const response = await fetch(`http://localhost:${PORT}/api//ranking/winner`, {
+	const response = await fetch(`http://localhost:${PORT}/api/ranking/winner`, {
 		method: "GET",
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -109,6 +109,17 @@ export const fetchDeleteGames = async (token: string | null, player_id: string |
 		method: "DELETE",
 		headers: {
 			Authorization: `Bearer ${token}`,
+		}
+	})
+	return response
+}
+
+export const fetchGetRanking= async (token: string | null) => {
+	const response = await fetch(`http://localhost:${PORT}/api/ranking/`, {
+		method: "GET",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			
 		}
 	})
 	return response
