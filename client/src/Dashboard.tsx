@@ -44,7 +44,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 					if (response.ok) {
 						const responseData = await response.json();
 
-						setData(responseData.playerList);
+						setData(responseData.playerList.reverse());
 
 					} else {
 						console.error('Fetching players');
@@ -80,13 +80,6 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 						/>
 						<PlayerList props={data} />
 						<GetGameData handleRefreshGames={handleRefreshGames} />
-						{/* {data.map((player) => (
-							<div className="m-2 p-2 border-2" key={player.email}>
-								<h3>{player.name}</h3>
-								<p>Rating: {player.rating}</p>
-								<p>Registration Date: {player.registrationDate}</p>
-							</div>
-						))} */}
 					</div>
 					<GameList id={id} refreshGames={refreshGameList} />
 					<div>

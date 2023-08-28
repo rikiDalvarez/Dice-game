@@ -18,8 +18,8 @@ const GameList: React.FC<GameListProps> = (refreshGames) => {
 
 				if (response.ok) {
 					const responseData = await response.json();
-
-					setGames(responseData);
+					(
+						setGames(responseData.reverse()));
 
 				} else {
 					console.error('fetching games');
@@ -36,8 +36,8 @@ const GameList: React.FC<GameListProps> = (refreshGames) => {
 
 
 	return (
-		<div className=" rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
-			{games ? games.map((game) => <Game props={game} />) : "test"}
+		<div className=" flex flex-col first-letter:items-center rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
+			{games ? games.reverse().map((game) => <Game props={game} />) : "you havent played the game yet"}
 		</div>
 	)
 }

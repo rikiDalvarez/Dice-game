@@ -14,7 +14,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
 
 
   return (
-    <div className="userDataManipulation border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
+    <div className="userDataManipulation w-60  border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
@@ -34,7 +34,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
         Change Name
       </button>
       {isChangeNameInProgress ? (
-        <ChangeName setChangeNameInProgress={setChangeNameInProgress} refreshDashboard={props.handleRefreshGames}/>
+        <ChangeName setChangeNameInProgress={setChangeNameInProgress} refreshDashboard={props.handleRefreshGames} />
       ) : (
         ""
       )}
