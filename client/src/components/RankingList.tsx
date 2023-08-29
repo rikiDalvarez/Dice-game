@@ -11,7 +11,6 @@ function RankingList({ ranking }) {
 					
 					
 					{ranking.ranking.map((player:IPlayer) =>{
-						console.log('ranking,', player)
 						const playerName = player.name? player.name: "Anonim"
 						return (
 						<div className="card font-mono w-96" key={player.id}>
