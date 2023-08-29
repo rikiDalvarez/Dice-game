@@ -1,6 +1,7 @@
 import React from 'react'
 
-export interface Game {
+//---> component and interface should have different name
+export interface GameInterface {
 	id: string;
 	gameWin: boolean;
 	dice1Value: number;
@@ -8,7 +9,7 @@ export interface Game {
 }
 
 interface Props {
-	props: Game
+	props: GameInterface
 }
 
 const Game: React.FC<Props> = ({ props }) => {

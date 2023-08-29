@@ -21,10 +21,12 @@ const Player: React.FC<Props> = ({ props }) => {
 		backgroundColorClass = "bg-amber-300";
 	}
 
+	const playerName = props.name? props.name: "Anonim"
+
 	return (
 		<div className="card font-mono " key={props.email} >
 			<div className={`m-2 p-2 border-2 ${backgroundColorClass}`} key={props.email}>
-				<h3>{props.name}</h3>
+				<h3>{playerName}</h3>
 				<p>Rating: {props.rating}</p>
 				<p>Registration Date: {props.registrationDate}</p>
 			</div>

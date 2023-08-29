@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Game from './Game'
+import {GameInterface} from "./Game"
 import { fetchGameList } from '../services';
 interface GameListProps {
 	id?: string | null;
@@ -37,7 +38,7 @@ const GameList: React.FC<GameListProps> = (refreshGames) => {
 
 	return (
 		<div className=" flex flex-col first-letter:items-center rounded-lg m-4 p-4 max-h-80 overflow-y-auto">
-			{games ? games.reverse().map((game) => <Game key={game.id} props={game} />) : "you havent played the game yet"}
+			{games ? games.reverse().map((game:GameInterface) => <Game key={game.id} props={game} />) : "you havent played the game yet"}
 		</div>
 	)
 }

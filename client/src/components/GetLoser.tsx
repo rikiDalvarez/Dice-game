@@ -1,29 +1,28 @@
-import React, {  useEffect, useState, } from "react";
-import { fetchGetLoser} from "../services";
+import React, { useEffect, useState } from "react";
+import { fetchGetLoser } from "../services";
 
 type LoserType = {
-  isGetLoserInProgress: boolean
+  isGetLoserInProgress: boolean;
   setGetLoserInProgress: (state: boolean) => void;
-  refreshDashboard: ()=> void
-
+  refreshDashboard: () => void;
 };
 
-export interface Loser{
-	name: string;
-	successRate:string
+export interface Loser {
+  name: string;
+  successRate: string;
 }
 
 export const GetLoser: React.FC<LoserType> = (props) => {
-	const [losers, setLosers] = useState([])
+  const [losers, setLosers] = useState([]);
 
   const getLoser = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetchGetLoser(token);
-      
+
       if (response.ok) {
         const responseData = await response.json();
-        setLosers(responseData)
+        setLosers(responseData);
         console.log(responseData);
       } else {
         console.error("fetching games");
@@ -31,7 +30,6 @@ export const GetLoser: React.FC<LoserType> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
- 
   };
 
   useEffect(() => {
@@ -45,10 +43,19 @@ export const GetLoser: React.FC<LoserType> = (props) => {
     <div className=" w-full p-6 bg-white rounded-lg shadow-lg">
       {losers ? (
         <div>
-          {losers.map((loser:Loser) =><div><p>Loser:</p><p>{loser.name}</p> <p>{loser.successRate}</p></div> )}
+          {losers.map((loser: Loser) => {
+            const name = loser.name? loser.name: "Anonim"
+            return (
+              <div>
+                <p>Loser:</p>
+                <p>{name}</p> <p>{loser.successRate}</p>
+              </div>
+            );
+          })}
         </div>
-      ) : ""}
+      ) : (
+        ""
+      )}
     </div>
   );
 };
-
