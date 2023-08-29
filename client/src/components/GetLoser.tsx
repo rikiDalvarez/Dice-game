@@ -8,6 +8,7 @@ type LoserType = {
 };
 
 export interface Loser {
+  id:string;
   name: string;
   successRate: string;
 }
@@ -46,7 +47,7 @@ export const GetLoser: React.FC<LoserType> = (props) => {
           {losers.map((loser: Loser) => {
             const name = loser.name? loser.name: "Anonim"
             return (
-              <div>
+              <div key={loser.id}>
                 <p>Loser:</p>
                 <p>{name}</p> <p>{loser.successRate}</p>
               </div>

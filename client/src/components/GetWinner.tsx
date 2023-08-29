@@ -8,6 +8,7 @@ type WinnerType = {
 };
 
 export interface Winner {
+  id:string;
   name: string;
   successRate: string;
 }
@@ -23,7 +24,7 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
       if (response.ok) {
         const responseData = await response.json();
         setWinners(responseData);
-        console.log(responseData);
+        console.log('winner', responseData);
       } else {
         console.error("fetching games");
       }
@@ -45,8 +46,9 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
         <div>
           {winners.map((winner: Winner) => {
             const name = winner.name? winner.name: "Anonim"
+            
             return (
-              <div>
+              <div key={winner.id}>
                 <p>Winner:</p>
                 <p>{name}</p> <p>{winner.successRate}</p>
               </div>
