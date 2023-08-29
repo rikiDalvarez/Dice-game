@@ -40,7 +40,7 @@ describe("API CREATE PLAYER TEST", () => {
 
     //TODO: thinh about better test
     if (playerDetails) {
-      const { name, id, rating } = playerDetails;
+      const { name, id, successRate: rating } = playerDetails;
       //const passwordMatch = bcrypt.compare('first password', password)
       expect(id.toString()).toBe(playerId);
       expect(name).toBe("first user");

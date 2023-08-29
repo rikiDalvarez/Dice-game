@@ -60,7 +60,7 @@ describe("API ADD GAME TEST", () => {
     const games = await getGames(requestUri, token, playerId);
     const gameWin = games.filter((game) => game.gameWin);
     const successRate = (gameWin.length / games.length) * 100;
-    expect(Number(playerAfterSecondGame.rating)).toBe(successRate);
+    expect(Number(playerAfterSecondGame.successRate)).toBe(successRate);
   });
 //TODO------> this test works only for SQL
 /*  test("If player id don't exists throw error:", async () => {
