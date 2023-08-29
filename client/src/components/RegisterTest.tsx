@@ -44,13 +44,20 @@ function Register() {
 	}, [email]);
 
 	useEffect(() => {
-		console.log("validpwd", validPwd)
-		const result = PWD_REGEX.test(pwd);
-		console.log(result);
-		console.log(pwd);
-		const match = pwd === matchPwd;
-		setValidPwd(match);
-	}, [pwd, matchPwd]);
+		if (pwd.length > 0) {
+			console.log("validpwd", validPwd)
+			const result = PWD_REGEX.test(pwd);
+			console.log(result);
+			console.log(pwd);
+			const match = (pwd === matchPwd)
+			setValidMatch(match);
+			console.log({ match })
+			if (pwd.length > 3) {
+				setValidPwd(true);
+			} else { setValidPwd(false) }
+
+		}
+	}, [pwd, matchPwd, validPwd]);
 
 
 	useEffect(() => {
@@ -76,6 +83,7 @@ function Register() {
 						id="name"
 
 					/>
+					{/* email input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
 						Email
 						<span className={validEmail ? "valid" : "hide"}>
@@ -102,9 +110,10 @@ function Register() {
 						must be a valid email
 					</p>
 
+					{/* pwd input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
 						Password:
-						<span className={!validPwd ? "hide" : "valid"}>
+						<span className={validPwd ? "valid" : "hide"}>
 							<FontAwesomeIcon icon={faCheck} />
 						</span>
 
@@ -126,9 +135,12 @@ function Register() {
 						please provide a password with more than 3 characters.<br />
 					</p>
 
-
+					{/* match password input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm_pwd">
 						Confirm Password:
+						<span className={validMatch ? "valid" : "hide"}>
+							<FontAwesomeIcon icon={faCheck} />
+						</span>
 					</label>
 					<input
 						className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -148,7 +160,7 @@ function Register() {
 					</p>
 					<button
 						className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-						onClick={() => { navigate("/dashboard") }}>
+						onClick={() => { navigate("/") }}>
 						Sign Up</button>
 				</form>
 			</div>

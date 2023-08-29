@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import './index.css'
 import Registration from './RegistrationForm.tsx';
-import Dashboard from './Dashboard.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
 import RegisterForm from "./components/RegisterTest.tsx"
@@ -33,10 +32,7 @@ const router = createBrowserRouter([{
   path: "/api/players",
   element: <Registration />,
 },
-{
-  path: "/dashboard",
-  element: <Dashboard />
-},
+
 {
   path: "/registerform",
   element: <RegisterForm />
