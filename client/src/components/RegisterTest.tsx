@@ -2,9 +2,10 @@ import { useRef, useState, useEffect } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { fetchRegistration } from '../services';
 
 const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-const PWD_REGEX = /^.{4,}$/;
+
 const REGISTER_URL = '/register';
 
 
@@ -13,7 +14,7 @@ function Register() {
 	const userRef = useRef<HTMLInputElement>(null);
 	const errRef = useRef<HTMLInputElement>(null);
 
-	const [name, setName] = useState("")
+	const [name, setName] = useState<string | null>("")
 
 	const [email, setEmail] = useState('');
 	const [validEmail, setvalidEmail] = useState(false);
@@ -30,6 +31,12 @@ function Register() {
 	const [errMsg, setErrMsg] = useState('');
 	const [success, setSuccess] = useState(false);
 
+	// const [registrationData, setRegistrationData] = useState({
+	// 	name: "",
+	// 	email: "",
+	// 	password: ""
+	// })
+
 	useEffect(() => {
 		userRef.current?.focus();
 	}, [])
@@ -44,18 +51,13 @@ function Register() {
 	}, [email]);
 
 	useEffect(() => {
+
 		if (pwd.length > 0) {
-			console.log("validpwd", validPwd)
-			const result = PWD_REGEX.test(pwd);
-			console.log(result);
-			console.log(pwd);
 			const match = (pwd === matchPwd)
 			setValidMatch(match);
-			console.log({ match })
 			if (pwd.length > 3) {
 				setValidPwd(true);
 			} else { setValidPwd(false) }
-
 		}
 	}, [pwd, matchPwd, validPwd]);
 
@@ -64,6 +66,29 @@ function Register() {
 		setErrMsg("");
 	}, [email, pwd, matchPwd]);
 
+
+	const handleClickSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
+		// setRegistrationData({ name: name.toLowerCase(), email: email, password: pwd })
+		try {
+			const response = await fetchRegistration({ name: (name.length > 0 ? name : null), email: email, password: pwd });
+			if (response.ok) {
+				const data = await response.json();
+				console.log(data)
+				navigate("/login")
+
+			} else {
+				console.error("registration failed")
+			}
+		} catch (error) {
+			console.error("an error occurred:", error)
+		}
+
+	}
+
+	const handleLogin = () => {
+		navigate("/login")
+	}
 
 
 	return (
@@ -78,10 +103,12 @@ function Register() {
 						Name
 					</label>
 					<input
+						placeholder="unknown"
+						onChange={(e) => setName(e.target.value)}
 						className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
 						type="text"
 						id="name"
-
+						value={name}
 					/>
 					{/* email input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -102,7 +129,7 @@ function Register() {
 						onChange={(e) => setEmail(e.target.value)}
 						required
 						aria-invalid={validEmail ? "true" : "false"}
-						aria-described="uidnote"
+						aria-describedby="uidnote"
 						onFocus={() => { setUserFocus(true) }}
 						onBlur={() => { setUserFocus(false) }} />
 					<p id="uidnote" className={userFocus && email && !validEmail ? "instructions" : "offscreen"}>
@@ -160,11 +187,19 @@ function Register() {
 					</p>
 					<button
 						className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-						onClick={() => { navigate("/") }}>
+						onClick={
+							handleClickSubmit
+						}>
 						Sign Up</button>
+					<button
+						className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+						type="submit"
+						onClick={handleLogin}>
+						Login
+					</button>
 				</form>
 			</div>
-		</section>
+		</section >
 	)
 }
 

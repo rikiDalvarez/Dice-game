@@ -30,7 +30,7 @@ const router = createBrowserRouter([{
 
 {
   path: "/api/players",
-  element: <Registration />,
+  element: <RegisterForm />,
 },
 
 {
