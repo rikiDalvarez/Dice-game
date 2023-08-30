@@ -6,8 +6,6 @@ import { fetchRegistration } from '../services';
 
 const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-const REGISTER_URL = '/register';
-
 
 function Register() {
 	const navigate = useNavigate();
@@ -29,13 +27,8 @@ function Register() {
 	const [matchFocus, setMatchFocus] = useState(false);
 
 	const [errMsg, setErrMsg] = useState('');
-	const [success, setSuccess] = useState(false);
+	// const [success, setSuccess] = useState(false);
 
-	// const [registrationData, setRegistrationData] = useState({
-	// 	name: "",
-	// 	email: "",
-	// 	password: ""
-	// })
 
 	useEffect(() => {
 		userRef.current?.focus();
