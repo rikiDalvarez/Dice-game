@@ -1,6 +1,7 @@
 import { Player } from "./Player";
 
 type RankingType = {
+  id: string
   name: string | null;
   successRate: number;
 };
@@ -22,7 +23,7 @@ export class Ranking {
 
   private preparePlayersDetails(players: Array<Player>): Array<RankingType> {
     return players.map((player) => {
-      return { name: player.name, successRate: player.successRate };
+      return {id: player.id, name: player.name, successRate: player.successRate };
     });
   }
   public set rankingList(players: Array<Player>) {

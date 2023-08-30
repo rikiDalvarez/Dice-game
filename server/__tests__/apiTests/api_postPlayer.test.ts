@@ -4,8 +4,9 @@ import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";
 import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
-import { getPlayer} from "../auxilaryFunctionsForTests/getPlayers";
+import { getPlayer } from "../auxilaryFunctionsForTests/getPlayers";
 import config from "../../config/config";
+import { IPlayerSQL, MongoPlayerType } from "../../src/domain/Player";
 
 const requestUri = `http://localhost:${config.PORT}`;
 
@@ -39,7 +40,7 @@ describe("API CREATE PLAYER TEST", () => {
 
     //TODO: thinh about better test
     if (playerDetails) {
-      const { name, id, rating } = playerDetails;
+      const { name, id, successRate: rating } = playerDetails;
       //const passwordMatch = bcrypt.compare('first password', password)
       expect(id.toString()).toBe(playerId);
       expect(name).toBe("first user");
@@ -62,9 +63,20 @@ describe("API CREATE PLAYER TEST", () => {
       .set("Authorization", token)
       .expect(200)
       .expect("Content-Type", /application\/json/);
+    const passedDetails = [
+      { name: null, email: "first.anonim@op.pl" },
+      { name: null, email: "second.anonim@op.pl" },
+    ];
+    const playerList = response.body.playerList;
+    const playerDetails = playerList.map(
+      (player: MongoPlayerType | IPlayerSQL) => {
+        return { name: player.name, email: player.email };
+      }
+    );
 
     const listLength = response.body.playerList.length;
     expect(listLength).toBe(2);
+    expect(passedDetails).toEqual(expect.arrayContaining(playerDetails));
   }, 30000);
 
   test("Should create anonim user:", async () => {
@@ -92,7 +104,7 @@ describe("API CREATE PLAYER TEST", () => {
       "first.anonim@op.pl",
       "first password"
     );
-    
+
     await request(requestUri)
       .post("/api/players")
       .set("Authorization", token)
@@ -142,7 +154,7 @@ describe("API CREATE PLAYER TEST", () => {
       .expect(409)
       .expect("Content-Type", /application\/json/);
   }, 30000);
-  
+
   test("Should return ValidationError if wrong email format:", async () => {
     await request(requestUri)
       .post("/api/players")
