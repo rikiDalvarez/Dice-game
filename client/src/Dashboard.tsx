@@ -22,7 +22,6 @@ export interface playerRanking {
 export interface IRanking {
 	ranking: playerRanking[];
 	average: number;
-
 }
 
 interface DashboardProps {
@@ -43,7 +42,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 	const { user } = userContext;
 	console.log("userContextDashboard", user)
 
-	const handleRankingSetUp = (data: IRanking[]) => {
+	const handleRankingSetUp = (data: IRanking) => {
 		setRanking(data)
 	}
 
