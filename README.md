@@ -1,5 +1,8 @@
 # Dice-game
 
+[![github repo size] (https://img.shields.io/github/repo-size/rikiDalvarez/Dice-game)](https://github.com/rikiDalvarez/Dice-game)
+[![github last commit] (https://img.shields.io/github/last-commit/rikiDalvarez/Dice-game)](https://github.com/rikiDalvarez/Dice-game)
+
 Application built with hexagonal architecture and TDD.
 
 To start the server side navigate to the server folder and create a .env file with the following content:
