@@ -3,7 +3,7 @@ import { Player } from "./Player";
 export type PlayerDetailsType = {
   id: string;
   name: string|null;
-  rating: number;
+  successRate: number;
   registrationDate: Date;
   email: string;
 };
@@ -21,7 +21,7 @@ export class PlayerList {
       return {
         id: player.id,
         name: player.name,
-        rating: player.successRate,
+        successRate: player.successRate,
         registrationDate: player.registrationDate,
         email: player.email
       };

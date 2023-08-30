@@ -5,10 +5,11 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import './index.css'
-import Registration from './RegistrationForm.tsx';
-import Dashboard from './Dashboard.tsx';
+// import Registration from './RegistrationForm.tsx';
 import { UserContextProvider } from './context/UserContext.tsx';
 import App from './App.tsx';
+import RegisterForm from "./components/RegisterTest.tsx"
+
 
 
 const router = createBrowserRouter([{
@@ -29,11 +30,12 @@ const router = createBrowserRouter([{
 
 {
   path: "/api/players",
-  element: <Registration />,
+  element: <RegisterForm />,
 },
+
 {
-  path: "/dashboard",
-  element: <Dashboard />
+  path: "/registerform",
+  element: <RegisterForm />
 },
 
 ]);

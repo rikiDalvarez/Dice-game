@@ -4,6 +4,7 @@ import { fetchGetRanking } from "../services";
 
 interface Ranking {
     ranking: {
+        id:string;
         name: string;
         successRate: number;
     }[],
@@ -51,7 +52,7 @@ export const GetRanking: React.FC = () => {
                         </div>
                     }
                     {getRanking.ranking.map((item, index) => (
-                        <div key={index}>
+                        <div key={item.id}>
                             <p>Name: {item.name}</p>
                             <p>Success Rate: {item.successRate}</p>
                         </div>

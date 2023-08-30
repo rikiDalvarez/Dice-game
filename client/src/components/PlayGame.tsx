@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { fetchPlayGame } from "../services";
-import { Game } from "./Game";
+import { GameInterface } from "./Game";
 
 type PlayGame = {
   newGame: boolean;
@@ -11,7 +11,7 @@ type PlayGame = {
 
 const PlayGame: React.FC<PlayGame> = (props) => {
   const [gameState, setGameState] = useState("notPlayed");
-  const [gameResult, setGameResult] = useState<Game | null>(null);
+  const [gameResult, setGameResult] = useState<GameInterface | null>(null);
 
   const playGame = useCallback(async () => {
     try {

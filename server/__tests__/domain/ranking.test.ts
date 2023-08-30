@@ -55,17 +55,17 @@ describe("Ranking class test", () => {
     ranking.winners = [player1];
     ranking.losers = [player2, player3];
     expect(ranking.rankingList).toStrictEqual([
-      { name: "mafalda", successRate: 100 },
-      { name: "ricky", successRate: 0 },
-      { name: "bella", successRate: 0 },
+      { id: '1', name: "mafalda", successRate: 100 },
+      { id: '2', name: "ricky", successRate: 0 },
+      { id: '3', name: "bella", successRate: 0 },
     ]);
     expect(ranking.average).toBe(averageRate);
     expect(ranking.winners).toStrictEqual([
-      { name: "mafalda", successRate: 100 },
+      { id: '1', name: "mafalda", successRate: 100 },
     ]);
     expect(ranking.losers).toStrictEqual([
-      { name: "ricky", successRate: 0 },
-      { name: "bella", successRate: 0 },
+      {id: '2', name: "ricky", successRate: 0 },
+      {id: '3',  name: "bella", successRate: 0 },
     ]);
   });
 });
