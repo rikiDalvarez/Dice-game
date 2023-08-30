@@ -33,7 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
   const [data, setData] = useState<Array<IPlayer> | null>(null);
   const [refreshGameList, setRefreshGameList] = useState(false);
   //const [ranking, setRanking] = useState<IRanking[] | null>(null);
-  const [isRankingShown, showRanking] = useState(false);
+  const [isRankingChoosen, setRankingChoosen] = useState(false);
 
   const userContext = useContext(UserContext);
 
@@ -101,12 +101,10 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
       fetchProtectedData();
     }
 
-	if (data){
-		showRanking(false)
-	}
+	
   }, [refreshGameList, data]);
 
-  return (
+    return (
     <div className="flex-col">
       {data ? (
         <>
@@ -115,15 +113,14 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
             <UserDataManipulation handleRefreshGames={handleRefreshGames} />
 
             
-            {isRankingShown ? (
+            {isRankingChoosen ? (
               <RankingList
-                setRankingInProgress={showRanking}
               />
             ) : (
 				<PlayerList props={data} />
             )}
             <GetGameData
-              showRanking={showRanking}
+              setRankingChoosen={setRankingChoosen}
               handleRefreshGames={handleRefreshGames}
               setData={setData}
             />

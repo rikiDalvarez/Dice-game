@@ -6,7 +6,7 @@ import {fetchToken } from "../services";
 
 type GetGameDateProps = {
   handleRefreshGames: () => void;
-  showRanking: (param:boolean) => void;
+  setRankingChoosen: (param:boolean) => void;
   setData: (data: unknown) => void;
   //setGetWinnerInProgress: (param: boolean) => void;
   // setGetLoserInProgress: (param: boolean) => void;
@@ -26,6 +26,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
     if (response.ok) {
       const responseData = await response.json();
       console.log("new playerlist", responseData);
+      props.setRankingChoosen(false)
       props.setData(responseData.playerList);
     }
   };
@@ -56,7 +57,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
       </button>
       <button
         onClick={() => {
-          props.showRanking(true);
+          props.setRankingChoosen(true);
         }}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
