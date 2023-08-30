@@ -1,7 +1,7 @@
 # Dice-game
 
 ![github repo size](https://img.shields.io/github/repo-size/rikiDalvarez/Dice-game)
-[![github last commit] (https://img.shields.io/github/last-commit/rikiDalvarez/Dice-game)](https://github.com/rikiDalvarez/Dice-game)
+[![github last commit](https://img.shields.io/github/last-commit/rikiDalvarez/Dice-game)](https://github.com/rikiDalvarez/Dice-game)
 
 Application built with hexagonal architecture and TDD.
 
