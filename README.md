@@ -7,14 +7,14 @@ Application built with hexagonal architecture and TDD.
 
 ## Login
 
-![Alt text](<Screenshot 2023-08-30 at 17.06.43.png>)
+![Login page](<./public/Screenshot 2023-08-30 at 17.06.43.png>)
 
 ## Register
 
 ## Dashboard
 
-![Alt text](<Screenshot 2023-08-30 at 17.07.17.png>)
-![Alt text](<Screenshot 2023-08-30 at 17.07.33.png>)
+![Dashboard page player list](<./public/Screenshot 2023-08-30 at 17.07.17.png>)
+![Dashboard page ranking list](<./public/Screenshot 2023-08-30 at 17.07.33.png>)
 
 To start the server side navigate to the server folder and create a .env file with the following content:
 
