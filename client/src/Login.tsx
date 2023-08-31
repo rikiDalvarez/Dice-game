@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import Dashboard from './Dashboard';
 import { UserContext } from './context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { fetchLogin } from './services';
@@ -65,9 +64,6 @@ const Login: React.FC<LoginType> = (props) => {
 			console.error("an error occurred:", error)
 		}
 	}
-
-	const name = localStorage.getItem("name")
-	const id = localStorage.getItem("id")
 
 	return (
 		<>

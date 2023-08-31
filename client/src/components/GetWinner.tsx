@@ -4,7 +4,7 @@ import { fetchGetWinner } from "../services";
 type WinnerType = {
   isGetWinnerInProgress: boolean;
   setGetWinnerInProgress: (state: boolean) => void;
-  refreshDashboard: () => void;
+  setRefreshDashboard: (param:boolean) => void;
 };
 
 export interface Winner {
@@ -15,7 +15,6 @@ export interface Winner {
 
 export const GetWinner: React.FC<WinnerType> = (props) => {
   const [winners, setWinners] = useState([]);
-
   const getWinner = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -31,6 +30,7 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
+    props.setRefreshDashboard(true)
   };
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { fetchGetLoser } from "../services";
 type LoserType = {
   isGetLoserInProgress: boolean;
   setGetLoserInProgress: (state: boolean) => void;
-  refreshDashboard: () => void;
+  setRefreshDashboard: (param: boolean) => void;
 };
 
 export interface Loser {
@@ -31,6 +31,7 @@ export const GetLoser: React.FC<LoserType> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
+    props.setRefreshDashboard(true)
   };
 
   useEffect(() => {

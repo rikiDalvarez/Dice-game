@@ -2,12 +2,12 @@ import React, { useState, useContext } from "react";
 import { GetLoser } from "./GetLoser";
 import { GetWinner } from "./GetWinner";
 import { UserContext } from "../context/UserContext";
-import {fetchToken } from "../services";
 
 type GetGameDateProps = {
-  handleRefreshGames: () => void;
+ // handleRefreshGames: () => void;
   setRankingChoosen: (param:boolean) => void;
-  setData: (data: unknown) => void;
+  setRefreshDashboard: (param:boolean) => void
+ // setData: (data: unknown) => void;
   //setGetWinnerInProgress: (param: boolean) => void;
   // setGetLoserInProgress: (param: boolean) => void;
 };
@@ -61,7 +61,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
         <div>
           <GetWinner
             isGetWinnerInProgress={isGetWinnerInProgress}
-            refreshDashboard={props.handleRefreshGames}
+            setRefreshDashboard={props.setRefreshDashboard}
             setGetWinnerInProgress={setGetWinnerInProgress}
           />
         </div>
@@ -71,7 +71,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
       {!isGetWinnerInProgress ? (
         <GetLoser
           isGetLoserInProgress={isGetLoserInProgress}
-          refreshDashboard={props.handleRefreshGames}
+          setRefreshDashboard={props.setRefreshDashboard}
           setGetLoserInProgress={setGetLoserInProgress}
         />
       ) : (

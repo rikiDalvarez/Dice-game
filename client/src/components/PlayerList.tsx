@@ -1,21 +1,14 @@
-
-import Player, { IPlayer } from './Player';
-import { fetchToken } from '../services';
+import Player, { IPlayer } from "./Player";
+import { fetchToken } from "../services";
 import React, { useEffect, useState } from "react";
 
-interface Props {
-	props: IPlayer[];
-}
-
 interface PlayerListI {
-	setIsRankingChoosen: (param:boolean)=> void
+  setIsRankingChoosen: (param: boolean) => void;
 }
 
-
-export const PlayerList: React.FC <PlayerListI>= (props) => {
-
-	const [playerList, setPlayerList] = useState([]);
-console.log('playerlist')
+export const PlayerList: React.FC<PlayerListI> = (props) => {
+  const [playerList, setPlayerList] = useState([]);
+  console.log("playerlist");
   const getPlayerList = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -33,20 +26,17 @@ console.log('playerlist')
   };
 
   useEffect(() => {
-   props.setIsRankingChoosen(false)
-      getPlayerList();
-    
+    props.setIsRankingChoosen(false);
+    getPlayerList();
   }, [props]);
 
-	return (
-		<div className='bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto'>
-			{playerList
-				? playerList.map((player:IPlayer) => <Player key={player.email} props={player} />)
-				: 'something went wrong'}
-		</div>
-	);
-}
-
-
-
-
+  return (
+    <div className="bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto">
+      {playerList
+        ? playerList.map((player: IPlayer) => (
+            <Player key={player.email} props={player} />
+          ))
+        : "something went wrong"}
+    </div>
+  );
+};

@@ -5,8 +5,8 @@ import { GameInterface } from "./Game";
 type PlayGame = {
   newGame: boolean;
   setGameInProgress: (state: boolean) => void;
- // refreshDashboard: ()=> void
-  handleRafreshGames: ()=> void
+ setRefreshDashboard: (param:boolean)=> void
+  //handleRafreshGames: (param:true)=> void
 
 };
 
@@ -36,7 +36,7 @@ const PlayGame: React.FC<PlayGame> = (props) => {
       console.error("An error occurred:", error);
     }
     setGameState("played");
-    props.handleRafreshGames()
+    props.setRefreshDashboard(true)
   }, [props]);
 
   useEffect(() => {
