@@ -8,6 +8,9 @@ import RankingList from "./components/RankingList";
 import jwt_decode from "jwt-decode";
 import { JwtPayload } from "jwt-decode";
 
+//TODO MAX HIGHTSIZE OF APP
+//TODO if name is null on mongodb nav bar receives null
+
 export interface playerRanking {
   name: string | null;
   successRate: number;
@@ -26,9 +29,11 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   const [refreshDashboard, setRefreshDashboard] = useState(false);
   const [isRankingChoosen, setRankingChoosen] = useState(true);
 
+  //EXPLAIN - this si just how to use useContext
   //const userContext = useContext(UserContext);
   //const { user } = userContext;
   //console.log(isRankingChoosen)
+
   const logout = () => {
     localStorage.clear();
     props.setIsLoggedIn(false);
@@ -53,7 +58,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     if (tokenExpiration) {
       if (tokenExpiration * 1000 < currentDate.getTime()) {
         console.log("Token expired.");
-		props.setIsLoggedIn(false)
+        props.setIsLoggedIn(false)
       } else {
         console.log("Valid token");
       }
@@ -64,11 +69,11 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     <div className="flex-col">
       <>
         <Navbar name={name} />
-        <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-          <UserDataManipulation setRefreshDashboard={setRefreshDashboard}  refreshDashboard={refreshDashboard}  />
+        <div className="m-5  border-t-4 border-double border-emerald-950 flex max-h-360 ">
+          <UserDataManipulation setRefreshDashboard={setRefreshDashboard} refreshDashboard={refreshDashboard} />
           {isRankingChoosen ? (
             <RankingList
-            refreshDashboard={refreshDashboard}
+              refreshDashboard={refreshDashboard}
             />
           ) : (
             <PlayerList setIsRankingChoosen={setRankingChoosen} />
