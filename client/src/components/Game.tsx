@@ -17,8 +17,8 @@ const Game: React.FC<Props> = ({ props }) => {
 			} `}
 			key={props.id}>
 			<div className="m-2 p-2 border-2" >
-				<p>dice 1 value: {props.dice1Value}</p>
-				<p>dice 2 value: {props.dice2Value}</p>
+				<p>Dice 1 value: {props.dice1Value}</p>
+				<p>Dice 2 value: {props.dice2Value}</p>
 				<p>{props.gameWin ? "Won" : "Lost"}</p>
 			</div>
 		</div>

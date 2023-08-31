@@ -41,7 +41,7 @@ const RankingList: React.FC<RankingListType> = (props) => {
     <>
       <div className="bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto">
         <div className="average text-lg font-extrabold ">
-          average : {average}
+          Average success rate : {average}
         </div>
         {rankingList.map((player: IPlayer) => {
           const playerName = player.name ? player.name : "Anonim";
@@ -56,8 +56,8 @@ const RankingList: React.FC<RankingListType> = (props) => {
                     : "bg-red-200"
                 }`}
               >
-                <h1>name: {playerName}</h1>
-                <p>average: {player.successRate}</p>
+                <h1>Name: {playerName}</h1>
+                <p>Success rate: {player.successRate}</p>
               </div>
             </div>
           );

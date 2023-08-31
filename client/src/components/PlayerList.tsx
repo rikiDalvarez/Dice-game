@@ -34,7 +34,7 @@ export const PlayerList: React.FC<PlayerListI> = (props) => {
     <div className="bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto">
       {playerList
         ? playerList.map((player: IPlayer) => (
-            <Player key={player.email} props={player} />
+            <Player key={player.id} props={player} />
           ))
         : "something went wrong"}
     </div>

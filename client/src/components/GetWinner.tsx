@@ -51,7 +51,7 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
             return (
               <div key={winner.id}>
                 <p>Winner:</p>
-                <p>{name}</p> <p>{winner.successRate}</p>
+                <p>Name: {name}</p> <p>Success rate:{winner.successRate}</p>
               </div>
             );
           })}

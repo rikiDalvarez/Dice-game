@@ -50,7 +50,7 @@ export const GetLoser: React.FC<LoserType> = (props) => {
             return (
               <div key={loser.id}>
                 <p>Loser:</p>
-                <p>{name}</p> <p>{loser.successRate}</p>
+                <p>Name: {name}</p> <p>Success rate: {loser.successRate}</p>
               </div>
             );
           })}
