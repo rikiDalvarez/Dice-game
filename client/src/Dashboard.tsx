@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/Navbar";
 import UserDataManipulation from "./components/UserDataManipulation";
-import {PlayerList} from "./components/PlayerList";
+import { PlayerList } from "./components/PlayerList";
 import GetGameData from "./components/GetGameData";
 import GameList from "./components/GameList";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ export interface IRanking {
 }
 
 interface DashboardProps {
-setIsLoggedIn: (param:boolean)=> void
+  setIsLoggedIn: (param: boolean) => void;
   name?: string | null;
   id?: string | null;
 }
@@ -31,7 +31,7 @@ setIsLoggedIn: (param:boolean)=> void
 const Dashboard: React.FC<DashboardProps> = (props) => {
   const [data, setData] = useState<Array<IPlayer> | null>(null);
   const [refreshGameList, setRefreshGameList] = useState(false);
-  //const [ranking, setRanking] = useState<IRanking[] | null>(null);
+  const [refreshDashboard, setRefreshDashboard] = useState(false);
   const [isRankingChoosen, setRankingChoosen] = useState(true);
 
   const userContext = useContext(UserContext);
@@ -52,8 +52,14 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
 
   const logout = () => {
     localStorage.clear();
-     props.setIsLoggedIn(false)
+    props.setIsLoggedIn(false);
   };
+
+  useEffect(() => {
+    if (refreshGameList) {
+      setRefreshGameList(false);
+    }
+  }, [refreshGameList]);
 
   const token = localStorage.getItem("token");
   if (token) {
@@ -69,35 +75,36 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     }
   }
 
-    return (
+  return (
     <div className="flex-col">
-        <>
-          <Navbar name={props.name} />
-          <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-            <UserDataManipulation handleRefreshGames={handleRefreshGames} />
-            {isRankingChoosen ? (
-              <RankingList
-              />
-            ) : (
-				<PlayerList setIsRankingChoosen={setRankingChoosen} />
-            )}
-            <GetGameData
-              setRankingChoosen={setRankingChoosen}
-              handleRefreshGames={handleRefreshGames}
-              setData={setData}
-            />
-          </div>
-          <GameList id={props.id} refreshGames={refreshGameList} />
-          <div>
-            <button
-              onClick={logout}
-              className="bg-amber-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Logout
-            </button>
-          </div>
-        </>
-    
+      <>
+        <Navbar name={props.name} />
+        <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
+          <UserDataManipulation
+            handleRefreshGames={handleRefreshGames}
+            setRefreshDashboard={setRefreshDashboard}
+          />
+          {isRankingChoosen ? (
+            <RankingList />
+          ) : (
+            <PlayerList setIsRankingChoosen={setRankingChoosen} />
+          )}
+          <GetGameData
+            setRankingChoosen={setRankingChoosen}
+            handleRefreshGames={handleRefreshGames}
+            setData={setData}
+          />
+        </div>
+        <GameList id={props.id} refreshGames={refreshGameList} />
+        <div>
+          <button
+            onClick={logout}
+            className="bg-amber-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Logout
+          </button>
+        </div>
+      </>
     </div>
   );
 };

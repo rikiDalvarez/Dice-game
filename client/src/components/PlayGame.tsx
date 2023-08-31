@@ -5,7 +5,8 @@ import { GameInterface } from "./Game";
 type PlayGame = {
   newGame: boolean;
   setGameInProgress: (state: boolean) => void;
-  refreshDashboard: ()=> void
+ // refreshDashboard: ()=> void
+  handleRafreshGames: ()=> void
 
 };
 
@@ -15,6 +16,7 @@ const PlayGame: React.FC<PlayGame> = (props) => {
 
   const playGame = useCallback(async () => {
     try {
+      console.log('playgame')
       const token = localStorage.getItem("token");
       const id = localStorage.getItem("id");
       const response = await fetchPlayGame(token, id);
@@ -34,7 +36,7 @@ const PlayGame: React.FC<PlayGame> = (props) => {
       console.error("An error occurred:", error);
     }
     setGameState("played");
-    props.refreshDashboard()
+    props.handleRafreshGames()
   }, [props]);
 
   useEffect(() => {

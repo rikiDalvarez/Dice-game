@@ -5,6 +5,7 @@ import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
   handleRefreshGames: () => void;
+  setRefreshDashboard: (param:boolean) => void;
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
@@ -40,7 +41,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
       )}
       <PlayGame
         newGame={isGameInProgress}
-        refreshDashboard={props.handleRefreshGames}
+        handleRafreshGames={props.handleRefreshGames}
         setGameInProgress={setGameInProgress}
       />
       <DeleteGames
