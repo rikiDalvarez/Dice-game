@@ -21,20 +21,12 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
   console.log("userContext getgamedata", user);
 
 
-  const handleClickGetPlayerList = async () => {
-    const response = await fetchToken(user.token);
-    if (response.ok) {
-      const responseData = await response.json();
-      console.log("new playerlist", responseData);
-      props.setRankingChoosen(false)
-      props.setData(responseData.playerList);
-    }
-  };
+  
 
   return (
     <div className=" w-60 getGameData m-4 p-4 border-2 border-sky-500 flex flex-col rounded-lg">
       <button
-        onClick={() => handleClickGetPlayerList()}
+        onClick={() => props.setRankingChoosen(false)}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         GetPlayers

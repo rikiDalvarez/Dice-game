@@ -4,12 +4,11 @@ import { UserContext } from './context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { fetchLogin } from './services';
 
-const Login: React.FC = () => {
+type LoginType = {
+	setIsLoggedIn: (param:boolean)=>void
+}
 
-	// interface DashboardProps {
-	// 	name: string | null;
-	// 	id: string | null;
-	// }
+const Login: React.FC<LoginType> = (props) => {
 
 	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
@@ -19,7 +18,6 @@ const Login: React.FC = () => {
 		password: ""
 	})
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const navigateRegistration = () => {
 		navigate("/api/players")
@@ -38,6 +36,7 @@ const Login: React.FC = () => {
 		event.preventDefault();
 		try {
 			const response = await fetchLogin(formData);
+			console.log(response)
 			if (response.ok) {
 				const data = await response.json();
 				const token = data.token;
@@ -56,7 +55,7 @@ const Login: React.FC = () => {
 				});
 
 				console.log("login successful")
-				setIsLoggedIn(true)
+				props.setIsLoggedIn(true)
 				// navigate("/dashboard")
 
 			} else {
@@ -72,11 +71,6 @@ const Login: React.FC = () => {
 
 	return (
 		<>
-			{isLoggedIn ? (<>
-
-				<Dashboard name={name} id={id} />
-			</>)
-				: (<>
 					<h2 className="text-2xl font-semibold mb-4">Login</h2>
 					<form onSubmit={handleSubmit}>
 						<div className="mb-4">
@@ -120,10 +114,7 @@ const Login: React.FC = () => {
 						</button>
 					</form>
 				</>
-				)}
-
-		</>
-	);
+	)
 };
 
 export default Login;

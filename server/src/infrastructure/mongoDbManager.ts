@@ -71,7 +71,7 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
-    const { name, email, password, games, id } = playerDetails;
+    const { name, email, password, games, id} = playerDetails;
     return new Player(email, password, games, name, id);
   }
 

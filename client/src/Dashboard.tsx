@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/Navbar";
-import Login from "./Login";
 import UserDataManipulation from "./components/UserDataManipulation";
-import PlayerList from "./components/PlayerList";
+import {PlayerList} from "./components/PlayerList";
 import GetGameData from "./components/GetGameData";
 import GameList from "./components/GameList";
 import { useNavigate } from "react-router-dom";
-import { fetchToken } from "./services";
 import { IPlayer } from "./components/Player";
 import RankingList from "./components/RankingList";
 import { UserContext } from "./context/UserContext";
@@ -25,15 +23,16 @@ export interface IRanking {
 }
 
 interface DashboardProps {
+setIsLoggedIn: (param:boolean)=> void
   name?: string | null;
   id?: string | null;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
+const Dashboard: React.FC<DashboardProps> = (props) => {
   const [data, setData] = useState<Array<IPlayer> | null>(null);
   const [refreshGameList, setRefreshGameList] = useState(false);
   //const [ranking, setRanking] = useState<IRanking[] | null>(null);
-  const [isRankingChoosen, setRankingChoosen] = useState(false);
+  const [isRankingChoosen, setRankingChoosen] = useState(true);
 
   const userContext = useContext(UserContext);
 
@@ -53,8 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
   const logout = () => {
     localStorage.clear();
-    setData(null);
-    navigate("/");
+     props.setIsLoggedIn(false)
   };
 
   const token = localStorage.getItem("token");
@@ -71,53 +69,17 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
     }
   }
 
-  useEffect(() => {
-    const fetchProtectedData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (token) {
-          const response = await fetchToken(token);
-
-          if (response.ok) {
-            const responseData = await response.json();
-
-            setData(responseData.playerList.reverse());
-          } else {
-            console.error("Fetching players");
-          }
-        } else {
-          console.error("Token not found");
-        }
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
-    };
-    if (refreshGameList) {
-      fetchProtectedData();
-      setRefreshGameList(false);
-    }
-    if (!data) {
-      fetchProtectedData();
-    }
-
-	
-  }, [refreshGameList, data]);
-
     return (
     <div className="flex-col">
-      {data ? (
         <>
-          <Navbar name={name} />
+          <Navbar name={props.name} />
           <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
             <UserDataManipulation handleRefreshGames={handleRefreshGames} />
-
-            
             {isRankingChoosen ? (
               <RankingList
               />
             ) : (
-				<PlayerList props={data} />
+				<PlayerList setIsRankingChoosen={setRankingChoosen} />
             )}
             <GetGameData
               setRankingChoosen={setRankingChoosen}
@@ -125,7 +87,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
               setData={setData}
             />
           </div>
-          <GameList id={id} refreshGames={refreshGameList} />
+          <GameList id={props.id} refreshGames={refreshGameList} />
           <div>
             <button
               onClick={logout}
@@ -135,9 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
             </button>
           </div>
         </>
-      ) : (
-        <Login />
-      )}
+    
     </div>
   );
 };
