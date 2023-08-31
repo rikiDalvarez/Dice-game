@@ -22,6 +22,8 @@ export const ChangeName: React.FC<ChangeNameProps> = (props) => {
       if (response.ok) {
         const data = await response.json();
         if (data.name === inputField) {
+          localStorage.setItem("name", data.name);
+
           console.log('Name changed succesfully')
         } else {
           console.error("Error ocurred during changing name")
