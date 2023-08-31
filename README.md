@@ -7,9 +7,13 @@ Application built with hexagonal architecture and TDD.
 
 ## Login & Register
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-  <img src="./public/Screenshot 2023-08-30 at 17.06.43.png" alt="Login page" style="max-width: 100%;">
-  <img src="./public/register.png" alt="Register page" style="max-width: 100%;">
+<div style="display: flex;">
+  <div style="flex: 1; margin-right: 10px;">
+    <img src="./public/Screenshot 2023-08-30 at 17.06.43.png" alt="Login page" style="max-width: 100%;">
+  </div>
+  <div style="flex: 1;">
+    <img src="./public/register.png" alt="Register page" style="max-width: 100%;">
+  </div>
 </div>
 
 ## Dashboard
