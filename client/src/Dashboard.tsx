@@ -65,11 +65,10 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
       <>
         <Navbar name={name} />
         <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-          <UserDataManipulation setRefreshDashboard={setRefreshDashboard} />
+          <UserDataManipulation setRefreshDashboard={setRefreshDashboard}  refreshDashboard={refreshDashboard}  />
           {isRankingChoosen ? (
             <RankingList
-            //isRankingChoosen = {isRankingChoosen}
-            //setRefreshDashboard={setRefreshDashboard}
+            refreshDashboard={refreshDashboard}
             />
           ) : (
             <PlayerList setIsRankingChoosen={setRankingChoosen} />

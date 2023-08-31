@@ -3,7 +3,7 @@ import { fetchGetRanking } from "../services";
 import React, { useEffect, useState } from "react";
 
 type RankingListType = {
-	//setRefreshDashboard: (param:boolean) => void
+	refreshDashboard: boolean
 	//isRankingChoosen: boolean
 };
 
@@ -15,9 +15,8 @@ export interface RankingListI {
 const RankingList: React.FC<RankingListType> = (props) => {
   const [rankingList, setRankingList] = useState([]);
   const [average, setAverage] = useState();
-console.log('props', props)
+//console.log('props', props)
   const getRankingList = async () => {
-	console.log('get ranking')
     try {
       const token = localStorage.getItem("token");
       const response = await fetchGetRanking(token);
@@ -25,20 +24,17 @@ console.log('props', props)
         const responseData = await response.json();
         setRankingList(responseData.ranking);
         setAverage(responseData.average);
-        console.log(responseData);
       } else {
         console.error("fetching games");
       }
     } catch (error) {
       console.error("An error occurred:", error);
     }
-	//props.setRefreshDashboard(false)
 
   };
 
   useEffect(() => {
     getRankingList()
-
   }, [props]);
 
   return (

@@ -1,10 +1,11 @@
-import React, {useEffect, useState } from "react";
+import React, {useState, useEffect } from "react";
 import ChangeName from "./ChangeName";
 import PlayGame from "./PlayGame";
 import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
   setRefreshDashboard: (param:boolean) => void;
+  refreshDashboard: boolean
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
@@ -12,10 +13,12 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
   const [isGameInProgress, setGameInProgress] = useState(false);
   const [gamesDeleted, setGamesDeleted] = useState(false);
 
+
   useEffect(()=>{
-
-
-  })
+    if (isGameInProgress){
+      setGamesDeleted(false)
+    }
+  }, [isGameInProgress])
 
   return (
     <div className="userDataManipulation w-60  border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
