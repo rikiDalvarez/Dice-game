@@ -15,7 +15,7 @@ export interface RankingListI {
 const RankingList: React.FC<RankingListType> = (props) => {
   const [rankingList, setRankingList] = useState([]);
   const [average, setAverage] = useState();
-
+console.log('props', props)
   const getRankingList = async () => {
 	console.log('get ranking')
     try {

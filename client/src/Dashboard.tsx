@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import UserDataManipulation from "./components/UserDataManipulation";
 import { PlayerList } from "./components/PlayerList";
@@ -19,7 +19,6 @@ export interface IRanking {
 
 interface DashboardProps {
   setIsLoggedIn: (param: boolean) => void;
- 
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
@@ -29,25 +28,24 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
 
   //const userContext = useContext(UserContext);
   //const { user } = userContext;
-//console.log(isRankingChoosen)
+  //console.log(isRankingChoosen)
   const logout = () => {
     localStorage.clear();
     props.setIsLoggedIn(false);
   };
 
   useEffect(() => {
-	console.log('dashboard ref')
+    console.log("dashboard ref");
     if (refreshGameList) {
       setRefreshGameList(false);
     }
     if (refreshDashboard) {
       setRefreshDashboard(false);
     }
-	
   }, [refreshGameList, refreshDashboard]);
 
   const token = localStorage.getItem("token");
-  const name = localStorage.getItem("name")
+  const name = localStorage.getItem("name");
   if (token) {
     const decodedToken: JwtPayload = jwt_decode(token);
     const currentDate = new Date();
@@ -55,6 +53,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     if (tokenExpiration) {
       if (tokenExpiration * 1000 < currentDate.getTime()) {
         console.log("Token expired.");
+		props.setIsLoggedIn(false)
       } else {
         console.log("Valid token");
       }
@@ -66,15 +65,12 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
       <>
         <Navbar name={name} />
         <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
-          <UserDataManipulation
-            setRefreshDashboard={setRefreshDashboard}
-          />
+          <UserDataManipulation setRefreshDashboard={setRefreshDashboard} />
           {isRankingChoosen ? (
-            <RankingList 
-			//isRankingChoosen = {isRankingChoosen}
-			//setRefreshDashboard={setRefreshDashboard}
-
-			/>
+            <RankingList
+            //isRankingChoosen = {isRankingChoosen}
+            //setRefreshDashboard={setRefreshDashboard}
+            />
           ) : (
             <PlayerList setIsRankingChoosen={setRankingChoosen} />
           )}
