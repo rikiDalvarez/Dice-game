@@ -9,8 +9,8 @@ type AuthUser = {
 }
 
 export type UserContextType = {
-	user: any;
-	setUser: any
+	user: AuthUser | null;
+	setUser: object;
 	isTokenValid: boolean
 };
 
