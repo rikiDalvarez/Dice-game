@@ -89,6 +89,17 @@ to play game:
 curl -X POST -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
 ```
 
+to get games:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to delete all games from a player:
+
+```bash
+curl -X DELETE -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
 
 
 
