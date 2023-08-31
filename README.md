@@ -80,11 +80,15 @@ curl -X PUT -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://
 to get player list:
 
 ```bash
-curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://localhost:8012/api/players/
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/players/
+```
+
+to play game:
+
+```bash
+curl -X POST -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
 ```
 
 
-
-```bash
 
 
