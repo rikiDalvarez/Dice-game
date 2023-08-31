@@ -104,7 +104,19 @@ curl -X DELETE -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api
 to get Ranking list:
 
 ```bash
-curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking
+```
+
+to get Looser:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/loser
+```
+
+to get Winner:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/winner
 ```
 
 
