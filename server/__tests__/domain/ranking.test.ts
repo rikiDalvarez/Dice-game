@@ -61,6 +61,7 @@ describe("Ranking class test", () => {
       { id: "3", name: "bella", successRate: 0 },
     ]);
     expect(ranking.average).toBeCloseTo(averageRate, 2); // 2 is the number of decimal places to consider
+    // toBe is strictEqual and could fail on build
     expect(ranking.winners).toStrictEqual([
       { id: "1", name: "mafalda", successRate: 100 },
     ]);
