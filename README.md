@@ -5,13 +5,12 @@
 
 Application built with hexagonal architecture and TDD.
 
-## Login
+## Login & Register
 
-![Login page](<./public/Screenshot 2023-08-30 at 17.06.43.png>)
-
-## Register
-
-![Register page](<./public/register.png>)
+<div style="display: flex ;">
+  <img src="./public/Screenshot 2023-08-30 at 17.06.43.png" alt="Login page" width="45%" style="margin-right: 10px;">
+  <img src="./public/register.png" alt="Register page" width="45%">
+</div>
 
 ## Dashboard
 
@@ -53,3 +52,72 @@ if you wish to run the app with a mysql database run:
 ```bash
 npm run devmysql
 ```
+
+## API DOCUMENTATION
+
+if you .env is set with port 8012 if not just adjust the port. You can access the api documentation with the following commands:
+
+first create a player with email and password, name is optional, if name is not provided the default will be "anonim":
+
+```bash
+curl -X POST -d "name=John&email=john@example.com&password=secretpassword" http://localhost:8012/api/players
+```
+
+then login with the email and password to get the token:
+
+```bash
+curl -X POST -d "email=john@example.com&password=secretpassword" http://localhost:8012/api/login
+```
+
+### Now you can access the api documentation with the following command always adding the token as bearer:
+
+to change name:
+
+```bash
+curl -X PUT -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://localhost:8012/api/players/<your_player_id>
+```
+
+to get player list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/players/
+```
+
+to play game:
+
+```bash
+curl -X POST -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to get games:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to delete all games from a player:
+
+```bash
+curl -X DELETE -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to get Ranking list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking
+```
+
+to get Looser:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/loser
+```
+
+to get Winner:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/winner
+```
+
+
+

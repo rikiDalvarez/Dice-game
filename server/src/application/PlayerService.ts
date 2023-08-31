@@ -31,6 +31,7 @@ export class PlayerService {
   async addGame(playerId: string): Promise<GameType> {
     const dice = new Dice();
     const player = await this.findPlayer(playerId);
+    console.log("playerservice", player);
     const game = new Game(dice);
     player.addNewGame(game);
     return this.playerInterface.addGame(player);

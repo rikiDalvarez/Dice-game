@@ -128,10 +128,13 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async addGame(player: Player): Promise<GameType> {
     const id = player.id;
+    console.log({ player });
+
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     );
+    console.log({ response });
 
     if (response.modifiedCount === 1) {
       const lastGame = player.games[player.games.length - 1];
