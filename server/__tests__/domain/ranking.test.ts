@@ -23,6 +23,7 @@ describe("Ranking class test", () => {
   });
 
   test("meanSuccesRate return mean value", () => {
+    // TODO
     const wonGame = gameGenerator(3, 4);
     const lostGame = gameGenerator(1, 2);
     const player1 = new Player(
@@ -55,17 +56,17 @@ describe("Ranking class test", () => {
     ranking.winners = [player1];
     ranking.losers = [player2, player3];
     expect(ranking.rankingList).toStrictEqual([
-      { id: '1', name: "mafalda", successRate: 100 },
-      { id: '2', name: "ricky", successRate: 0 },
-      { id: '3', name: "bella", successRate: 0 },
+      { id: "1", name: "mafalda", successRate: 100 },
+      { id: "2", name: "ricky", successRate: 0 },
+      { id: "3", name: "bella", successRate: 0 },
     ]);
-    expect(ranking.average).toBe(averageRate);
+    expect(ranking.average).toBeCloseTo(averageRate, 2); // 2 is the number of decimal places to consider
     expect(ranking.winners).toStrictEqual([
-      { id: '1', name: "mafalda", successRate: 100 },
+      { id: "1", name: "mafalda", successRate: 100 },
     ]);
     expect(ranking.losers).toStrictEqual([
-      {id: '2', name: "ricky", successRate: 0 },
-      {id: '3',  name: "bella", successRate: 0 },
+      { id: "2", name: "ricky", successRate: 0 },
+      { id: "3", name: "bella", successRate: 0 },
     ]);
   });
 });

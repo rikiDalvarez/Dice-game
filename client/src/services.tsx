@@ -33,7 +33,7 @@ export const fetchRegistration = async (data: RegistrationData | null) => {
 	return response
 }
 
-export const fetchToken = async (token: string | null) => {
+export const fetchPlayerList = async (token: string | null) => {
 	const response = await fetch(`http://localhost:${PORT}/api/players`, {
 		method: "GET",
 		headers: {
