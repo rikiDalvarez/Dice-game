@@ -1,6 +1,5 @@
 import React from 'react'
 
-//---> component and interface should have different name
 export interface GameInterface {
 	id: string;
 	gameWin: boolean;

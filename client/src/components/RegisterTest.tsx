@@ -7,7 +7,7 @@ import { fetchRegistration } from '../services';
 const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
 
-function Register() {
+const Register: React.FC = () => {
 	const navigate = useNavigate();
 	const userRef = useRef<HTMLInputElement>(null);
 	const errRef = useRef<HTMLInputElement>(null);
@@ -27,8 +27,6 @@ function Register() {
 	const [matchFocus, setMatchFocus] = useState(false);
 
 	const [errMsg, setErrMsg] = useState('');
-	// const [success, setSuccess] = useState(false);
-
 
 	useEffect(() => {
 		userRef.current?.focus();
@@ -64,10 +62,10 @@ function Register() {
 		event.preventDefault();
 		// setRegistrationData({ name: name.toLowerCase(), email: email, password: pwd })
 		try {
-			const response = await fetchRegistration({ name: (name.length > 0 ? name : null), email: email, password: pwd });
+			const response = await fetchRegistration({ name: (name ? name : null), email: email, password: pwd });
 			if (response.ok) {
 				const data = await response.json();
-				console.log(data)
+				console.log(data);
 				navigate("/login")
 
 			} else {

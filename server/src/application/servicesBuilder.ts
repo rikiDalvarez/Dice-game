@@ -46,31 +46,3 @@ export function buildServices(databaseType:string, dataBaseConectionDetails: Ini
 
   return { playerService, rankingService };
 }
-
-/*
-
-export async function initMongoDatabase(): Promise<object> {
-
-    connection = connectDatabase(config.MONGO_URI, dataBaseName);
-    const playerDocument = connection.model<PlayerType>("Player", playerSchema);
-    
-    return {connection, playerDocument}
-  } 
-
-  export async function initSQLDatabase(): Promise<void> {
-      await createSQLDatabase(dataBaseName, {
-        host: config.HOST,
-        user: config.MYSQL_USER,
-        password: config.MYSQL_PASSWORD,
-      });
-      sequelize = createSequelizer(
-        dataBaseName,
-        config.MYSQL_USER,
-        config.MYSQL_PASSWORD,
-        config.HOST
-      );
-      initializeGameTable(sequelize);
-      initializePlayerTable(sequelize);
-      await createSQLTableRelations(sequelize);
-    }
-  */

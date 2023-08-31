@@ -6,11 +6,6 @@ import { fetchLogin } from './services';
 
 const Login: React.FC = () => {
 
-	// interface DashboardProps {
-	// 	name: string | null;
-	// 	id: string | null;
-	// }
-
 	const navigate = useNavigate();
 	const userContext = useContext(UserContext);
 

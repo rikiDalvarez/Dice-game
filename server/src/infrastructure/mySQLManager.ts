@@ -115,8 +115,6 @@ export class PlayerMySQLManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    console.log(playerId),
-    console.log(newName)
     try {
       const response = await PlayerSQL.update(
         { name: newName },

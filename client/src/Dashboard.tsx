@@ -15,34 +15,38 @@ import jwt_decode from "jwt-decode";
 
 //after refreshing the dashboard we lose userContext
 
-export interface playerRanking {
-	name: string | null;
-	successRate: number;
-}
-export interface IRanking {
-	ranking: playerRanking[];
-	average: number;
-}
-
 interface DashboardProps {
 	name?: string | null;
 	id?: string | null;
 }
 
+interface DecodedToken {
+	userId: string;
+	iat: number;
+	exp: number;
+}
+
+export interface Ranking {
+    ranking: {
+        id:string;
+        name: string;
+        successRate: number;
+    }[],
+    average: number
+}
 
 const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 	const [data, setData] = useState<Array<IPlayer> | null>(null);
 	const [refreshGameList, setRefreshGameList] = useState(false);
-	const [ranking, setRanking] = useState<IRanking | null>(null)
+	const [ranking, setRanking] = useState<Ranking | null>(null)
 
 	const userContext = useContext(UserContext);
 
-	//using context instead of localStorage
 	const { user } = userContext;
 	console.log("userContextDashboard", user)
 
-	const handleRankingSetUp = (data: IRanking) => {
+	const handleRankingSetUp = (data: Ranking | null) => {
 		setRanking(data)
 	}
 
@@ -60,11 +64,11 @@ const Dashboard: React.FC<DashboardProps> = ({ name, id }) => {
 
 	const token = localStorage.getItem("token");
 	if (token) {
-		const decodedToken = jwt_decode(token)
-		console.log("decodedTOKEN", decodedToken)
+		const decodedToken: DecodedToken = jwt_decode(token)
 		const currentDate = new Date();
 		if (decodedToken.exp * 1000 < currentDate.getTime()) {
 			console.log("Token expired.");
+			
 		} else {
 			console.log("Valid token");
 		}

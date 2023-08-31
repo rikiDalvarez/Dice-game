@@ -13,7 +13,7 @@ interface Props {
 }
 
 const Player: React.FC<Props> = ({ props }) => {
-	let backgroundColorClass = "bg-red-200"; // Default background color
+	let backgroundColorClass = "bg-red-200";
 
 	if (props.successRate > 19) {
 		backgroundColorClass = "bg-green-200";
@@ -21,8 +21,7 @@ const Player: React.FC<Props> = ({ props }) => {
 		backgroundColorClass = "bg-amber-300";
 	}
 
-	const playerName = props.name? props.name: "Anonim"
-	console.log('ppppppppp', props)
+	const playerName = props.name? props.name: "Anonim";
 
 	return (
 		<div className="card font-mono " key={props.email} >

@@ -8,16 +8,8 @@ interface Player {
 	registrationDate: string
 }
 
-
-
-function App() {
+const App: React.FC = () => {
 	const [data, setData] = useState<Array<Player> | null>(null);
-
-	//if user has token not expired, user is logged in and navigate to dashboard
-	// dashboard will have all the components, navbar greeting the client , userInfo with userdata,
-	// games result of last player games, and the buttons on the side
-	//if token is expired or there is no token, render the login page
-	//Create a register page
 	useEffect(() => {
 		const fetchProtectedData = async () => {
 			try {

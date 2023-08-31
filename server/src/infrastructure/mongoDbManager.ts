@@ -71,8 +71,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
-    const { name, email, password, games, id } = playerDetails;
-    return new Player(email, password, games, name, id);
+    const { name, email, password, games, id, registrationDate } = playerDetails;
+    const player = new Player(email, password, games, name, id);
+    player.registrationDate = registrationDate
+    return player;
   }
 
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
@@ -154,12 +156,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async getGames(playerId: string): Promise<Array<GameType>> {
     const player = await this.playerDocument.findById(playerId);
-
-    console.log(player, "player");
     if (!player) {
       throw new Error("PlayerNotFound");
     }
-    console.log(player, "player");
     return player ? player.games : [];
   }
 }
