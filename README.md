@@ -69,9 +69,20 @@ then login with the email and password to get the token:
 curl -X POST -d "email=john@example.com&password=secretpassword" http://localhost:8012/api/login
 ```
 
-then you can access the api documentation with the following command always adding the token as bearer:
+### Now you can access the api documentation with the following command always adding the token as bearer:
+
+to change name:
 
 ```bash
+curl -X PUT -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://localhost:8012/api/players/<your_player_id>
+```
+
+to get player list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://localhost:8012/api/players/
+```
+
 
 
 ```bash
