@@ -19,8 +19,7 @@ export interface IRanking {
 
 interface DashboardProps {
   setIsLoggedIn: (param: boolean) => void;
-  name?: string | null;
-  id?: string | null;
+ 
 }
 
 const Dashboard: React.FC<DashboardProps> = (props) => {
@@ -30,8 +29,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
 
   //const userContext = useContext(UserContext);
   //const { user } = userContext;
-
-  
+//console.log(isRankingChoosen)
   const logout = () => {
     localStorage.clear();
     props.setIsLoggedIn(false);
@@ -45,9 +43,11 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     if (refreshDashboard) {
       setRefreshDashboard(false);
     }
+	
   }, [refreshGameList, refreshDashboard]);
 
   const token = localStorage.getItem("token");
+  const name = localStorage.getItem("name")
   if (token) {
     const decodedToken: JwtPayload = jwt_decode(token);
     const currentDate = new Date();
@@ -64,13 +64,17 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   return (
     <div className="flex-col">
       <>
-        <Navbar name={props.name} />
+        <Navbar name={name} />
         <div className="m-5  border-t-4 border-double border-emerald-950 flex ">
           <UserDataManipulation
             setRefreshDashboard={setRefreshDashboard}
           />
           {isRankingChoosen ? (
-            <RankingList refreshDashboard={refreshDashboard}/>
+            <RankingList 
+			//isRankingChoosen = {isRankingChoosen}
+			//setRefreshDashboard={setRefreshDashboard}
+
+			/>
           ) : (
             <PlayerList setIsRankingChoosen={setRankingChoosen} />
           )}
@@ -79,7 +83,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
             setRefreshDashboard={setRefreshDashboard}
           />
         </div>
-        <GameList id={props.id} refreshGames={refreshGameList} />
+        <GameList refreshGames={refreshGameList} />
         <div>
           <button
             onClick={logout}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { fetchGetLoser } from "../services";
 
 type LoserType = {
@@ -16,7 +16,7 @@ export interface Loser {
 export const GetLoser: React.FC<LoserType> = (props) => {
   const [losers, setLosers] = useState([]);
 
-  const getLoser = async () => {
+  const getLoser = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetchGetLoser(token);
@@ -32,14 +32,14 @@ export const GetLoser: React.FC<LoserType> = (props) => {
       console.error("An error occurred:", error);
     }
     props.setRefreshDashboard(true)
-  };
+  },[props])
 
   useEffect(() => {
     if (props.isGetLoserInProgress) {
       props.setGetLoserInProgress(false);
       getLoser();
     }
-  }, [props]);
+  }, [getLoser, props]);
 
   return (
     <div className=" w-full p-6 bg-white rounded-lg shadow-lg">
@@ -61,3 +61,4 @@ export const GetLoser: React.FC<LoserType> = (props) => {
     </div>
   );
 };
+

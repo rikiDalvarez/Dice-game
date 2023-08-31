@@ -15,6 +15,7 @@ type GetGameDateProps = {
 const GetGameData: React.FC<GetGameDateProps> = (props) => {
   const [isGetWinnerInProgress, setGetWinnerInProgress] = useState(false);
   const [isGetLoserInProgress, setGetLoserInProgress] = useState(false);
+  
   const userContext = useContext(UserContext);
 
   const { user } = userContext;

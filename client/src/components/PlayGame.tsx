@@ -6,7 +6,6 @@ type PlayGame = {
   newGame: boolean;
   setGameInProgress: (state: boolean) => void;
  setRefreshDashboard: (param:boolean)=> void
-  //handleRafreshGames: (param:true)=> void
 
 };
 
