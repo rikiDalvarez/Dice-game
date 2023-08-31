@@ -8,8 +8,8 @@ Application built with hexagonal architecture and TDD.
 ## Login & Register
 
 <div style="display: flex ;">
-  <img src="./public/Screenshot 2023-08-30 at 17.06.43.png" alt="Login page" width="45%" style="margin-right: 10px;">
-  <img src="./public/register.png" alt="Register page" width="45%">
+  <img src="./public/Screenshot 2023-08-30 at 17.06.43.png" alt="Login page" width="40%" style="margin-right: 10px;">
+  <img src="./public/register.png" alt="Register page" width="40%">
 </div>
 
 ## Dashboard
