@@ -27,6 +27,7 @@ export const ChangeName: React.FC<ChangeNameProps> = (props) => {
           console.error("Error ocurred during changing name")
         }
       } else {
+        alert("This name is already taken")
         console.error(response)
       }
     } catch (error) {
