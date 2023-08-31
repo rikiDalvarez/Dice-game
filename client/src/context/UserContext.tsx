@@ -11,17 +11,27 @@ type AuthUser = {
 export type UserContextType = {
 	user: any;
 	setUser: any
+	isTokenValid: boolean
 };
 
 type UserContextProviderType = {
 	children: React.ReactNode
 }
 
+interface DecodedToken {
+	userId: string;
+	iat: number;
+	exp: number;
+}
+
 
 export const UserContext = createContext({} as UserContextType)
 
 export const UserContextProvider = ({ children }: UserContextProviderType) => {
+
 	const [user, setUser] = useState<AuthUser | null>(null);
+	const [isTokenValid, setIsTokenValid] = useState<boolean>(false)
+
 	useEffect(() => {
 		console.log("veryfing token")
 		const token = localStorage.getItem("token")
@@ -30,22 +40,25 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 			return
 		}
 		if (token) {
-			const decodedToken = jwt_decode(token)
+			const decodedToken: DecodedToken = jwt_decode(token)
 			console.log("decodedTOKEN", decodedToken)
 			const currentDate = new Date();
 			if (decodedToken.exp * 1000 < currentDate.getTime()) {
 				console.log("Token expired.");
+				setIsTokenValid(false)
 				localStorage.clear()
 			} else {
+
+				console.log("current time", currentDate.getTime())
 				console.log("Valid token");
-				const decodedToken = jwt_decode(token)
-				console.log("decodedTOKEN123", decodedToken)
+				setIsTokenValid(true)
 				setUser({ email: "", token: token, id: decodedToken.userId })
 			}
 		}
 
 	}, [])
+	console.log("user", { user })
 
-	return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
+	return <UserContext.Provider value={{ user, setUser, isTokenValid }}>{children}</UserContext.Provider>
 
 };

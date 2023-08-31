@@ -21,6 +21,7 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
   }, [isGameInProgress])
 
   return (
+    // FIX changeName a overlay div
     <div className="userDataManipulation w-60  border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

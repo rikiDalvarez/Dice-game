@@ -7,8 +7,8 @@ import GameList from "./components/GameList";
 import RankingList from "./components/RankingList";
 import jwt_decode from "jwt-decode";
 import { JwtPayload } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
-//TODO MAX HIGHTSIZE OF APP
 //TODO if name is null on mongodb nav bar receives null
 
 export interface playerRanking {
@@ -29,14 +29,14 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   const [refreshDashboard, setRefreshDashboard] = useState(false);
   const [isRankingChoosen, setRankingChoosen] = useState(true);
 
-  //EXPLAIN - this si just how to use useContext
-  //const userContext = useContext(UserContext);
-  //const { user } = userContext;
-  //console.log(isRankingChoosen)
+
+  const navigate = useNavigate();
 
   const logout = () => {
     localStorage.clear();
     props.setIsLoggedIn(false);
+    navigate("/")
+
   };
 
   useEffect(() => {
