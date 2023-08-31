@@ -31,7 +31,8 @@ export class Ranking {
   }
 
   public set average(meanValue: number) {
-    this._average = meanValue;
+   
+    this._average = Number(meanValue.toFixed(2))
   }
   public set losers(losers: Array<Player>) {
     this._losers = this.preparePlayersDetails(losers);

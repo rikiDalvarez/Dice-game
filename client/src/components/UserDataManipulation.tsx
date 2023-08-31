@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, {useState, useEffect } from "react";
 import ChangeName from "./ChangeName";
 import PlayGame from "./PlayGame";
 import DeleteGames from "./DeleteGames";
 
 type UserDataManipulationProps = {
-  handleRefreshGames: () => void;
+  setRefreshDashboard: (param:boolean) => void;
+  refreshDashboard: boolean
 };
 
 const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
@@ -13,13 +14,18 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
   const [gamesDeleted, setGamesDeleted] = useState(false);
 
 
+  useEffect(()=>{
+    if (isGameInProgress){
+      setGamesDeleted(false)
+    }
+  }, [isGameInProgress])
+
   return (
     <div className="userDataManipulation w-60  border-2 border-sky-500 m-4 p-4 flex flex-col rounded-lg">
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
           setGameInProgress(true);
-          //setGamesDeleted(false); state is false we dont need set again to false
         }}
       >
         Play Game
@@ -28,25 +34,24 @@ const UserDataManipulation: React.FC<UserDataManipulationProps> = (props) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
           setChangeNameInProgress(true);
-          //setGamesDeleted(false); state is false we dont need set again to false
         }}
       >
         Change Name
       </button>
       {isChangeNameInProgress ? (
-        <ChangeName setChangeNameInProgress={setChangeNameInProgress} refreshDashboard={props.handleRefreshGames} />
+        <ChangeName setChangeNameInProgress={setChangeNameInProgress} setRefreshDashboard={props.setRefreshDashboard} />
       ) : (
         ""
       )}
       <PlayGame
         newGame={isGameInProgress}
-        refreshDashboard={props.handleRefreshGames}
         setGameInProgress={setGameInProgress}
+        setRefreshDashboard={props.setRefreshDashboard}
       />
       <DeleteGames
         onGamesDeleted={() => {
           setGamesDeleted(true);
-          props.handleRefreshGames();
+          props.setRefreshDashboard(true);
         }}
       />
       {gamesDeleted && (

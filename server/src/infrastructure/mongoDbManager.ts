@@ -71,11 +71,19 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
+<<<<<<< HEAD
     const { name, email, password, games, id, registrationDate } = playerDetails;
     const player = new Player(email, password, games, name, id);
     player.registrationDate = registrationDate
     return player;
+=======
+    const { name, email, password, games, id, registrationDate} = playerDetails;
+   const player = new Player(email, password, games, name, id);
+   player.registrationDate = registrationDate
+   return player
+>>>>>>> a3c899bef61ff868f8
   }
+
 
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await this.playerDocument.findOne({

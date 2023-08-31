@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { fetchGetWinner } from "../services";
 
 type WinnerType = {
   isGetWinnerInProgress: boolean;
   setGetWinnerInProgress: (state: boolean) => void;
-  refreshDashboard: () => void;
+  setRefreshDashboard: (param:boolean) => void;
 };
 
 export interface Winner {
@@ -15,8 +15,8 @@ export interface Winner {
 
 export const GetWinner: React.FC<WinnerType> = (props) => {
   const [winners, setWinners] = useState([]);
-
-  const getWinner = async () => {
+  
+  const getWinner = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetchGetWinner(token);
@@ -31,14 +31,15 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  };
+    props.setRefreshDashboard(true)
+  }, [props])
 
   useEffect(() => {
     if (props.isGetWinnerInProgress) {
       props.setGetWinnerInProgress(false);
       getWinner();
     }
-  }, [props]);
+  }, [getWinner, props]);
 
   return (
     <div className=" w-full p-6 bg-white rounded-lg shadow-lg">

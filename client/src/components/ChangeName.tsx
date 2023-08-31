@@ -3,11 +3,11 @@ import { changeName } from "../services";
 
 export type ChangeNameProps = {
   setChangeNameInProgress: (param: boolean) => void;
-  refreshDashboard: ()=> void
+  setRefreshDashboard: (param:boolean)=> void
 };
 
 export const ChangeName: React.FC<ChangeNameProps> = (props) => {
-  const [inputField, setInputValue] = useState("");
+ const [inputField, setInputValue] = useState("");
   const token = localStorage.getItem("token");
   const player_id = localStorage.getItem("id");
 
@@ -22,6 +22,8 @@ export const ChangeName: React.FC<ChangeNameProps> = (props) => {
       if (response.ok) {
         const data = await response.json();
         if (data.name === inputField) {
+          localStorage.setItem("name", data.name);
+
           console.log('Name changed succesfully')
         } else {
           console.error("Error ocurred during changing name")
@@ -34,7 +36,7 @@ export const ChangeName: React.FC<ChangeNameProps> = (props) => {
       console.error("an error occurred:", error)
     }
     props.setChangeNameInProgress(false)
-    props.refreshDashboard()
+    props.setRefreshDashboard(true)
   };
 
   return (
