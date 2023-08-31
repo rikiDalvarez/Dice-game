@@ -101,5 +101,11 @@ to delete all games from a player:
 curl -X DELETE -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
 ```
 
+to get Ranking list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/
+```
+
 
 
