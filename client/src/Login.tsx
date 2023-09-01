@@ -62,7 +62,8 @@ const Login: React.FC<LoginType> = (props) => {
 				// navigate("/dashboard")
 
 			} else {
-				console.error("login failed")
+				alert("Email and/or password incorrect");
+				console.error("login failed");
 			}
 		} catch (error) {
 			console.error("an error occurred:", error)
@@ -106,7 +107,6 @@ const Login: React.FC<LoginType> = (props) => {
 					Log In
 				</button>
 				<button
-					// onClick={() => { navigate("/api/players") }}
 					className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
 					onClick={navigateRegistration}
 				>

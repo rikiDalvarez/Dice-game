@@ -43,7 +43,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Us
 import './index.css';
 import { UserContextProvider } from './context/UserContext';
 import App from './App';
-import RegisterForm from './components/RegisterTest';
+import RegisterForm from './components/Register';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const AppRoutes = () => (
