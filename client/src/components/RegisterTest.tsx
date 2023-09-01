@@ -6,7 +6,6 @@ import { fetchRegistration } from '../services';
 
 const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-const REGISTER_URL = '/register';
 
 
 function Register() {
@@ -29,7 +28,6 @@ function Register() {
 	const [matchFocus, setMatchFocus] = useState(false);
 
 	const [errMsg, setErrMsg] = useState('');
-	const [success, setSuccess] = useState(false);
 
 	// const [registrationData, setRegistrationData] = useState({
 	// 	name: "",
@@ -71,7 +69,7 @@ function Register() {
 		event.preventDefault();
 		// setRegistrationData({ name: name.toLowerCase(), email: email, password: pwd })
 		try {
-			const response = await fetchRegistration({ name: (name.length > 0 ? name : null), email: email, password: pwd });
+			const response = await fetchRegistration({ name: (name? name : null), email: email, password: pwd });
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data)
@@ -108,7 +106,7 @@ function Register() {
 						className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
 						type="text"
 						id="name"
-						value={name}
+						value={name? name: undefined}
 					/>
 					{/* email input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">

@@ -6,7 +6,7 @@ export interface FormData {
 }
 
 export interface RegistrationData {
-	name: string;
+	name: string|null;
 	email: string;
 	password: string;
 }
