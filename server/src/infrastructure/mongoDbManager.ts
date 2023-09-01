@@ -73,10 +73,9 @@ export class PlayerMongoDbManager implements PlayerInterface {
     }
     const { name, email, password, games, id, registrationDate } = playerDetails;
     const player = new Player(email, password, games, name, id);
-    player.registrationDate = registrationDate
-    return player
+    player.registrationDate = registrationDate;
+    return player;
   }
-
 
   async findPlayerByEmail(playerEmail: string): Promise<Player> {
     const playerDetails = await this.playerDocument.findOne({
