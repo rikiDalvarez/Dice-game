@@ -45,6 +45,7 @@ import { UserContextProvider } from './context/UserContext';
 import App from './App';
 import RegisterForm from './components/RegisterTest';
 
+// eslint-disable-next-line react-refresh/only-export-components
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<App />} />
