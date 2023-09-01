@@ -13,7 +13,7 @@ interface Props {
 
 const Game: React.FC<Props> = ({ props }) => {
 	return (
-		<div className={` card font-mono ${props.gameWin ? 'bg-green-200' : "bg-amber-200"
+		<div className={`w-96 card font-mono ${props.gameWin ? 'bg-green-200' : "bg-red-200"
 			} `}
 			key={props.id}>
 			<div className="m-2 p-2 border-2" >

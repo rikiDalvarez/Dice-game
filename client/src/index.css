@@ -57,6 +57,8 @@ button {
 
 .gameList{
   max-height: 120px;
+  /* max-width: 600px; */
+  /* justify-content: center; */
 }
 
 .instructions {
