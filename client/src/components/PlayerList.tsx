@@ -31,7 +31,7 @@ export const PlayerList: React.FC<PlayerListI> = (props) => {
   }, [props]);
 
   return (
-    <div className="bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto">
+    <div className="bg-blue-200 rounded-lg m-4 p-4 max-h-96 overflow-y-auto shadow-lg ">
       {playerList
         ? playerList.map((player: IPlayer) => (
           <Player key={player.id} props={player} />
