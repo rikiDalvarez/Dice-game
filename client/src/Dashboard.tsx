@@ -5,8 +5,8 @@ import { PlayerList } from "./components/PlayerList";
 import GetGameData from "./components/GetGameData";
 import GameList from "./components/GameList";
 import RankingList from "./components/RankingList";
-import jwt_decode from "jwt-decode";
-import { JwtPayload } from "jwt-decode";
+// import jwt_decode from "jwt-decode";
+// import { JwtPayload } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 //TODO if name is null on mongodb nav bar receives null
@@ -33,9 +33,10 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   const navigate = useNavigate();
 
   const logout = () => {
+    console.log("Logging out...");
     localStorage.clear();
     props.setIsLoggedIn(false);
-    navigate("/")
+    navigate("/login")
 
   };
 
@@ -49,21 +50,21 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
     }
   }, [refreshGameList, refreshDashboard]);
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
-  if (token) {
-    const decodedToken: JwtPayload = jwt_decode(token);
-    const currentDate = new Date();
-    const tokenExpiration = decodedToken.exp ? decodedToken.exp : null;
-    if (tokenExpiration) {
-      if (tokenExpiration * 1000 < currentDate.getTime()) {
-        console.log("Token expired.");
-        props.setIsLoggedIn(false)
-      } else {
-        console.log("Valid token");
-      }
-    }
-  }
+  // if (token) {
+  //   const decodedToken: JwtPayload = jwt_decode(token);
+  //   const currentDate = new Date();
+  //   const tokenExpiration = decodedToken.exp ? decodedToken.exp : null;
+  //   if (tokenExpiration) {
+  //     if (tokenExpiration * 1000 < currentDate.getTime()) {
+  //       console.log("Token expired.");
+  //       props.setIsLoggedIn(false)
+  //     } else {
+  //       console.log("Valid token");
+  //     }
+  //   }
+  // }
 
   return (
     <div className="flex-col">

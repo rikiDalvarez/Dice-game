@@ -41,15 +41,12 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 		}
 		if (token) {
 			const decodedToken: DecodedToken = jwt_decode(token)
-			console.log("decodedTOKEN", decodedToken)
 			const currentDate = new Date();
 			if (decodedToken.exp * 1000 < currentDate.getTime()) {
 				console.log("Token expired.");
 				setIsTokenValid(false)
 				localStorage.clear()
 			} else {
-
-				console.log("current time", currentDate.getTime())
 				console.log("Valid token");
 				setIsTokenValid(true)
 				setUser({ email: "", token: token, id: decodedToken.userId })
@@ -57,7 +54,6 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 		}
 
 	}, [])
-	console.log("user", { user })
 
 	return <UserContext.Provider value={{ user, setUser, isTokenValid }}>{children}</UserContext.Provider>
 

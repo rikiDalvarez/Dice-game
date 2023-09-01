@@ -40,7 +40,6 @@ const Login: React.FC<LoginType> = (props) => {
 		event.preventDefault();
 		try {
 			const response = await fetchLogin(formData);
-			console.log(response)
 			if (response.ok) {
 				const data = await response.json();
 				const token = data.token;
