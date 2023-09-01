@@ -84,7 +84,7 @@ export function playerControllers(playerService: PlayerService) {
     const playerId = req.params.id;
     try {
       const responseFromDatabase = await playerService.addGame(playerId);
-      return res.status(200).json(responseFromDatabase );
+      return res.status(200).json(responseFromDatabase);
     } catch (err) {
       next(err);
     }

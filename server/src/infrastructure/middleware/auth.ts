@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import sanitizedConfig from "../../../config/config";
 
 interface CustomRequest extends Request {
-  userId?: string; // or the appropriate type for your user IDs
+  userId?: string;
 }
 
 const authenticate = (
@@ -30,7 +30,7 @@ const authenticate = (
     }
     next(error);
   }
-  
+
 };
 
 export default authenticate;

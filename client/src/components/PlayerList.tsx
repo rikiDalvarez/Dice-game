@@ -8,7 +8,6 @@ interface PlayerListI {
 
 export const PlayerList: React.FC<PlayerListI> = (props) => {
   const [playerList, setPlayerList] = useState([]);
-  console.log("playerlist");
   const getPlayerList = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -16,7 +15,6 @@ export const PlayerList: React.FC<PlayerListI> = (props) => {
       if (response.ok) {
         const responseData = await response.json();
         setPlayerList(responseData.playerList);
-        console.log(responseData);
       } else {
         console.error("fetching games");
       }

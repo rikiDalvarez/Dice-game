@@ -71,10 +71,10 @@ export class PlayerMongoDbManager implements PlayerInterface {
     if (!playerDetails) {
       throw new Error("PlayerNotFound");
     }
-    const { name, email, password, games, id, registrationDate} = playerDetails;
-   const player = new Player(email, password, games, name, id);
-   player.registrationDate = registrationDate
-   return player
+    const { name, email, password, games, id, registrationDate } = playerDetails;
+    const player = new Player(email, password, games, name, id);
+    player.registrationDate = registrationDate
+    return player
   }
 
 
@@ -129,19 +129,14 @@ export class PlayerMongoDbManager implements PlayerInterface {
 
   async addGame(player: Player): Promise<GameType> {
     const id = player.id;
-    console.log({ player });
-
     const response = await this.playerDocument.replaceOne(
       { _id: { $eq: id } },
       this.createPlayerDoc(player)
     );
-    console.log({ response });
-
     if (response.modifiedCount === 1) {
       const lastGame = player.games[player.games.length - 1];
       return lastGame;
     }
-
     throw new Error("AddingGameError");
   }
 

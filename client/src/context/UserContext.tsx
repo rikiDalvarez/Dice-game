@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 import jwt_decode from "jwt-decode"
 
 
@@ -10,8 +10,9 @@ type AuthUser = {
 
 export type UserContextType = {
 	user: AuthUser | null;
-	setUser: object;
+	setUser: Dispatch<SetStateAction<AuthUser | null>>;
 	isTokenValid: boolean
+	setIsTokenValid: Dispatch<SetStateAction<boolean>>;
 };
 
 type UserContextProviderType = {
@@ -37,6 +38,7 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 		const token = localStorage.getItem("token")
 		if (!token) {
 			console.log("token not found")
+			setIsTokenValid(false)
 			return
 		}
 		if (token) {
@@ -55,6 +57,6 @@ export const UserContextProvider = ({ children }: UserContextProviderType) => {
 
 	}, [])
 
-	return <UserContext.Provider value={{ user, setUser, isTokenValid }}>{children}</UserContext.Provider>
+	return <UserContext.Provider value={{ user, setUser, isTokenValid, setIsTokenValid }}>{children}</UserContext.Provider>
 
 };

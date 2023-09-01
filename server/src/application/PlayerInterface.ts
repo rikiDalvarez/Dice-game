@@ -10,6 +10,6 @@ export interface PlayerInterface {
   deleteAllGames(playerDetails: Player): Promise<boolean>;
   findPlayer(playerId: string): Promise<Player>;
   findPlayerByEmail(playerEmail: string): Promise<Player>;
- getPlayerList(): Promise<PlayerList>;
+  getPlayerList(): Promise<PlayerList>;
   getGames(playerId: string): Promise<Array<GameType>>;
 }
