@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 
 
 export class Game {
-  readonly id:string;
+  readonly id: string;
   readonly gameWin: boolean;
   readonly dice1Value: number;
   readonly dice2Value: number;

@@ -1,6 +1,5 @@
 import React from 'react'
 
-//---> component and interface should have different name
 export interface GameInterface {
 	id: string;
 	gameWin: boolean;
@@ -14,12 +13,12 @@ interface Props {
 
 const Game: React.FC<Props> = ({ props }) => {
 	return (
-		<div className={` card font-mono ${props.gameWin ? 'bg-green-200' : "bg-amber-200"
+		<div className={`w-96 card font-mono ${props.gameWin ? 'bg-green-200' : "bg-red-200"
 			} `}
 			key={props.id}>
 			<div className="m-2 p-2 border-2" >
-				<p>dice 1 value: {props.dice1Value}</p>
-				<p>dice 2 value: {props.dice2Value}</p>
+				<p>Dice 1 value: {props.dice1Value}</p>
+				<p>Dice 2 value: {props.dice2Value}</p>
 				<p>{props.gameWin ? "Won" : "Lost"}</p>
 			</div>
 		</div>

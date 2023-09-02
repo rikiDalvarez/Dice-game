@@ -3,10 +3,6 @@ import { PlayerRootControllers, RankingRootControllers } from "./app";
 import auth from "./infrastructure/middleware/auth";
 
 export async function initRoutes(router: Router, playerRootControllers: PlayerRootControllers, rankingRootControllers: RankingRootControllers) {
-  // const router = express.Router();
-
-  // router.get("/protected", auth, getPlayers);
-
   router.post("/login", playerRootControllers.handleLogin);
 
   // POST /players: crea un jugador/a.
@@ -35,6 +31,4 @@ export async function initRoutes(router: Router, playerRootControllers: PlayerRo
 
   // GET /ranking/winner: retorna el jugador/a amb millor percentatge d’èxit.
   router.get("/ranking/winner", auth, rankingRootControllers.getWinner);
-
-  // return router
 }

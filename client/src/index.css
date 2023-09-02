@@ -51,6 +51,16 @@ button {
   padding: 0.5rem;
 }
 
+.app-container {
+  min-height: 400px;
+}
+
+.gameList{
+  max-height: 120px;
+  /* max-width: 600px; */
+  /* justify-content: center; */
+}
+
 .instructions {
   font-size: 0.75rem;
   border-radius: 0.5rem;

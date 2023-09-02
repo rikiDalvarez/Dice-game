@@ -48,8 +48,6 @@ export class PlayerMySQLManager implements PlayerInterface {
           throw new Error("NameConflictError");
         }
       }
-      //The last stable version of sequelizer has error. Type returns upper case 'Validation error'
-      //but should return lower case 'validation error.'
       if (error.type?.toLowerCase() === "validation error") {
         if (error.path === "email") {
           throw new Error("EmailInvalidError");
@@ -115,8 +113,6 @@ export class PlayerMySQLManager implements PlayerInterface {
     playerId: string,
     newName: string
   ): Promise<Partial<Player>> {
-    console.log(playerId),
-    console.log(newName)
     try {
       const response = await PlayerSQL.update(
         { name: newName },

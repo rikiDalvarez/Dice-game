@@ -4,10 +4,10 @@ import { GetWinner } from "./GetWinner";
 import { UserContext } from "../context/UserContext";
 
 type GetGameDateProps = {
- // handleRefreshGames: () => void;
-  setRankingChoosen: (param:boolean) => void;
-  setRefreshDashboard: (param:boolean) => void
- // setData: (data: unknown) => void;
+  // handleRefreshGames: () => void;
+  setRankingChoosen: (param: boolean) => void;
+  setRefreshDashboard: (param: boolean) => void
+  // setData: (data: unknown) => void;
   //setGetWinnerInProgress: (param: boolean) => void;
   // setGetLoserInProgress: (param: boolean) => void;
 };
@@ -15,16 +15,18 @@ type GetGameDateProps = {
 const GetGameData: React.FC<GetGameDateProps> = (props) => {
   const [isGetWinnerInProgress, setGetWinnerInProgress] = useState(false);
   const [isGetLoserInProgress, setGetLoserInProgress] = useState(false);
-  
+
   const userContext = useContext(UserContext);
 
   const { user } = userContext;
   console.log("userContext getgamedata", user);
 
 
-  
+
 
   return (
+
+    // TODO fix layout when button clicked
     <div className=" w-60 getGameData m-4 p-4 border-2 border-sky-500 flex flex-col rounded-lg">
       <button
         onClick={() => props.setRankingChoosen(false)}
@@ -56,7 +58,7 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
       >
         GetRanking
       </button>
-      
+
 
       {!isGetLoserInProgress ? (
         <div>

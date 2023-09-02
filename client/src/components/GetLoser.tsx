@@ -8,7 +8,7 @@ type LoserType = {
 };
 
 export interface Loser {
-  id:string;
+  id: string;
   name: string;
   successRate: string;
 }
@@ -32,7 +32,7 @@ export const GetLoser: React.FC<LoserType> = (props) => {
       console.error("An error occurred:", error);
     }
     props.setRefreshDashboard(true)
-  },[props])
+  }, [props])
 
   useEffect(() => {
     if (props.isGetLoserInProgress) {
@@ -46,11 +46,11 @@ export const GetLoser: React.FC<LoserType> = (props) => {
       {losers ? (
         <div>
           {losers.map((loser: Loser) => {
-            const name = loser.name? loser.name: "Anonim"
+            const name = loser.name ? loser.name : "Anonim"
             return (
               <div key={loser.id}>
                 <p>Loser:</p>
-                <p>{name}</p> <p>{loser.successRate}</p>
+                <p>Name: {name}</p> <p>Success rate: {loser.successRate}</p>
               </div>
             );
           })}
