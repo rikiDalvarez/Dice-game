@@ -12,10 +12,12 @@ ENV MYSQL_PASSWORD='password'
 ENV HOST='mysql'
 ENV JWT_SECRET='5dd0aa20-a5c7-472c-b4aa-2d7716a5a654'
 
-COPY server/ .
+
 
 WORKDIR /server
+COPY server/package*.json .
 RUN npm install
+COPY server/ .
 RUN npm run build
 EXPOSE 5000
 CMD npm run dev_sql

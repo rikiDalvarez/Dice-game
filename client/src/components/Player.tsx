@@ -22,7 +22,6 @@ const Player: React.FC<Props> = ({ props }) => {
 	}
 
 	const playerName = props.name? props.name: "Anonim"
-	console.log('ppppppppp', props)
 
 	return (
 		<div className="card font-mono " key={props.email} >
