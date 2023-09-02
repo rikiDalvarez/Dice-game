@@ -111,3 +111,27 @@ to get Winner:
 ```bash
 curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/winner
 ```
+## RUN WITH DOCKER
+To run backend and frontend with docker, type in root directory:
+```bash
+docker compose up -d
+```
+With this command you build up and run containers with mongo, mysql, backend and frontend. In this case, by default application connect to ``mongoDB``.
+Now you can use `Dice-game` interface by going to:
+
+http://localhost:8000/login
+
+To stop all docker containers type:
+```bash
+docker compose down 
+```
+
+If you want choose ``mySQL`` database:
+ - first type in commandline:
+```bash
+docker compose up mongo mysql frontend -d   
+```
+- next type:
+```bash
+docker compose run -p 5000:5000 backend npm run dev_sql -d  
+```

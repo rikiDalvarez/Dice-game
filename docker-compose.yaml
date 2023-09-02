@@ -5,14 +5,13 @@ services:
     build:
       dockerfile: Dockerfile_backend
     container_name: backend
+    command: npm run dev_mongo
+    ports:
+      - "5000:5000"
     environment:
      - MONGO_URI=mongodb://mongodb:27017
      - SQL_URI=mysql://mysql
      - HOST=mysql
-
-    command: npm run dev_mongo
-    ports:
-      - "5000:5000"
     
     networks:
       - mafalda
