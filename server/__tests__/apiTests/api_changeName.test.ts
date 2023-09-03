@@ -1,5 +1,4 @@
 import request from "supertest";
-// import { server } from "../../src/Server";
 import { Application, applicationStart } from "../../src/app";
 import { describe, test, afterAll, beforeEach } from "@jest/globals";
 import { createUser } from "../auxilaryFunctionsForTests/createUser";

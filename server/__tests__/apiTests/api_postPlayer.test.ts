@@ -25,27 +25,29 @@ describe("API CREATE PLAYER TEST", () => {
       .post("/api/players")
       .send({
         password: "first password",
-        email: "mafalda1@op.pl",
+        email: "mafalda@op.pl",
         name: "first user",
       })
       .expect(201)
       .expect("Content-Type", /application\/json/);
+    const regDate = new Date().toISOString().slice(0,13)
+
     const playerId = response.body.Player_id;
     const token = await loginUser(
       requestUri,
-      "mafalda1@op.pl",
+      "mafalda@op.pl",
       "first password"
     );
     const playerDetails = await getPlayer(requestUri, token, playerId);
 
     //TODO: thinh about better test
     if (playerDetails) {
-      const { name, id, successRate: rating } = playerDetails;
-      //const passwordMatch = bcrypt.compare('first password', password)
+      const { name, id, successRate: rating, email, registrationDate} = playerDetails;
+      const registrationDateFromDB = new Date(registrationDate).toISOString().slice(0,13)
       expect(id.toString()).toBe(playerId);
+      expect(regDate).toBe(registrationDateFromDB)
       expect(name).toBe("first user");
-      //expect(passwordMatch).toBeTruthy;
-      //expect(email).toBe("mafalda@op.pl");
+      expect(email).toBe("mafalda@op.pl");
       expect(Number(rating)).toBe(0);
     }
   });

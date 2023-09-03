@@ -9,6 +9,7 @@ export async function getPlayers(requestUri:string, token:string){
   if (response.status != 200) {
     throw new Error("failed to retrieve players")
   }
+  console.log('PPPP', response.body.playerList)
   return response.body.playerList;
 }
 

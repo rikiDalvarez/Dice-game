@@ -6,6 +6,7 @@ import { Application, applicationStart } from "../../src/app";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 import { getGames, getPlayer } from "../auxilaryFunctionsForTests/getPlayers";
 import config from "../../config/config";
+import { constants } from "../auxilaryFunctionsForTests/constants";
 
 const requestUri = `http://localhost:${config.PORT}`;
 
@@ -66,10 +67,8 @@ describe("API ADD GAME TEST", () => {
     const successRate = (gameWin.length / games.length) * 100;
     expect(Number(playerAfterSecondGame.successRate)).toBe(successRate);
   });
-  //TODO------> this test works only for SQL
-  /*  test("If player id don't exists throw error:", async () => {
-    const nonExistingPlayerId = constantsGenerator(app.connection)
-
+    test("If player id don't exists throw error:", async () => {
+       const nonExistingPlayerId = constants(app.connection).id
     const response = await request(requestUri)
       .post(`/api/games/${nonExistingPlayerId}`)
       .set("Authorization", token)
@@ -77,7 +76,8 @@ describe("API ADD GAME TEST", () => {
       .expect("Content-Type", /application\/json/);
     expect(response.body.error).toBe(undefined);
   });
-*/
+
+
   afterAll(async () => {
     app.stop();
   });

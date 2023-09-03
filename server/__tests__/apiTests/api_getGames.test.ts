@@ -6,6 +6,7 @@ import { loginUser } from "../auxilaryFunctionsForTests/loginUser";
 import { addGame } from "../auxilaryFunctionsForTests/addGame";
 import { cleanupDatabase } from "../auxilaryFunctionsForTests/cleanup";
 import config from "../../config/config";
+import { constants } from "../auxilaryFunctionsForTests/constants";
 
 const requestUri = `http://localhost:${config.PORT}`
 
@@ -42,10 +43,9 @@ describe("API ADD GAME TEST", () => {
     expect(games.body.length).toBe(2);
   });
 
-  //TODO------> this test works only for SQL
-/*
+
   test("Should throw an error if player doesn't exists", async () => {
-    const fakePlayerId = constantsGenerator(app.connection)
+    const fakePlayerId = constants(app.connection).id
     await addGame(requestUri, token, playerId);
     await addGame(requestUri, token, playerId);
     const games = await request(requestUri)
@@ -55,7 +55,7 @@ describe("API ADD GAME TEST", () => {
       .expect("Content-Type", /application\/json/);
     expect(games.body.length).toBe(undefined);
   });
-*/
+
 
   afterAll(async () => {
     app.stop()
