@@ -4,6 +4,9 @@
 [![github last commit](https://img.shields.io/github/last-commit/rikiDalvarez/Dice-game)](https://github.com/rikiDalvarez/Dice-game)
 
 Application built with hexagonal architecture and TDD.
+<!-- link the file gameRules.md -->
+For more information about the game rules and requirements
+[click here](./gameRules.md)
 
 ## Dashboard
 
