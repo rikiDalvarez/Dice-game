@@ -44,11 +44,11 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
   return (
     <>
       {winners ? (
-        <div className="bg-green-200">
+        <div className="w-full p-6 bg-white  shadow-lg">
           {winners.map((winner: Winner) => {
             const name = winner.name ? winner.name : "Anonim"
             return (
-              <div key={winner.id}>
+              <div className="bg-green-200" key={winner.id}>
                 <p>{name}</p>
                 <p>Success rate:{winner.successRate}</p>
               </div>

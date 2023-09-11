@@ -42,15 +42,16 @@ export const GetLoser: React.FC<LoserType> = (props) => {
   }, [getLoser, props]);
 
   return (
-    <div className=" w-full p-6 bg-white rounded-lg shadow-lg">
+    <div className=" w-full p-6 bg-white  shadow-lg">
       {losers ? (
         <div>
           {losers.map((loser: Loser) => {
             const name = loser.name ? loser.name : "Anonim"
             return (
-              <div key={loser.id}>
-                <p>Loser:</p>
-                <p>Name: {name}</p> <p>Success rate: {loser.successRate}</p>
+              <div className=" mt-2 bg-red-200" key={loser.id}>
+
+                <p> {name}</p>
+                <p>Success rate: {loser.successRate}</p>
               </div>
             );
           })}
