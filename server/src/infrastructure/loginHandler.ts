@@ -11,6 +11,5 @@ export const loginHandler = async (player: Player, password: string) => {
   const token = jwt.sign({ userId: player.id }, sanitizedConfig.JWT_SECRET, {
     expiresIn: "1h",
   });
-  console.log(token);
   return token;
 };

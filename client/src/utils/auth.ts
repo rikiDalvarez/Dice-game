@@ -1,3 +1,4 @@
+/*
 class Auth {
   authenticated: boolean;
   constructor() {
@@ -20,3 +21,4 @@ class Auth {
 }
 
 export default new Auth();
+*/

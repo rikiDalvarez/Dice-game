@@ -23,7 +23,7 @@ export class Ranking {
 
   private preparePlayersDetails(players: Array<Player>): Array<RankingType> {
     return players.map((player) => {
-      return {id: player.id, name: player.name, successRate: player.successRate };
+      return { id: player.id, name: player.name, successRate: player.successRate };
     });
   }
   public set rankingList(players: Array<Player>) {
@@ -31,7 +31,8 @@ export class Ranking {
   }
 
   public set average(meanValue: number) {
-    this._average = meanValue;
+
+    this._average = Number(meanValue.toFixed(2))
   }
   public set losers(losers: Array<Player>) {
     this._losers = this.preparePlayersDetails(losers);

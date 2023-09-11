@@ -7,7 +7,7 @@ import { fetchRegistration } from '../services';
 const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
 
-function Register() {
+const Register: React.FC = () => {
 	const navigate = useNavigate();
 	const userRef = useRef<HTMLInputElement>(null);
 	const errRef = useRef<HTMLInputElement>(null);
@@ -27,8 +27,6 @@ function Register() {
 	const [matchFocus, setMatchFocus] = useState(false);
 
 	const [errMsg, setErrMsg] = useState('');
-	// const [success, setSuccess] = useState(false);
-
 
 	useEffect(() => {
 		userRef.current?.focus();
@@ -62,27 +60,24 @@ function Register() {
 
 	const handleClickSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
-		// setRegistrationData({ name: name.toLowerCase(), email: email, password: pwd })
 		try {
-			const response = await fetchRegistration({ name: (name.length > 0 ? name : null), email: email, password: pwd });
+			const response = await fetchRegistration({ name: (name ? name : null), email: email, password: pwd });
 			if (response.ok) {
-				const data = await response.json();
-				console.log(data)
+				alert("Registration completed succesfully")
 				navigate("/login")
 
 			} else {
+				alert("Email and/or name already in use");
 				console.error("registration failed")
 			}
 		} catch (error) {
 			console.error("an error occurred:", error)
 		}
-
 	}
 
-	const handleLogin = () => {
+	const navigateToLogin = () => {
 		navigate("/login")
 	}
-
 
 	return (
 		<section className="min-h-screen flex items-center justify-center bg-color-movement">
@@ -96,14 +91,13 @@ function Register() {
 						Name
 					</label>
 					<input
-						placeholder="unknown"
+						placeholder="Anonim"
 						onChange={(e) => setName(e.target.value)}
 						className="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
 						type="text"
 						id="name"
-						value={name}
+						value={name? name:undefined}
 					/>
-					{/* email input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
 						Email
 						<span className={validEmail ? "valid" : "hide"}>
@@ -129,8 +123,6 @@ function Register() {
 						<FontAwesomeIcon icon={faInfoCircle} />
 						must be a valid email
 					</p>
-
-					{/* pwd input */}
 					<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
 						Password:
 						<span className={validPwd ? "valid" : "hide"}>
@@ -187,7 +179,7 @@ function Register() {
 					<button
 						className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
 						type="submit"
-						onClick={handleLogin}>
+						onClick={navigateToLogin}>
 						Login
 					</button>
 				</form>

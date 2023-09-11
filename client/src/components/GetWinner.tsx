@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { fetchGetWinner } from "../services";
 
 type WinnerType = {
   isGetWinnerInProgress: boolean;
   setGetWinnerInProgress: (state: boolean) => void;
-  refreshDashboard: () => void;
+  setRefreshDashboard: (param: boolean) => void;
 };
 
 export interface Winner {
-  id:string;
+  id: string;
   name: string;
   successRate: string;
 }
@@ -16,7 +16,7 @@ export interface Winner {
 export const GetWinner: React.FC<WinnerType> = (props) => {
   const [winners, setWinners] = useState([]);
 
-  const getWinner = async () => {
+  const getWinner = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetchGetWinner(token);
@@ -31,26 +31,26 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  };
+    props.setRefreshDashboard(true)
+  }, [props])
 
   useEffect(() => {
     if (props.isGetWinnerInProgress) {
       props.setGetWinnerInProgress(false);
       getWinner();
     }
-  }, [props]);
+  }, [getWinner, props]);
 
   return (
-    <div className=" w-full p-6 bg-white rounded-lg shadow-lg">
+    <>
       {winners ? (
-        <div>
+        <div className="w-full p-2 bg-white  shadow-lg">
           {winners.map((winner: Winner) => {
-            const name = winner.name? winner.name: "Anonim"
-            
+            const name = winner.name ? winner.name : "Anonim"
             return (
-              <div key={winner.id}>
-                <p>Winner:</p>
-                <p>{name}</p> <p>{winner.successRate}</p>
+              <div className="bg-green-200" key={winner.id}>
+                <p>{name}</p>
+                <p>Success rate: {winner.successRate}%</p>
               </div>
             );
           })}
@@ -58,6 +58,6 @@ export const GetWinner: React.FC<WinnerType> = (props) => {
       ) : (
         ""
       )}
-    </div>
+    </>
   );
 };

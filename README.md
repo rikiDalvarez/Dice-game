@@ -5,14 +5,6 @@
 
 Application built with hexagonal architecture and TDD.
 
-## Login
-
-![Login page](<./public/Screenshot 2023-08-30 at 17.06.43.png>)
-
-## Register
-
-![Register page](<./public/register.png>)
-
 ## Dashboard
 
 ![Dashboard page ranking list](<./public/Screenshot 2023-08-30 at 17.07.33.png>)
@@ -52,4 +44,89 @@ if you wish to run the app with a mysql database run:
 
 ```bash
 npm run devmysql
+```
+
+## API DOCUMENTATION
+
+if you .env is set with port 8012 if not just adjust the port. You can access the api documentation with the following commands:
+
+first create a player with email and password, name is optional, if name is not provided the default will be "anonim":
+
+```bash
+curl -X POST -d "name=John&email=john@example.com&password=secretpassword" http://localhost:8012/api/players
+```
+
+then login with the email and password to get the token:
+
+```bash
+curl -X POST -d "email=john@example.com&password=secretpassword" http://localhost:8012/api/login
+```
+
+### Now you can access the api documentation with the following command always adding the token as bearer:
+
+to change name:
+
+```bash
+curl -X PUT -H "Authorization: Bearer <YOUR_TOKEN>" -d "name=Ronaldinho" http://localhost:8012/api/players/<your_player_id>
+```
+
+to get player list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/players/
+```
+
+to play game:
+
+```bash
+curl -X POST -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to get games:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to delete all games from a player:
+
+```bash
+curl -X DELETE -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/games/<your_player_id>
+```
+
+to get Ranking list:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking
+```
+
+to get Looser:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/loser
+```
+
+to get Winner:
+
+```bash
+curl -X GET -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8012/api/ranking/winner
+```
+## RUN WITH DOCKER
+To run databases, backend and frontend with docker, type in root directory:
+```bash
+docker compose --profile mongo up -d
+```
+or
+```bash
+docker compose --profile sql up -d
+```
+With `--profile` option you can choose which database you want to use by server.
+
+Now you can use `Dice-game` interface by going to:
+
+http://localhost:8000/login
+
+To stop all docker containers type:
+```bash
+docker compose --profile <profile_name> down 
 ```

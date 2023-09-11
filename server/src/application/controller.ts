@@ -16,20 +16,15 @@ export function playerControllers(playerService: PlayerService) {
     try {
       const { email, password } = req.body;
       const player = await playerService.findPlayerByEmail(email);
-
-      // const token = await loginHandler(player, password);
-
       if (!player) {
         return res
           .status(401)
           .json({ error: "no player found with this email" });
       }
-
       const passwordMatch = await bcrypt.compare(password, player.password);
       if (!passwordMatch) {
         return res.status(401).json({ error: "authentication failed" });
       }
-
       const token = jwt.sign(
         { userId: player.id },
         sanitizedConfig.JWT_SECRET,
@@ -73,11 +68,8 @@ export function playerControllers(playerService: PlayerService) {
         .json({ Bad_reqest: "email and password required" });
     }
     const { email, password, name } = req.body;
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User(email, hashedPassword, name);
-
     playerService
       .createPlayer(newUser)
       .then((response) => {
@@ -92,7 +84,7 @@ export function playerControllers(playerService: PlayerService) {
     const playerId = req.params.id;
     try {
       const responseFromDatabase = await playerService.addGame(playerId);
-      return res.status(200).json(responseFromDatabase );
+      return res.status(200).json(responseFromDatabase);
     } catch (err) {
       next(err);
     }
@@ -105,8 +97,6 @@ export function playerControllers(playerService: PlayerService) {
   ) => {
     const playerId = req.params.id;
     try {
-      console.log("DELETE ALL GAMES CONTROLLER");
-      console.log("player service", playerService);
       const player = await playerService.findPlayer(playerId);
       player.deleteGames();
       const responseFromDatabase = await playerService.deleteAllGames(player);
@@ -153,7 +143,6 @@ export function playerControllers(playerService: PlayerService) {
 }
 
 export function rankingControllers(rankingService: RankingService) {
-  //refactoring of getRankingAndAvarage
   const getRankingWithAverage = async (req: Request, res: Response) => {
     try {
       const ranking = await rankingService.getRankingWithAverage();

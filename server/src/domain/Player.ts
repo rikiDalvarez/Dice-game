@@ -2,7 +2,7 @@ import { Game } from "./Game";
 import { User } from "./User";
 
 export type GameType = {
-  id:string;
+  id: string;
   gameWin: boolean;
   dice1Value: number;
   dice2Value: number;
@@ -47,25 +47,21 @@ export class Player extends User {
   }
 
   public addNewGame(game: Game) {
-    console.log(game);
     this._games.push(game);
     this._successRate = this.calcSuccesRate();
   }
-  
+
   public deleteGames() {
     this._games = [];
     this._successRate = this.calcSuccesRate();
   }
+
   private calcSuccesRate() {
     const wins = this._games.filter((game) => game.gameWin).length;
     return this._games.length > 0
       ? Number(((wins / this._games.length) * 100).toFixed(2))
       : 0;
   }
-
-  //public setId(id: string) {
-  // this.id = id;
-  //}
 
   public get successRate() {
     return this._successRate;
