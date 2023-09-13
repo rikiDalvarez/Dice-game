@@ -4,12 +4,8 @@ import { GetWinner } from "./GetWinner";
 import { UserContext } from "../context/UserContext";
 
 type GetGameDateProps = {
-  // handleRefreshGames: () => void;
   setRankingChoosen: (param: boolean) => void;
   setRefreshDashboard: (param: boolean) => void
-  // setData: (data: unknown) => void;
-  //setGetWinnerInProgress: (param: boolean) => void;
-  // setGetLoserInProgress: (param: boolean) => void;
 };
 
 const GetGameData: React.FC<GetGameDateProps> = (props) => {
@@ -20,9 +16,6 @@ const GetGameData: React.FC<GetGameDateProps> = (props) => {
 
   const { user } = userContext;
   console.log("userContext getgamedata", user);
-
-
-
 
   return (
 

@@ -85,11 +85,6 @@ export class Application {
   }
 }
 
-export async function applicationStart() {
-  const databaseName =
-    config.NODE_ENV === "test" ? config.TEST_DATABASE : config.DATABASE;
-  return startServer(config.DATABASE_ENV, databaseName);
-}
 
 export async function appSetup(app: Express, router: Router) {
   app.use(cors());
@@ -128,4 +123,9 @@ async function startServer(databaseType: string, databaseName: string) {
   return new Application(server, dataBaseDetails.connection);
 }
 
+export async function applicationStart() {
+  const databaseName =
+    config.NODE_ENV === "test" ? config.TEST_DATABASE : config.DATABASE;
+  return startServer(config.DATABASE_ENV, databaseName);
+}
 

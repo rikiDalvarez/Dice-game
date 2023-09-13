@@ -27,8 +27,4 @@ export class PlayerList {
       };
     });
   }
-
-  sortList() {
-    return this.playerList.sort();
-  }
 }

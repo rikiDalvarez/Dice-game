@@ -5,7 +5,7 @@ x-backend_common: &backend_common
   build:
     dockerfile: Dockerfile_backend
   ports:
-    - "5000:5000"
+    - "5002:5002"
   environment:
     - MONGO_URI=mongodb://mongodb:27017
     - SQL_URI=mysql://mysql

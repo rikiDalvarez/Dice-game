@@ -1,4 +1,3 @@
-// import { PlayerDocument } from "./mongoDbModel";
 import { Request, Response, NextFunction } from "express";
 import { User } from "../domain/User";
 import bcrypt from "bcrypt";

@@ -45,21 +45,12 @@ const Login: React.FC<LoginType> = (props) => {
 				const token = data.token;
 				const nameUser = data.name;
 
-				//using local storage
 				localStorage.setItem("token", token)
 				localStorage.setItem("name", nameUser)
 				localStorage.setItem("id", data.id)
 
-				//using context
-				// userContext.setUser({
-				// 	email: formData.email,
-				// 	token: localStorage.getItem("token"),
-				// 	id: localStorage.getItem("id")
-				// });
-
 				console.log("login successful")
 				props.setIsLoggedIn(true)
-				// navigate("/dashboard")
 
 			} else {
 				alert("Email and/or password incorrect");

@@ -45,7 +45,7 @@ export class Player extends User {
     this.id = id;
     this._successRate = this.calcSuccesRate();
   }
-
+  
   public addNewGame(game: Game) {
     this._games.push(game);
     this._successRate = this.calcSuccesRate();

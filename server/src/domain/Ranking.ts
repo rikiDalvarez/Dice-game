@@ -7,9 +7,6 @@ type RankingType = {
 };
 
 export class Ranking {
-  meanSuccesRate(): number {
-    throw new Error("Method not implemented.");
-  }
   private _rankingList: Array<RankingType>;
   private _average: number;
   private _losers: Array<RankingType>;
