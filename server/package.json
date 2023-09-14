@@ -13,8 +13,8 @@
     "devsql": "cross-env NODE_ENV=dev DATABASE_ENV=sql ts-node ./src/Server.ts",
     "prod_mongo": "cross-env NODE_ENV=production DATABASE_ENV=mongo node ./dist/src/Server.js",
     "prod_sql": "cross-env NODE_ENV=production DATABASE_ENV=sql node ./dist/src/Server.js",
-    "dev_mongo": "concurrently \"tsc -w\" \"cross-env NODE_ENV=dev DATABASE_ENV=mongo nodemon ./dist/src/Server.js\"",
-    "dev_sql": "concurrently \"tsc -w\" \"cross-env NODE_ENV=dev DATABASE_ENV=sql nodemon ./dist/src/Server.js\"",
+    "dev_mongo": "concurrently \"tsc -w\" \"cross-env NODE_ENV=dev DATABASE_ENV=mongo node ./dist/src/Server.js\"",
+    "dev_sql": "concurrently \"tsc -w\" \"cross-env NODE_ENV=dev DATABASE_ENV=sql node ./dist/src/Server.js\"",
     "test_mongo": "cross-env NODE_ENV=test DATABASE_ENV=mongo npx jest --silent --runInBand --testPathPattern=./__tests__/apiTests",
     "test_sql": "cross-env NODE_ENV=test DATABASE_ENV=sql npx jest --silent --runInBand --testPathPattern=./__tests__/apiTests",
     "test_domain": "npx jest --silent --runInBand --testPathPattern=./__tests__/domain"
