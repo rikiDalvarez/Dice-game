@@ -21,7 +21,7 @@ NODE_ENV="development"
 DATABASE_ENV='mongo'
 TEST_DATABASE='test'
 DATABASE="dicegame"
-PORT="8012"
+PORT="5002"
 
 SQL_URI='mysql://127.0.0.1'
 MYSQL_USER='root'
